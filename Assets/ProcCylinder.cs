@@ -94,7 +94,7 @@ public class ProcCylinder : MonoBehaviour {
         mesh.triangles = triangles;
 
         mesh.RecalculateBounds();
-        mesh.Optimize();
+        ;
     }
 	
 	// Update is called once per frame
