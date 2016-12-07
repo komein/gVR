@@ -5,7 +5,8 @@ using UnityEngine;
 public class CameraPrototype1 : MonoBehaviour {
 
     public CharacterPrototype1 ch;
-    public float distance = 2f;
+    public float distance = 3f;
+    public float height = 3f;
 
 	// Use this for initialization
 	void Start () {
@@ -13,7 +14,8 @@ public class CameraPrototype1 : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		
+	void FixedUpdate () {
+        Vector3 newPos = new Vector3(gameObject.transform.position.x, ch.transform.position.y + height, ch.transform.position.z - distance);
+        gameObject.transform.position = newPos;
 	}
 }

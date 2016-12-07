@@ -25,6 +25,16 @@ public class GvrReticle : MonoBehaviour, IGvrGazePointer {
   /// Growth speed multiplier for the reticle/
   public float reticleGrowthSpeed = 8.0f;
 
+    bool isGazed = false;
+
+    public bool Gazed
+    {
+        get
+        {
+            return isGazed;
+        }
+    }
+
   // Private members
   private Material materialComp;
   private GameObject targetObj;
@@ -93,6 +103,7 @@ public class GvrReticle : MonoBehaviour, IGvrGazePointer {
   public void OnGazeStart(Camera camera, GameObject targetObject, Vector3 intersectionPosition,
                           bool isInteractive) {
     SetGazeTarget(intersectionPosition, isInteractive);
+        isGazed = true;
   }
 
   /// Called every frame the user is still looking at a valid GameObject. This
@@ -117,6 +128,8 @@ public class GvrReticle : MonoBehaviour, IGvrGazePointer {
     reticleDistanceInMeters = kReticleDistanceMax;
     reticleInnerAngle = kReticleMinInnerAngle;
     reticleOuterAngle = kReticleMinOuterAngle;
+
+        isGazed = false;
   }
 
   /// Called when a trigger event is initiated. This is practically when

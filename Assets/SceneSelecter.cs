@@ -5,17 +5,17 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Collider))]
 public class SceneSelecter : MonoBehaviour, IGvrGazeResponder
 {
-    private Vector3 startingPosition;
+    protected Vector3 startingPosition;
 
-    bool isGazedOn = false;
+    protected bool isGazedOn = false;
 
     public string scenePath = "";
 
-    float time = 0f;
-    const float TELEPORT_TIME = 1.2f;
+    protected float time = 0f;
+    protected const float TELEPORT_TIME = 1.2f;
 
-    Color GAZED_COLOR = Color.green;
-    Color UNGAZED_COLOR = Color.red;
+    protected Color GAZED_COLOR = Color.green;
+    protected Color UNGAZED_COLOR = Color.red;
 
     void Start()
     {
@@ -24,7 +24,7 @@ public class SceneSelecter : MonoBehaviour, IGvrGazeResponder
         isGazedOn = false;
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (isGazedOn)
         {
@@ -51,7 +51,7 @@ public class SceneSelecter : MonoBehaviour, IGvrGazeResponder
         }
     }
 
-    public void SetGazedAt(bool gazedAt)
+    public virtual void SetGazedAt(bool gazedAt)
     {
         isGazedOn = gazedAt;
         GetComponent<Renderer>().material.color = isGazedOn ? GAZED_COLOR : UNGAZED_COLOR;
@@ -78,11 +78,10 @@ public class SceneSelecter : MonoBehaviour, IGvrGazeResponder
     {
         GvrViewer.Controller.directRender = !GvrViewer.Controller.directRender;
     }
-#endif  //  !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#endif
 
     protected virtual void Function()
     {
-        Debug.Log("loading " + scenePath);
         SceneManager.LoadScene(scenePath, LoadSceneMode.Single);
     }
 

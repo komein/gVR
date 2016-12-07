@@ -33,7 +33,15 @@ public class AbstractMover : MonoBehaviour {
     protected virtual void Update () {
         if (currentSpeed < maxSpeed)
         {
-            currentSpeed += (-cam.transform.forward.y) * acceleration * Time.deltaTime;
+            //currentSpeed += (-cam.transform.forward.y) * acceleration * Time.deltaTime;
+            if (cam.transform.forward.y > 0)
+            {
+                currentSpeed += acceleration * Time.deltaTime;
+            }
+            else
+            {
+                currentSpeed -= (-cam.transform.forward.y) * acceleration * Time.deltaTime;
+            }
             currentSpeed = Mathf.Max(currentSpeed, 0);
             currentSpeed = Mathf.Min(currentSpeed, maxSpeed);
         }
