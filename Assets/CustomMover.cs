@@ -5,8 +5,7 @@ using UnityEngine;
 public class CustomMover : AbstractMover
 {
 
-
-	protected override void Update ()
+    protected override void Update ()
     {
         base.Update();
     }

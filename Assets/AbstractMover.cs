@@ -17,6 +17,8 @@ public class AbstractMover : MonoBehaviour {
 
     public float strafeSpeed = 3f;
 
+    public float dropSpeed = 50f;
+
     protected float currentSpeed = 0f;
 
     void Start()
@@ -33,7 +35,6 @@ public class AbstractMover : MonoBehaviour {
     protected virtual void Update () {
         if (currentSpeed < maxSpeed)
         {
-            //currentSpeed += (-cam.transform.forward.y) * acceleration * Time.deltaTime;
             if (cam.transform.forward.y > 0)
             {
                 currentSpeed += acceleration * Time.deltaTime;
@@ -51,7 +52,9 @@ public class AbstractMover : MonoBehaviour {
     {
         if (other.GetComponent<Obstacle>() != null)
         {
-            currentSpeed = 0f;
+            currentSpeed -= dropSpeed;
+            currentSpeed = Mathf.Max(0, currentSpeed);
+
             Destroy(other.gameObject);
         }
     }

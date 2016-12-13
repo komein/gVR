@@ -21,6 +21,8 @@ public class CharacterPrototype1 : MonoBehaviour {
     Color SEE_COLOR = Color.green;
     Color UNSEE_COLOR = Color.red;
 
+    Vector3 targetVec = Vector3.zero;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -28,63 +30,85 @@ public class CharacterPrototype1 : MonoBehaviour {
             rb = GetComponentInChildren<Rigidbody>();
 
         gim = SceneSelecter.FindObjectOfType<GazeInputModule>();
+
+        ResetTargetVector();
     }
 
-    void DrawLine(LineRenderer lr, Vector3 start, Vector3 end, Color color, float duration = 0.2f)
+    private void ResetTargetVector()
+    {
+        if (movMode == MovingMode.inertial)
+        {
+            targetVec = Vector3.zero;
+        }
+        else
+        {
+            targetVec = gameObject.transform.position;
+        }
+    }
+
+    void DrawLine(LineRenderer lr, Vector3 start, Vector3 end, Color color, float width)
     {
         lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
         lr.SetColors(color, color);
-        lr.SetWidth(0.1f, 0.1f);
+        lr.SetWidth(width, width);
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
     }
 
-    void FixedUpdate () {
+    void Update () {
         if (movMode == MovingMode.inertial)
         {
             if (curSpeed < speed)
-                curSpeed += Time.fixedDeltaTime * speed;
+                curSpeed += Time.deltaTime * speed;
             rb.velocity = new Vector3(0, 0, curSpeed);
         }
 
         GameObject target = gim.GetCurrentGameObject();
 
+        //Debug.Log(target);
+
         if (null != target)
         {
-
             Vector3 gotoPos = gim.GetIntersectionPosition();
             Vector3 movePos = new Vector3(gotoPos.x, gameObject.transform.position.y, gotoPos.z);
 
             RaycastHit hit;
-            Physics.Raycast(gameObject.transform.position, gotoPos - gameObject.transform.position, out hit);
+            Physics.Raycast(gameObject.transform.position, gotoPos - gameObject.transform.position, out hit, Mathf.Infinity, LayerMask.NameToLayer("TransparentFX"));
 
             //Debug.DrawLine(gameObject.transform.position, movePos, Color.yellow, Time.fixedDeltaTime);
 
             LineRenderer lr = GetComponent<LineRenderer>();
 
-            DrawLine(GetComponent<LineRenderer>(), gameObject.transform.position, hit.point, Color.yellow, Time.fixedDeltaTime);
+
+            DrawLine(GetComponent<LineRenderer>(), gameObject.transform.position, hit.point, Color.yellow, 0.1f);
 
             if (hit.collider == null)
             {
+                ResetTargetVector();
+
                 GetComponent<Renderer>().material.color = UNSEE_COLOR;
                 return;
             }
 
             if (!Object.Equals(hit.collider.gameObject, target))
             {
+                ResetTargetVector();
+
                 GetComponent<Renderer>().material.color = UNSEE_COLOR;
                 return;
             }
             else
             {
+
                 GetComponent<Renderer>().material.color = SEE_COLOR;
 
                 float step = Vector3.Distance(gameObject.transform.position, movePos);
                 
                 if (movMode == MovingMode.inertial)
                 {
-                    //rb.velocity = rb.velocity + new Vector3(0, 0, movePos.z);
                     movePos = new Vector3(movePos.x, movePos.y, gameObject.transform.position.z);
+                    targetVec = (movePos - gameObject.transform.position) * speed;
+
                     rb.AddForce((movePos - gameObject.transform.position) * speed, ForceMode.Force);
                 }
                 else
@@ -94,9 +118,23 @@ public class CharacterPrototype1 : MonoBehaviour {
                         movePos = Vector3.Lerp(gameObject.transform.position, movePos, maxStepPerTick / step);
                         step = maxStepPerTick;
                     }
-                    rb.MovePosition(Vector3.Lerp(gameObject.transform.position, movePos, speed * Time.fixedDeltaTime));
+
+                    targetVec = Vector3.Lerp(gameObject.transform.position, movePos, speed * Time.deltaTime);
+                    rb.MovePosition(Vector3.Lerp(gameObject.transform.position, movePos, speed * Time.deltaTime));
                 }
             }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (movMode == MovingMode.inertial)
+        {
+            rb.AddForce(targetVec, ForceMode.Force);
+        }
+        else
+        {
+            rb.MovePosition(targetVec);
         }
     }
 
@@ -106,9 +144,14 @@ public class CharacterPrototype1 : MonoBehaviour {
         {
             if (movMode == MovingMode.inertial)
             {
-                curSpeed = 0f;
-                Destroy(other.gameObject);
+
+                other.gameObject.SetActive(false);
             }
+        }
+
+        if (other.GetComponent<Collectible>() != null)
+        {
+            other.gameObject.SetActive(false);
         }
     }
 

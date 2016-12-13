@@ -14,7 +14,7 @@ public class CameraPrototype1 : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
+	void Update () {
         Vector3 newPos = new Vector3(gameObject.transform.position.x, ch.transform.position.y + height, ch.transform.position.z - distance);
         gameObject.transform.position = newPos;
 	}
