@@ -48,7 +48,7 @@ public class AbstractMover : MonoBehaviour {
         }
     }
 
-    protected void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<Obstacle>() != null)
         {

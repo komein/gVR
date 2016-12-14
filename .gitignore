@@ -7,3 +7,6 @@ VRGoogle1.sln
 .vs
 /Library
 /*.apk
+Temp
+/*.csproj
+/*.sln

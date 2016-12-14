@@ -29,7 +29,12 @@ public class CharacterPrototype2 : MonoBehaviour
 
     Vector3 collisionVector = Vector3.zero;
 
+    Quaternion rot;
+
     CharacterController ch;
+    Animator anim;
+    bool onGround = true;
+    int planeCount = 0;
 
     void Awake()
     {
@@ -38,6 +43,8 @@ public class CharacterPrototype2 : MonoBehaviour
 
     private void Start()
     {
+        anim = GetComponent<Animator>();
+
         rb = GetComponent<Rigidbody>();
         if (null == rb)
             rb = GetComponentInChildren<Rigidbody>();
@@ -69,6 +76,22 @@ public class CharacterPrototype2 : MonoBehaviour
         if (curSpeed < speed)
             curSpeed += Time.deltaTime * speed;
 
+        if (null != anim)
+        {
+            if (!onGround && planeCount == 0)
+            {
+                anim.SetBool("jumping", true);
+                anim.speed = 1;
+            }
+            else
+            {   
+                anim.SetBool("jumping", false);
+
+                anim.SetFloat("speed", curSpeed);
+                anim.speed = curSpeed / speed * 0.5f + 0.5f;
+            }
+        }
+
         Vector3 pos = new Vector3(cam.transform.forward.x - gameObject.transform.position.x / 16f, 0, 0) * strafeSpeed;
 
         if (Mathf.Abs(pos.x) > strafeStep)
@@ -76,11 +99,9 @@ public class CharacterPrototype2 : MonoBehaviour
 
         pos.z = curSpeed;
 
-        //Debug.Log(collisionVector);
-
         ch.SimpleMove(pos * Time.deltaTime);
-        //transform.rotation = Quaternion.LookRotation(pos + (collisionVector == Vector3.zero ? Vector3.zero : (gameObject.transform.position - collisionVector) * 500));
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(pos + (collisionVector == Vector3.zero ? Vector3.zero : (gameObject.transform.position - collisionVector) * 500)), 0.1f);
+        transform.rotation = Quaternion.Lerp(transform.rotation, rot, 0.1f);
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(pos), 0.1f);
     }
 
     protected void OnTriggerEnter(Collider other)
@@ -95,24 +116,37 @@ public class CharacterPrototype2 : MonoBehaviour
         {
             other.gameObject.SetActive(false);
         }
-    }
 
-    private void OnCollisionEnter(Collision other)
-    {
         if (other.gameObject.GetComponent<Ground>() != null)
         {
             this.GetComponent<ConstantForce>().enabled = true;
-            if (other.contacts.Length > 0)
-                collisionVector = other.contacts[0].point;
+            planeCount++;
+            rot = other.transform.rotation;
         }
+
+        if (other.gameObject.GetComponent<PlaneGround>() != null)
+        {
+            this.GetComponent<ConstantForce>().enabled = true;
+            onGround = true;
+            rot = Quaternion.identity;
+        }
+
     }
 
-    private void OnCollisionExit(Collision other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.GetComponent<Ground>() != null)
         {
             this.GetComponent<ConstantForce>().enabled = false;
-            collisionVector = Vector3.zero;
+            planeCount--;
+            rot = Quaternion.identity;
+        }
+
+        if (other.gameObject.GetComponent<PlaneGround>() != null)
+        {
+            this.GetComponent<ConstantForce>().enabled = false;
+            onGround = false;
+            rot = other.transform.rotation;
         }
     }
 }
