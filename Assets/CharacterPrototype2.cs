@@ -16,9 +16,6 @@ public class CharacterPrototype2 : MonoBehaviour
 
     public bool hasCompensatingForce = false;
 
-    //public float maxSpeed = 2f;
-    //public float minSpeed = 0.5f;
-
     float curSpeed = 0f;
 
     Color SEE_COLOR = Color.green;
@@ -34,7 +31,10 @@ public class CharacterPrototype2 : MonoBehaviour
     CharacterController ch;
     Animator anim;
     bool onGround = true;
-    int planeCount = 0;
+
+    List<Collider> grounds = new List<Collider>();
+    List<Collider> planeGrounds = new List<Collider>();
+
 
     void Awake()
     {
@@ -59,49 +59,41 @@ public class CharacterPrototype2 : MonoBehaviour
         targetVec = Vector3.zero;
     }
 
-    void DrawLine(LineRenderer lr, Vector3 start, Vector3 end, Color color, float width)
-    {
-        lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
-        lr.SetColors(color, color);
-        lr.SetWidth(width, width);
-        lr.SetPosition(0, start);
-        lr.SetPosition(1, end);
-    }
-
-    private void Update()
+    private void FixedUpdate()
     {
         if (null == cam)
             return;
 
         if (curSpeed < speed)
-            curSpeed += Time.deltaTime * speed;
+            curSpeed += Time.fixedDeltaTime * speed;
 
-        if (null != anim)
-        {
-            if (!onGround && planeCount == 0)
-            {
-                anim.SetBool("jumping", true);
-                anim.speed = 1;
-            }
-            else
-            {   
-                anim.SetBool("jumping", false);
-
-                anim.SetFloat("speed", curSpeed);
-                anim.speed = curSpeed / speed * 0.5f + 0.5f;
-            }
-        }
-
-        Vector3 pos = new Vector3(cam.transform.forward.x - gameObject.transform.position.x / 16f, 0, 0) * strafeSpeed;
+        Vector3 pos = new Vector3(cam.transform.forward.x - gameObject.transform.position.x / 8f, 0, 0) * strafeSpeed;
 
         if (Mathf.Abs(pos.x) > strafeStep)
             pos.x = strafeStep * Mathf.Sign(pos.x);
 
         pos.z = curSpeed;
 
-        ch.SimpleMove(pos * Time.deltaTime);
-        transform.rotation = Quaternion.Lerp(transform.rotation, rot, 0.1f);
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(pos), 0.1f);
+        if (null != anim)
+        {
+            if (planeGrounds.Count == 0 && grounds.Count == 0)
+            {
+                anim.SetBool("jumping", true);
+                anim.speed = 1;
+            }
+            else
+            {
+                anim.SetBool("jumping", false);
+                float d = Vector3.Distance(Vector3.zero, pos);
+                anim.SetFloat("speed", d);
+            }
+        }
+
+        ch.SimpleMove(pos * Time.fixedDeltaTime);
+        Quaternion rot_ = planeGrounds.Count != 0 || grounds.Count == 0 ? Quaternion.identity : grounds[grounds.Count-1].transform.rotation;
+
+        if (pos != Vector3.zero)
+            transform.rotation = Quaternion.Lerp(transform.rotation, rot_ * Quaternion.LookRotation(pos), Time.fixedDeltaTime * 20);
     }
 
     protected void OnTriggerEnter(Collider other)
@@ -112,41 +104,33 @@ public class CharacterPrototype2 : MonoBehaviour
             other.gameObject.SetActive(false);
         }
 
-        if (other.GetComponent<Collectible>() != null)
+        else if (other.GetComponent<Collectible>() != null)
         {
             other.gameObject.SetActive(false);
         }
 
-        if (other.gameObject.GetComponent<Ground>() != null)
+        else if (other.gameObject.GetComponent<Ground>() != null)
         {
-            this.GetComponent<ConstantForce>().enabled = true;
-            planeCount++;
+            grounds.Add(other);
             rot = other.transform.rotation;
         }
 
-        if (other.gameObject.GetComponent<PlaneGround>() != null)
+        else if (other.gameObject.GetComponent<PlaneGround>() != null)
         {
-            this.GetComponent<ConstantForce>().enabled = true;
-            onGround = true;
-            rot = Quaternion.identity;
+            planeGrounds.Add(other);
         }
-
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.GetComponent<Ground>() != null)
         {
-            this.GetComponent<ConstantForce>().enabled = false;
-            planeCount--;
-            rot = Quaternion.identity;
+            grounds.Remove(other);
         }
 
-        if (other.gameObject.GetComponent<PlaneGround>() != null)
+        else if (other.gameObject.GetComponent<PlaneGround>() != null)
         {
-            this.GetComponent<ConstantForce>().enabled = false;
-            onGround = false;
-            rot = other.transform.rotation;
+            planeGrounds.Remove(other);
         }
     }
 }
