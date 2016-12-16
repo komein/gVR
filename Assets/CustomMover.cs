@@ -4,18 +4,67 @@ using UnityEngine;
 
 public class CustomMover : AbstractMover
 {
+    List<Collider> grounds = new List<Collider>();
+    List<Collider> planeGrounds = new List<Collider>();
+
+    CharacterController ch;
+
+    protected override void Start()
+    {
+        base.Start();
+        ch = GetComponent<CharacterController>();
+    }
 
     protected override void Update ()
     {
-        base.Update();
+        currentSpeed += Time.deltaTime * acceleration;
+
+        Vector3 v = cam.transform.forward;
+        v.y = 0;
+
+        ch.SimpleMove(v * currentSpeed * Time.deltaTime);
     }
 
-    void FixedUpdate()
+
+    protected override void OnTriggerEnter(Collider other)
     {
-        if (mode == ControlMode.move)
-            rb.MovePosition(rb.transform.position + cam.transform.forward * currentSpeed * Time.deltaTime);
-        else
-            rb.MovePosition(rb.transform.position + (Vector3.forward * currentSpeed + 
-                new Vector3(-cam.transform.right.y,0,0) * strafeSpeed) * Time.deltaTime);
+        if (other.GetComponent<Obstacle>() != null)
+        {
+            currentSpeed -= dropSpeed;
+            currentSpeed = Mathf.Max(0, currentSpeed);
+            other.gameObject.SetActive(false);
+        }
+        else if (other.GetComponent<IndestructibleObstacle>() != null)
+        {
+            currentSpeed = dropSpeed;
+        }
+
+        else if (other.GetComponent<Collectible>() != null)
+        {
+            other.gameObject.SetActive(false);
+        }
+
+        else if (other.gameObject.GetComponent<Ground>() != null)
+        {
+            grounds.Add(other);
+        }
+
+        else if (other.gameObject.GetComponent<PlaneGround>() != null)
+        {
+            planeGrounds.Add(other);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.GetComponent<Ground>() != null)
+        {
+            grounds.Remove(other);
+        }
+
+        else if (other.gameObject.GetComponent<PlaneGround>() != null)
+        {
+            planeGrounds.Remove(other);
+        }
     }
 }

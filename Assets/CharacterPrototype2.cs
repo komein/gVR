@@ -38,7 +38,7 @@ public class CharacterPrototype2 : MonoBehaviour
 
     void Awake()
     {
-        Application.targetFrameRate = 60;
+        //Application.targetFrameRate = 60;
     }
 
     private void Start()
@@ -59,13 +59,13 @@ public class CharacterPrototype2 : MonoBehaviour
         targetVec = Vector3.zero;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (null == cam)
             return;
 
         if (curSpeed < speed)
-            curSpeed += Time.fixedDeltaTime * speed;
+            curSpeed += Time.deltaTime * speed;
 
         Vector3 pos = new Vector3(cam.transform.forward.x - gameObject.transform.position.x / 8f, 0, 0) * strafeSpeed;
 
@@ -89,7 +89,8 @@ public class CharacterPrototype2 : MonoBehaviour
             }
         }
 
-        ch.SimpleMove(pos * Time.fixedDeltaTime);
+        ch.SimpleMove(pos * Time.deltaTime);
+
         Quaternion rot_ = planeGrounds.Count != 0 || grounds.Count == 0 ? Quaternion.identity : grounds[grounds.Count-1].transform.rotation;
 
         if (pos != Vector3.zero)
@@ -118,6 +119,11 @@ public class CharacterPrototype2 : MonoBehaviour
         else if (other.gameObject.GetComponent<PlaneGround>() != null)
         {
             planeGrounds.Add(other);
+        }
+
+        else
+        {
+            Debug.Log("something unexpected");
         }
     }
 

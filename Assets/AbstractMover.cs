@@ -21,7 +21,7 @@ public class AbstractMover : MonoBehaviour {
 
     protected float currentSpeed = 0f;
 
-    void Start()
+    protected virtual void Start()
     {
         cam = GetComponent<Camera>();
         if (null == cam)
@@ -32,20 +32,18 @@ public class AbstractMover : MonoBehaviour {
             rb = GetComponentInChildren<Rigidbody>();
     }
 
-    protected virtual void Update () {
-        if (currentSpeed < maxSpeed)
+    protected virtual void Update ()
+    {
+        if (cam.transform.forward.y > 0)
         {
-            if (cam.transform.forward.y > 0)
-            {
-                currentSpeed += acceleration * Time.deltaTime;
-            }
-            else
-            {
-                currentSpeed -= (-cam.transform.forward.y) * acceleration * Time.deltaTime;
-            }
-            currentSpeed = Mathf.Max(currentSpeed, 0);
-            currentSpeed = Mathf.Min(currentSpeed, maxSpeed);
+            currentSpeed += acceleration * Time.deltaTime;
         }
+        else
+        {
+            currentSpeed -= (-cam.transform.forward.y) * acceleration * Time.deltaTime;
+        }
+        currentSpeed = Mathf.Max(currentSpeed, 0);
+        currentSpeed = Mathf.Min(currentSpeed, maxSpeed);
     }
 
     protected virtual void OnTriggerEnter(Collider other)
