@@ -67,7 +67,7 @@ public class CharacterPrototype2 : MonoBehaviour
         if (curSpeed < speed)
             curSpeed += Time.deltaTime * speed;
 
-        Vector3 pos = new Vector3(cam.transform.forward.x - gameObject.transform.position.x / 8f, 0, 0) * strafeSpeed;
+        Vector3 pos = new Vector3(cam.transform.forward.x + (cam.transform.position.x - gameObject.transform.position.x) / 8f, 0, 0) * strafeSpeed;
 
         if (Mathf.Abs(pos.x) > strafeStep)
             pos.x = strafeStep * Mathf.Sign(pos.x);
@@ -119,11 +119,6 @@ public class CharacterPrototype2 : MonoBehaviour
         else if (other.gameObject.GetComponent<PlaneGround>() != null)
         {
             planeGrounds.Add(other);
-        }
-
-        else
-        {
-            Debug.Log("something unexpected");
         }
     }
 
