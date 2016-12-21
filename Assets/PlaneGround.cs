@@ -1,16 +1,20 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlaneGround : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    Action onTrigger;
+
+    public void SetTriggerCallback(Action toSet)
+    {
+        onTrigger = toSet;
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (null != onTrigger)
+            onTrigger();
+    }
 }
