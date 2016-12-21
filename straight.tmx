@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="left-down" width="16" height="16" tilewidth="256" tileheight="256" nextobjectid="1">
+ <tileset firstgid="1" name="city" tilewidth="256" tileheight="256" tilecount="55" columns="0">
+  <tile id="55">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_01.jpg"/>
+  </tile>
+  <tile id="56">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_02 — копия (2).jpg"/>
+  </tile>
+  <tile id="57">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_02 — копия (3).jpg"/>
+  </tile>
+  <tile id="58">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_02 — копия.jpg"/>
+  </tile>
+  <tile id="59">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_02.jpg"/>
+  </tile>
+  <tile id="60">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_03.jpg"/>
+  </tile>
+  <tile id="61">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_04 — копия (2).jpg"/>
+  </tile>
+  <tile id="62">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_04 — копия.jpg"/>
+  </tile>
+  <tile id="63">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_04.jpg"/>
+  </tile>
+  <tile id="64">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_05.jpg"/>
+  </tile>
+  <tile id="65">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_06.jpg"/>
+  </tile>
+  <tile id="66">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_07.jpg"/>
+  </tile>
+  <tile id="67">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_08.jpg"/>
+  </tile>
+  <tile id="68">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_09.jpg"/>
+  </tile>
+  <tile id="69">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_10.jpg"/>
+  </tile>
+  <tile id="70">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_11.jpg"/>
+  </tile>
+  <tile id="71">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_12.jpg"/>
+  </tile>
+  <tile id="72">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_13.jpg"/>
+  </tile>
+  <tile id="73">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_14.jpg"/>
+  </tile>
+  <tile id="74">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_15.jpg"/>
+  </tile>
+  <tile id="75">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_16.jpg"/>
+  </tile>
+  <tile id="76">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_17.jpg"/>
+  </tile>
+  <tile id="77">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_18.jpg"/>
+  </tile>
+  <tile id="78">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_19.jpg"/>
+  </tile>
+  <tile id="79">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_20.jpg"/>
+  </tile>
+  <tile id="80">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_21.jpg"/>
+  </tile>
+  <tile id="81">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_22.jpg"/>
+  </tile>
+  <tile id="82">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_23.jpg"/>
+  </tile>
+  <tile id="83">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_24.jpg"/>
+  </tile>
+  <tile id="84">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_25.jpg"/>
+  </tile>
+  <tile id="85">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_26.jpg"/>
+  </tile>
+  <tile id="86">
+   <image width="256" height="256" source="VRGoogle1/city_tex/block_27.jpg"/>
+  </tile>
+  <tile id="87">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_01.jpg"/>
+  </tile>
+  <tile id="88">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_02.jpg"/>
+  </tile>
+  <tile id="89">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_03.jpg"/>
+  </tile>
+  <tile id="90">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_04.jpg"/>
+  </tile>
+  <tile id="91">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_05.jpg"/>
+  </tile>
+  <tile id="92">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_06.jpg"/>
+  </tile>
+  <tile id="93">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_07.jpg"/>
+  </tile>
+  <tile id="94">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_08.jpg"/>
+  </tile>
+  <tile id="95">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_09.jpg"/>
+  </tile>
+  <tile id="96">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_10.jpg"/>
+  </tile>
+  <tile id="97">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_11.jpg"/>
+  </tile>
+  <tile id="98">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_12.jpg"/>
+  </tile>
+  <tile id="99">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_13.jpg"/>
+  </tile>
+  <tile id="100">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_14.jpg"/>
+  </tile>
+  <tile id="101">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_15.jpg"/>
+  </tile>
+  <tile id="102">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_16.jpg"/>
+  </tile>
+  <tile id="103">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_17.jpg"/>
+  </tile>
+  <tile id="104">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_18.jpg"/>
+  </tile>
+  <tile id="105">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_19.jpg"/>
+  </tile>
+  <tile id="106">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_20.jpg"/>
+  </tile>
+  <tile id="107">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_21.jpg"/>
+  </tile>
+  <tile id="108">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_22.jpg"/>
+  </tile>
+  <tile id="109">
+   <image width="256" height="256" source="VRGoogle1/city_tex/green_23.jpg"/>
+  </tile>
+ </tileset>
+ <layer name="Слой тайлов 1" width="16" height="16">
+  <data encoding="csv">
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56,
+56,56,56,56,56,56,60,65,65,57,56,56,56,56,56,56
+</data>
+ </layer>
+</map>
