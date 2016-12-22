@@ -14,6 +14,8 @@ public class CharacterPrototype2 : MonoBehaviour
     public float strafeStep = 0.5f;
     public float deadZone = 0.4f;
 
+    public float dropSpeed = 50f;
+
     public bool hasCompensatingForce = false;
 
     float curSpeed = 0f;
@@ -104,7 +106,10 @@ public class CharacterPrototype2 : MonoBehaviour
             curSpeed = 0f;
             other.gameObject.SetActive(false);
         }
-
+        else if (other.GetComponent<IndestructibleObstacle>() != null)
+        {
+            curSpeed -= dropSpeed;
+        }
         else if (other.GetComponent<Collectible>() != null)
         {
             other.gameObject.SetActive(false);

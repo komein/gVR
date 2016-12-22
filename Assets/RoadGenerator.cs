@@ -35,6 +35,8 @@ public class RoadGenerator : MonoBehaviour {
             {
                 nextPart.transform.position = currentPart.transform.position + new Vector3(0, 0, currentPart.partSize);
             }
+            else
+                Debug.LogError("indexing fuckup");
         }
     }
 }
