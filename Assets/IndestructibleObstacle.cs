@@ -13,4 +13,5 @@ public class IndestructibleObstacle : MonoBehaviour {
 	void Update () {
 		
 	}
+
 }

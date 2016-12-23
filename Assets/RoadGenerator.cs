@@ -4,14 +4,14 @@ using UnityEngine;
 
 public delegate void OnRoadTrigger(RoadPart r);
 
-public class RoadGenerator : MonoBehaviour {
-
+public class RoadGenerator : MonoBehaviour
+{
     public List<RoadPart> roadParts;
-    public RoadPart currentPart;
-
+    RoadPart currentPart;
     RoadPart prevPart;
 
-	void Start () {
+	void Start ()
+    {
 		foreach (RoadPart r in roadParts)
         {
             r.SetDelegate(RoadTriggered);
@@ -22,11 +22,14 @@ public class RoadGenerator : MonoBehaviour {
     {
         if (null != r)
         {
+            Debug.Log("triggered " + r.gameObject.name);
             if (r == currentPart)
+            {
                 return;
+            }
 
             prevPart = currentPart;
-            currentPart = r;
+            currentPart = r;;
 
             List<RoadPart> nextCandidates = roadParts.FindAll(p => p != prevPart && p != currentPart);
 
@@ -35,8 +38,6 @@ public class RoadGenerator : MonoBehaviour {
             {
                 nextPart.transform.position = currentPart.transform.position + new Vector3(0, 0, currentPart.partSize);
             }
-            else
-                Debug.LogError("indexing fuckup");
         }
     }
 }

@@ -45,7 +45,7 @@ public class CharacterPrototype1 : MonoBehaviour {
             targetVec = gameObject.transform.position;
         }
     }
-
+    /*
     void DrawLine(LineRenderer lr, Vector3 start, Vector3 end, Color color, float width)
     {
         lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
@@ -54,7 +54,7 @@ public class CharacterPrototype1 : MonoBehaviour {
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
     }
-
+    */
     void Update () {
         if (movMode == MovingMode.inertial)
         {
@@ -77,10 +77,10 @@ public class CharacterPrototype1 : MonoBehaviour {
 
             //Debug.DrawLine(gameObject.transform.position, movePos, Color.yellow, Time.fixedDeltaTime);
 
-            LineRenderer lr = GetComponent<LineRenderer>();
+            //LineRenderer lr = GetComponent<LineRenderer>();
 
 
-            DrawLine(GetComponent<LineRenderer>(), gameObject.transform.position, hit.point, Color.yellow, 0.1f);
+            //DrawLine(GetComponent<LineRenderer>(), gameObject.transform.position, hit.point, Color.yellow, 0.1f);
 
             if (hit.collider == null)
             {

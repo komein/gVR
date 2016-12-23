@@ -9,6 +9,7 @@ public class CharacterPrototype2 : MonoBehaviour
     public Camera cam;
 
     public float speed = 1f;
+    public float acceleration = 50f;
     public float strafeSpeed = 1f;
 
     public float strafeStep = 0.5f;
@@ -18,21 +19,13 @@ public class CharacterPrototype2 : MonoBehaviour
 
     public bool hasCompensatingForce = false;
 
+    int count = 0;
+    int enableCounter = 5;
+
     float curSpeed = 0f;
-
-    Color SEE_COLOR = Color.green;
-    Color UNSEE_COLOR = Color.red;
-
-    Vector3 targetVec = Vector3.zero;
-    Vector3 compensatingForceVector = Vector3.zero;
-
-    Vector3 collisionVector = Vector3.zero;
-
-    Quaternion rot;
 
     CharacterController ch;
     Animator anim;
-    bool onGround = true;
 
     List<Collider> grounds = new List<Collider>();
     List<Collider> planeGrounds = new List<Collider>();
@@ -49,30 +42,45 @@ public class CharacterPrototype2 : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
         if (null == rb)
+        {
             rb = GetComponentInChildren<Rigidbody>();
-
-        ResetTargetVector();
+        }
 
         ch = GetComponent<CharacterController>();
     }
 
-    private void ResetTargetVector()
-    {
-        targetVec = Vector3.zero;
-    }
-
-    private void Update()
+    private void FixedUpdate()
     {
         if (null == cam)
+        {
             return;
+        }
+
+        if (ch.enabled == false)
+        {
+            if (count < enableCounter)
+            {
+                count++;
+                return;
+            }
+            else
+            {
+                ch.enabled = true;
+                count = 0;
+            }
+        }
 
         if (curSpeed < speed)
-            curSpeed += Time.deltaTime * speed;
+        {
+            curSpeed += Time.fixedDeltaTime * acceleration;
+        }
 
         Vector3 pos = new Vector3(cam.transform.forward.x + (cam.transform.position.x - gameObject.transform.position.x) / 8f, 0, 0) * strafeSpeed;
 
         if (Mathf.Abs(pos.x) > strafeStep)
+        {
             pos.x = strafeStep * Mathf.Sign(pos.x);
+        }
 
         pos.z = curSpeed;
 
@@ -96,7 +104,9 @@ public class CharacterPrototype2 : MonoBehaviour
         Quaternion rot_ = planeGrounds.Count != 0 || grounds.Count == 0 ? Quaternion.identity : grounds[grounds.Count-1].transform.rotation;
 
         if (pos != Vector3.zero)
+        {
             transform.rotation = Quaternion.Lerp(transform.rotation, rot_ * Quaternion.LookRotation(pos), Time.fixedDeltaTime * 20);
+        }
     }
 
     protected void OnTriggerEnter(Collider other)
@@ -118,7 +128,6 @@ public class CharacterPrototype2 : MonoBehaviour
         else if (other.gameObject.GetComponent<Ground>() != null)
         {
             grounds.Add(other);
-            rot = other.transform.rotation;
         }
 
         else if (other.gameObject.GetComponent<PlaneGround>() != null)
@@ -137,6 +146,20 @@ public class CharacterPrototype2 : MonoBehaviour
         else if (other.gameObject.GetComponent<PlaneGround>() != null)
         {
             planeGrounds.Remove(other);
+        }
+    }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.GetComponent<IndestructibleObstacle>() != null)
+        {
+            Vector3 v = rb.transform.position - collision.contacts[0].point;
+            ch.enabled = false;
+            v = v * 100;
+            v.y = 10;
+            rb.AddForce(v , ForceMode.Impulse);
+            curSpeed = 0;
         }
     }
 }

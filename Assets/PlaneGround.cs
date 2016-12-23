@@ -14,7 +14,12 @@ public class PlaneGround : MonoBehaviour {
 
     public void OnTriggerEnter(Collider other)
     {
-        if (null != onTrigger)
-            onTrigger();
+        if (other.GetComponent<CharacterPrototype2>() != null)
+        {
+            if (null != onTrigger)
+            {
+                onTrigger();
+            }
+        }
     }
 }
