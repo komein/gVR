@@ -30,6 +30,8 @@ public class CharacterPrototype2 : MonoBehaviour
     List<Collider> grounds = new List<Collider>();
     List<Collider> planeGrounds = new List<Collider>();
 
+    SkinnedMeshRenderer mesh;
+
 
     void Awake()
     {
@@ -38,6 +40,7 @@ public class CharacterPrototype2 : MonoBehaviour
 
     private void Start()
     {
+        mesh = GetComponentInChildren<SkinnedMeshRenderer>();
         anim = GetComponent<Animator>();
 
         rb = GetComponent<Rigidbody>();
@@ -113,16 +116,15 @@ public class CharacterPrototype2 : MonoBehaviour
     {
         if (other.GetComponent<Obstacle>() != null)
         {
-            curSpeed = 0f;
             other.gameObject.SetActive(false);
-        }
+        }/*
         else if (other.GetComponent<IndestructibleObstacle>() != null)
         {
             curSpeed -= dropSpeed;
-        }
+        }*/
         else if (other.GetComponent<Collectible>() != null)
         {
-            other.gameObject.SetActive(false);
+            other.GetComponent<Collectible>().Collect();
         }
 
         else if (other.gameObject.GetComponent<Ground>() != null)
@@ -149,17 +151,38 @@ public class CharacterPrototype2 : MonoBehaviour
         }
     }
 
-
-    private void OnCollisionEnter(Collision collision)
+    public void MakeCrush(Collision collision)
     {
-        if (collision.collider.GetComponent<IndestructibleObstacle>() != null)
+        Vector3 v = rb.transform.position - collision.contacts[0].point;
+        ch.enabled = false;
+        v = v * 100;
+        v.y = 10;
+        rb.AddForce(v, ForceMode.Impulse);
+        curSpeed = 0;
+    }
+
+    public void ToggleFlashing(bool v)
+    {
+        if (v == true)
         {
-            Vector3 v = rb.transform.position - collision.contacts[0].point;
-            ch.enabled = false;
-            v = v * 100;
-            v.y = 10;
-            rb.AddForce(v , ForceMode.Impulse);
-            curSpeed = 0;
+            StartCoroutine(Flash());
         }
+        else
+        {
+            StopAllCoroutines();
+        }
+    }
+
+    private IEnumerator Flash()
+    {
+        if (null != mesh)
+        {
+            while (true)
+            {
+                mesh.enabled = !mesh.enabled;
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+        yield return null;
     }
 }

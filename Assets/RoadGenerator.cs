@@ -22,7 +22,7 @@ public class RoadGenerator : MonoBehaviour
     {
         if (null != r)
         {
-            Debug.Log("triggered " + r.gameObject.name);
+            //Debug.Log("triggered " + r.gameObject.name);
             if (r == currentPart)
             {
                 return;
@@ -37,6 +37,11 @@ public class RoadGenerator : MonoBehaviour
             if (nextPart != null)
             {
                 nextPart.transform.position = currentPart.transform.position + new Vector3(0, 0, currentPart.partSize);
+                Collectible[] collectibles = nextPart.GetComponentsInChildren<Collectible>();
+                foreach(Collectible c in collectibles)
+                {
+                    c.Replace();
+                }
             }
         }
     }
