@@ -21,6 +21,9 @@ public class CameraPrototype2 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (ch == null)
+            return;
+
         float xPos;
         if (!strafeCamera)
         {
@@ -30,6 +33,7 @@ public class CameraPrototype2 : MonoBehaviour
         {
             xPos = Mathf.Lerp(gameObject.transform.position.x, ch.transform.position.x, Time.deltaTime * strafeSpeed);
         }
+
         Vector3 newPos = new Vector3(xPos, ch.transform.position.y + height, ch.transform.position.z - distance);
         gameObject.transform.position = newPos;
     }

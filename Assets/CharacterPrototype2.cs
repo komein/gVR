@@ -151,9 +151,8 @@ public class CharacterPrototype2 : MonoBehaviour
         }
     }
 
-    public void MakeCrush(Collision collision)
+    public void MakeCrush(Vector3 v)
     {
-        Vector3 v = rb.transform.position - collision.contacts[0].point;
         ch.enabled = false;
         v = v * 100;
         v.y = 10;
@@ -170,6 +169,7 @@ public class CharacterPrototype2 : MonoBehaviour
         else
         {
             StopAllCoroutines();
+            mesh.enabled = true;
         }
     }
 

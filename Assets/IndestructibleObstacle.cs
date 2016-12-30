@@ -7,15 +7,6 @@ using UnityEngine;
 public class IndestructibleObstacle : MonoBehaviour {
 
     CrushDelegate doCrush;
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
     
     private void OnCollisionEnter(Collision collision)
     {
@@ -24,9 +15,15 @@ public class IndestructibleObstacle : MonoBehaviour {
         {
             if (collision.contacts.Length > 0)
             {
-                if (null != doCrush)
+                Vector3 v = chc.transform.position - collision.contacts[0].point;
+                v.y = 0;
+                float angle = Vector3.Angle(Vector3.forward, v);
+                if (Vector3.Angle(Vector3.forward, v) > 165)
                 {
-                    doCrush(collision);
+                    if (null != doCrush)
+                    {
+                        doCrush(v);
+                    }
                 }
             }
         }
