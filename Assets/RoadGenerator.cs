@@ -1,17 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public delegate void OnRoadTrigger(RoadPart r);
 
 public class RoadGenerator : MonoBehaviour
 {
-    public List<RoadPart> roadParts;
+    List<RoadPart> roadParts;
     RoadPart currentPart;
     RoadPart prevPart;
+    CollectiblePool pool;
+    List<RoadPart> nextCandidates;
+
+    public float MinChance = 0.3f;
+    public float MaxChance = 0.7f;
 
 	void Start ()
     {
+        roadParts = GetComponentsInChildren<RoadPart>().ToList();
+        nextCandidates = roadParts;
+        pool = FindObjectOfType<CollectiblePool>();
 		foreach (RoadPart r in roadParts)
         {
             r.SetDelegate(RoadTriggered);
@@ -22,25 +31,45 @@ public class RoadGenerator : MonoBehaviour
     {
         if (null != r)
         {
-            //Debug.Log("triggered " + r.gameObject.name);
             if (r == currentPart)
             {
                 return;
             }
 
+            if (null != prevPart)
+                nextCandidates.Add(prevPart);
+
             prevPart = currentPart;
             currentPart = r;;
 
-            List<RoadPart> nextCandidates = roadParts.FindAll(p => p != prevPart && p != currentPart);
+            if (null != prevPart)
+            {
+                if (null != pool)
+                {
+                    pool.RemoveAllFromRoad(prevPart);
+                }
+            }
+
+            nextCandidates.Remove(prevPart);
+            nextCandidates.Remove(currentPart);
 
             RoadPart nextPart = nextCandidates[Random.Range(0, nextCandidates.Count)];
+
             if (nextPart != null)
             {
                 nextPart.transform.position = currentPart.transform.position + new Vector3(0, 0, currentPart.partSize);
-                Collectible[] collectibles = nextPart.GetComponentsInChildren<Collectible>();
-                foreach(Collectible c in collectibles)
+
+                if (null != pool)
                 {
-                    c.Replace();
+                    CollectiblePlace[] places = nextPart.GetComponentsInChildren<CollectiblePlace>();
+                    foreach(var p in places)
+                    {
+                        float chance = Random.Range(MinChance, MaxChance); // WOW
+                        if (Random.value > chance) // MUCH RANDOM
+                        {
+                            pool.PlaceRandom(p.transform.position, nextPart);
+                        }
+                    }
                 }
             }
         }

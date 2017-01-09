@@ -14,6 +14,7 @@ public class ObstacleController : MonoBehaviour
         {
             i.SetCrushAction(CrushIntoObstacle);
         }
+        ToggleObstaclesGhost(false);
         character = FindObjectOfType<CharacterPrototype2>();
 
         //ToggleObstaclesGhost(true);

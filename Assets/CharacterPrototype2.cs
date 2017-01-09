@@ -117,11 +117,7 @@ public class CharacterPrototype2 : MonoBehaviour
         if (other.GetComponent<Obstacle>() != null)
         {
             other.gameObject.SetActive(false);
-        }/*
-        else if (other.GetComponent<IndestructibleObstacle>() != null)
-        {
-            curSpeed -= dropSpeed;
-        }*/
+        }
         else if (other.GetComponent<Collectible>() != null)
         {
             other.GetComponent<Collectible>().Collect();
