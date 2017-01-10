@@ -6,22 +6,22 @@ public class Collectible : MonoBehaviour {
 
     MeshRenderer ren;
     RoadPart road;
-    ScoreStorage scoreStorage;
+    DataStorage data;
 
     public int value = 1;
 
     private void Start()
     {
-        scoreStorage = FindObjectOfType<ScoreStorage>();
+        data = FindObjectOfType<DataStorage>();
     }
 
     public void Collect()
     {
         GetComponent<MeshRenderer>().enabled = false;
         GetComponent<BoxCollider>().enabled = false;
-        if (null != scoreStorage)
+        if (null != data)
         {
-            scoreStorage.UpdateScore(value);
+            data.AddScore(value);
         }
     }
 

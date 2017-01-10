@@ -4,21 +4,13 @@ using UnityEngine;
 
 public class CameraPrototype2 : MonoBehaviour
 {
-
     public CharacterPrototype2 ch;
     public float distance = 3f;
     public float height = 3f;
 
     public bool strafeCamera = false;
     public float strafeSpeed = 2f;
-
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
+    
     void Update()
     {
         if (ch == null)

@@ -31,7 +31,7 @@ public class RoadGenerator : MonoBehaviour
     {
         if (null != r)
         {
-            if (r == currentPart)
+            if (r == currentPart || r == prevPart)
             {
                 return;
             }

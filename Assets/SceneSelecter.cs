@@ -82,7 +82,7 @@ public class SceneSelecter : MonoBehaviour, IGvrGazeResponder
 
     protected virtual void Function()
     {
-        ScoreStorage scoreStorage = FindObjectOfType<ScoreStorage>();
+        DataStorage scoreStorage = FindObjectOfType<DataStorage>();
         if (null != scoreStorage)
         {
             scoreStorage.Save();
