@@ -177,7 +177,6 @@ public class CharacterPrototype2 : MonoBehaviour
         ch.enabled = false;
         v = v.normalized * 50;
         v.y = 50;
-        Debug.Log(v);
         rb.AddForce(v, ForceMode.Impulse);
         curSpeed = 0;
         curTime = 0f;

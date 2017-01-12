@@ -4,27 +4,31 @@ using UnityEngine;
 
 public class CollectiblePool : MonoBehaviour {
 
-    private Collectible[] cakePrefabs;
+    private ScoreCollectible[] cakePrefabs;
+    private HpCollectible hpPrefab;
 
-    private List<Collectible> pool = new List<Collectible>();
-    private List<Collectible> placedElements = new List<Collectible>();
+    private List<ScoreCollectible> pool = new List<ScoreCollectible>();
+    private List<HpCollectible> hpPool = new List<HpCollectible>();
+
+    private List<ScoreCollectible> placedElements = new List<ScoreCollectible>();
 
     public int poolDepth = 10;
 
 	void Awake () {
-        cakePrefabs = GetComponentsInChildren<Collectible>();
-		foreach(Collectible c in cakePrefabs)
+        hpPrefab = GetComponentInChildren<HpCollectible>();
+        cakePrefabs = GetComponentsInChildren<ScoreCollectible>();
+        foreach (ScoreCollectible c in cakePrefabs)
         {
             for (int i = 0; i < poolDepth; i++)
             {
-                Collectible instance = GameObject.Instantiate<Collectible>(c);
+                ScoreCollectible instance = GameObject.Instantiate<ScoreCollectible>(c);
                 pool.Add(instance);
                 instance.transform.SetParent(this.transform);
             }
         }
 	}
 	
-    private Collectible GetRandomCollectible()
+    private ScoreCollectible GetRandomCollectible()
     {
         if (null != pool)
         {
@@ -40,24 +44,41 @@ public class CollectiblePool : MonoBehaviour {
 
     public void RemoveAllFromRoad(RoadPart r)
     {
-        List<Collectible> list = placedElements.FindAll(p => p.GetRoadPart() == r);
+        List<ScoreCollectible> list = placedElements.FindAll(p => p.GetRoadPart() == r);
         placedElements.RemoveAll(p => p.GetRoadPart() == r);
         pool.AddRange(list);
     }
 
-    public Collectible PlaceRandom(Vector3 v, RoadPart r)
+    public ScoreCollectible PlaceRandom(Vector3 v, RoadPart r)
     {
-        Collectible c = GetRandomCollectible();
+        ScoreCollectible c = GetRandomCollectible();
         if (null != c)
         {
             c.transform.position = v;
+            c.transform.Rotate(Vector3.up, Random.value * 180);
             c.SetRoadPart(r);
-            c.Replace();
+            c.SetVisible(true);
 
             pool.Remove(c);
             placedElements.Add(c);
         }
 
         return c;
+    }
+    
+    public Collectible PlaceHp(Vector3 v, RoadPart r, RoadPart c)
+    {
+        if (null != hpPrefab)
+        {
+            if (hpPrefab.GetRoadPart() == c)
+            {
+                return null;
+            }
+
+            hpPrefab.transform.position = v + Vector3.up * 0.1f;
+            hpPrefab.SetRoadPart(r);
+            hpPrefab.SetVisible(true);
+        }
+        return hpPrefab;
     }
 }

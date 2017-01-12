@@ -13,11 +13,14 @@ public class RoadGenerator : MonoBehaviour
     CollectiblePool pool;
     List<RoadPart> nextCandidates;
 
+    DataStorage data;
+
     public float MinChance = 0.3f;
     public float MaxChance = 0.7f;
 
 	void Start ()
     {
+        data = FindObjectOfType<DataStorage>();
         roadParts = GetComponentsInChildren<RoadPart>().ToList();
         nextCandidates = roadParts;
         pool = FindObjectOfType<CollectiblePool>();
@@ -61,7 +64,21 @@ public class RoadGenerator : MonoBehaviour
 
                 if (null != pool)
                 {
-                    CollectiblePlace[] places = nextPart.GetComponentsInChildren<CollectiblePlace>();
+                    List<CollectiblePlace> places = nextPart.GetComponentsInChildren<CollectiblePlace>().ToList();
+                    
+                    if (null != data)
+                    {
+                        if (data.GetHp() < 3) // FIXME
+                        {
+                            CollectiblePlace hpPlace = places[Random.Range(0, places.Count)];
+                            if (null != hpPlace)
+                            {
+                                pool.PlaceHp(hpPlace.transform.position, nextPart, currentPart);
+                                places.Remove(hpPlace);
+                            }
+                        }
+                    }
+
                     foreach(var p in places)
                     {
                         float chance = Random.Range(MinChance, MaxChance); // WOW

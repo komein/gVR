@@ -25,7 +25,8 @@ public class DataStorage : MonoBehaviour {
 
     const int maxHp = 3;
 
-    Action optionalDisplayAction;
+    Action optionalScoreAction;
+    Action optionalHpAction;
 
     void Awake ()
     {
@@ -33,7 +34,7 @@ public class DataStorage : MonoBehaviour {
         DontDestroyOnLoad(transform.gameObject);
     }
 
-    public long GetLvlUnlock()
+    public long GetNextLvlUnlock()
     {
         if (score < lvl2Unlock)
             return lvl2Unlock;
@@ -41,6 +42,16 @@ public class DataStorage : MonoBehaviour {
             return lvl3Unlock;
         else
             return -1;
+    }
+
+    public long GetCurrentLevelUnlock()
+    {
+        if (score < lvl2Unlock)
+            return 0;
+        else if (score < lvl3Unlock)
+            return lvl2Unlock;
+        else
+            return lvl3Unlock;
     }
 
     public int GetCurrentLevel()
@@ -61,13 +72,29 @@ public class DataStorage : MonoBehaviour {
 
     private void OptionalAction()
     {
-        if (null != optionalDisplayAction)
-            optionalDisplayAction();
+        if (null != optionalScoreAction)
+            optionalScoreAction();
     }
-    
+
+    private void OptionalHpAction()
+    {
+        if (null != optionalHpAction)
+            optionalHpAction();
+    }
+
     public void SetOptionalAction(Action a)
     {
-        optionalDisplayAction = a;
+        optionalScoreAction = a;
+    }
+
+    internal bool IsMaxLvl()
+    {
+        return GetCurrentLevel() == 3;
+    }
+
+    public void SetOptionalHpAction(Action a)
+    {
+        optionalHpAction = a;
     }
 
     public void AddScore(long s)
@@ -85,20 +112,20 @@ public class DataStorage : MonoBehaviour {
     public void SetHp(int h)
     {
         hp = h;
-        OptionalAction();
+        OptionalHpAction();
     }
 
     public void AddHp(int v)
     {
         hp += v;
-        OptionalAction();
+        OptionalHpAction();
     }
 
     public void LoseHp(int v)
     {
         hp -= v;
         hp = Mathf.Max(0, hp);
-        OptionalAction();
+        OptionalHpAction();
     }
 
     public int GetHp()
@@ -109,31 +136,32 @@ public class DataStorage : MonoBehaviour {
     internal void RestoreHp()
     {
         hp = maxHp;
-        OptionalAction();
+        OptionalHpAction();
     }
 
     public void Save()
     {
         Game g = new Game(score);
         System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new BinaryFormatter();
-        System.IO.FileStream file = File.Create(Application.persistentDataPath + "/save.bin");
+        System.IO.FileStream file = File.Create(Application.persistentDataPath + "/save14.bin");
         bf.Serialize(file, g);
         file.Close();
     }
 
     public void Load()
     {
-        if (File.Exists(Application.persistentDataPath + "/save.bin"))
+        if (File.Exists(Application.persistentDataPath + "/save14.bin"))
         {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Application.persistentDataPath + "/save.bin", FileMode.Open);
+            FileStream file = File.Open(Application.persistentDataPath + "/save14.bin", FileMode.Open);
             Game g = (Game)bf.Deserialize(file);
             file.Close();
 
             score = g.score;
-            OptionalAction();
         }
         else
             score = 0;
+
+        OptionalAction();
     }
 }

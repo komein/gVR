@@ -4,42 +4,33 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Text))]
 public class ScoreDisplayer : MonoBehaviour
 {
     private const string DISPLAY_TEXT_FORMAT = "{0}/{1}\n{2}hp";
     private const string DISPLAY_TEXT_FORMAT_MAXED = "{0}(MAXED)\n{1}hp";
-    private Text textField;
-    public Camera cam;
+
+    public Text nextLvl;
+    public Text message;
+    public Image pBar;
+
+    public Color minColor;
+    public Color midColor;
+    public Color maxColor;
 
     DataStorage storage;
 
     int lvl;
 
     bool deadFlag;
-    bool showingCongratulation = false;
-
-    void Awake()
-    {
-        textField = GetComponent<Text>();
-    }
+    bool messageLockFlag; 
 
     void Start()
     {
         deadFlag = false;
-        showingCongratulation = false;
-
+        messageLockFlag = false;
         storage = FindObjectOfType<DataStorage>();
-
-        if (cam == null)
-        {
-            cam = Camera.main;
-        }
-
-        if (cam != null)
-        {
-            transform.SetParent(cam.GetComponent<Transform>(), true);
-        }
+        message.enabled = true;
+        message.text = "";
 
         if (null != storage)
         {
@@ -55,55 +46,80 @@ public class ScoreDisplayer : MonoBehaviour
         if (deadFlag)
             return;
 
-        if (showingCongratulation)
-            return;
-
         if (null != storage)
         {
-            long score = storage.GetScore();
-            int hp = storage.GetHp();
-
-            if (hp <= 0)
+            if (storage.GetHp() <= 0)
             {
                 deadFlag = true;
-                textField.text = "Kitty needs rest!\nReturning to menu..";
-                return;
+                if (null != message)
+                {
+                    message.text = "Kitty needs rest, returning to menu!";
+                }
             }
 
-            int newLvl = storage.GetCurrentLevel();
-
-            if (newLvl > lvl)
+            int curLvl = storage.GetCurrentLevel();
+            if (curLvl > lvl)
             {
                 StopAllCoroutines();
                 StartCoroutine(ShowCongratulation());
-                lvl = newLvl;
-                return;
             }
 
-            lvl = newLvl;
+            lvl = curLvl;
 
-            if (lvl > 2)
+            long score = storage.GetScore();
+            if (null != message && !messageLockFlag)
             {
-                textField.text = string.Format(DISPLAY_TEXT_FORMAT_MAXED, score, hp);
-                return;
+                message.text = "Score: " + score;
             }
 
-            long toNextLvl = storage.GetLvlUnlock();
+            if (storage.IsMaxLvl())
+            {
+                if (null != nextLvl)
+                {
+                    nextLvl.text = "MAX";
+                }
+                if (null != pBar)
+                {
+                    pBar.fillAmount = 1;
+                }
+                return;
+            }
+            else
+            {
+                long toNextLvl = storage.GetNextLvlUnlock();
+                long toCurrentLvl = storage.GetCurrentLevelUnlock();
 
-            textField.text = string.Format(DISPLAY_TEXT_FORMAT, score, toNextLvl, hp);
+                if (null != nextLvl)
+                {
+                    nextLvl.text = toNextLvl.ToString();
+                }
+
+                if (null != pBar)
+                {
+                    pBar.fillAmount = ((score - toCurrentLvl) / (float)(toNextLvl - toCurrentLvl));
+                    if (pBar.fillAmount < 0.5f)
+                    {
+                        pBar.color = Color.Lerp(minColor, midColor, pBar.fillAmount * 2f);
+                    }
+                    else
+                    {
+                        pBar.color = Color.Lerp(midColor, maxColor, (pBar.fillAmount - 0.5f) * 2f);
+                    }
+                }
+            }
         }
     }
 
     private IEnumerator ShowCongratulation()
     {
-        showingCongratulation = true;
-        textField.text = "You gained access to a new level!";
-
-        yield return new WaitForSeconds(2f);
-       
-        showingCongratulation = false;
-        UpdateText();
-
+        if (null != message)
+        {
+            messageLockFlag = true;
+            message.text = "You gained access to a new level!";
+            yield return new WaitForSeconds(5f);
+            message.text = "";
+            messageLockFlag = false;
+        }
         yield return null;
     }
 

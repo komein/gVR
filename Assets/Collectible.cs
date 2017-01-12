@@ -6,7 +6,7 @@ public class Collectible : MonoBehaviour {
 
     MeshRenderer ren;
     RoadPart road;
-    DataStorage data;
+    protected DataStorage data;
 
     public int value = 1;
 
@@ -15,20 +15,20 @@ public class Collectible : MonoBehaviour {
         data = FindObjectOfType<DataStorage>();
     }
 
-    public void Collect()
+    public virtual void Collect()
     {
-        GetComponent<MeshRenderer>().enabled = false;
-        GetComponent<BoxCollider>().enabled = false;
-        if (null != data)
+        SetVisible(false);
+        ParticleSystem ps = GetComponent<ParticleSystem>();
+        if (null != ps)
         {
-            data.AddScore(value);
+            ps.Play();
         }
     }
 
-    public void Replace()
+    public void SetVisible(bool v)
     {
-        GetComponent<MeshRenderer>().enabled = true;
-        GetComponent<BoxCollider>().enabled = true;
+        GetComponent<MeshRenderer>().enabled = v;
+        GetComponent<BoxCollider>().enabled = v;
     }
 
 
