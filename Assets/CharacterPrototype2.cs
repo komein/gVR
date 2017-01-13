@@ -29,7 +29,6 @@ public class CharacterPrototype2 : MonoBehaviour
     float curSpeed = 0f;
 
     CharacterController ch;
-    CharacterMotor chm;
     Animator anim;
 
     List<Collider> grounds = new List<Collider>();
@@ -58,7 +57,6 @@ public class CharacterPrototype2 : MonoBehaviour
         }
 
         ch = GetComponent<CharacterController>();
-        chm = GetComponent<CharacterMotor>();
     }
 
     private void FixedUpdate()

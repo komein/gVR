@@ -23,6 +23,11 @@ public class Collectible : MonoBehaviour {
         {
             ps.Play();
         }
+        AudioSource aus = GetComponent<AudioSource>();
+        if (null != aus)
+        {
+            aus.Play();
+        }
     }
 
     public void SetVisible(bool v)

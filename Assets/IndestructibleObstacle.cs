@@ -23,6 +23,11 @@ public class IndestructibleObstacle : MonoBehaviour {
                     if (null != doCrush)
                     {
                         doCrush(v);
+                        AudioSource aus = GetComponent<AudioSource>();
+                        if (null != aus)
+                        {
+                            aus.Play();
+                        }
                     }
                 }
             }
