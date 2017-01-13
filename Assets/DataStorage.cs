@@ -28,6 +28,18 @@ public class DataStorage : MonoBehaviour {
     Action optionalScoreAction;
     Action optionalHpAction;
 
+    public bool isAlive
+    {
+        get
+        {
+            if (GetHp() <= 0)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+
     void Awake ()
     {
         RestoreHp();
@@ -126,6 +138,7 @@ public class DataStorage : MonoBehaviour {
         hp -= v;
         hp = Mathf.Max(0, hp);
         OptionalHpAction();
+        OptionalAction();
     }
 
     public int GetHp()
@@ -136,7 +149,6 @@ public class DataStorage : MonoBehaviour {
     internal void RestoreHp()
     {
         hp = maxHp;
-        OptionalHpAction();
     }
 
     public void Save()

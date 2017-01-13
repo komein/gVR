@@ -48,13 +48,14 @@ public class ScoreDisplayer : MonoBehaviour
 
         if (null != storage)
         {
-            if (storage.GetHp() <= 0)
+            if (!storage.isAlive)
             {
                 deadFlag = true;
                 if (null != message)
                 {
-                    message.text = "Kitty needs rest, returning to menu!";
+                    message.text = "Kitty is tired, returning to menu!";
                 }
+                return;
             }
 
             int curLvl = storage.GetCurrentLevel();

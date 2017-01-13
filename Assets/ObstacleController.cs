@@ -31,16 +31,14 @@ public class ObstacleController : MonoBehaviour
     {
         character.MakeCrush(v);
 
-        if (character.isAlive)
-        {
-            ToggleObstaclesGhost(true);
-            character.ToggleFlashing(true);
+        ToggleObstaclesGhost(true);
+        character.ToggleFlashing(true);
 
-            yield return new WaitForSeconds(4.0f);
+        yield return new WaitForSeconds(4.0f);
 
-            ToggleObstaclesGhost(false);
-            character.ToggleFlashing(false);
-        }
+        ToggleObstaclesGhost(false);
+        character.ToggleFlashing(false);
+
         yield return null;
     }
 

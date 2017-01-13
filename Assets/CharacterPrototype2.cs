@@ -27,9 +27,9 @@ public class CharacterPrototype2 : MonoBehaviour
     int enableCounter = 25;
 
     float curSpeed = 0f;
-    float curTime = 0f;
 
     CharacterController ch;
+    CharacterMotor chm;
     Animator anim;
 
     List<Collider> grounds = new List<Collider>();
@@ -39,20 +39,9 @@ public class CharacterPrototype2 : MonoBehaviour
 
     DataStorage data;
 
-    public bool isAlive
-    {
-        get
-        {
-            if (null != data)
-            {
-                if (data.GetHp() <= 0)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
+    Coroutine c;
+
+    
 
     private void Start()
     {
@@ -69,6 +58,7 @@ public class CharacterPrototype2 : MonoBehaviour
         }
 
         ch = GetComponent<CharacterController>();
+        chm = GetComponent<CharacterMotor>();
     }
 
     private void FixedUpdate()
@@ -78,32 +68,27 @@ public class CharacterPrototype2 : MonoBehaviour
             return;
         }
 
-        if (!isAlive || currentState != CatState.moving)
+        switch(currentState)
         {
-            anim.SetBool("jumping", false);
-            anim.SetFloat("speed", 0f);
-
-            return;
-        }
-
-        if (ch.enabled == false)
-        {
-            if (count < enableCounter)
-            {
-                count++;
+            case CatState.dying:
+            case CatState.cantMove:
+                SetIdleAnimation();
                 return;
-            }
-            else
-            {
-                ch.enabled = true;
-            }
+            case CatState.moving:
+                if (curSpeed < maxSpeed)
+                {
+                    curSpeed += Time.deltaTime * acceleration;
+                }
+                Vector3 pos = GetMoveVector();
+                SetAnimation(pos);
+                MoveAndRotate(pos);
+                break;
         }
 
-        if (curSpeed < maxSpeed)
-        {
-            curSpeed += Time.deltaTime * acceleration;
-        }
-        
+    }
+
+    private Vector3 GetMoveVector()
+    {
         Vector3 pos = new Vector3(cam.transform.forward.x + (cam.transform.position.x - gameObject.transform.position.x) / 8f, 0, 0) * strafeSpeed;
 
         if (Mathf.Abs(pos.x) > strafeStep)
@@ -113,6 +98,33 @@ public class CharacterPrototype2 : MonoBehaviour
 
         pos.z = curSpeed;
 
+        return pos;
+    }
+
+    private void MoveAndRotate(Vector3 pos)
+    {
+        if (null != data)
+        {
+            if (data.isAlive && currentState == CatState.moving)
+            {
+                ch.SimpleMove(pos * Time.fixedDeltaTime);
+
+                Quaternion rot_ = planeGrounds.Count != 0 || grounds.Count == 0 ? Quaternion.identity : grounds[grounds.Count - 1].transform.rotation;
+
+                if (pos != Vector3.zero)
+                {
+                    transform.rotation = Quaternion.Lerp(transform.rotation, rot_ * Quaternion.LookRotation(pos), Time.fixedDeltaTime * 20);
+                }
+
+                return;
+            }
+        }
+
+        ch.SimpleMove(Vector3.zero);
+    }
+
+    private void SetAnimation(Vector3 pos)
+    {
         if (null != anim)
         {
             if (planeGrounds.Count == 0 && grounds.Count == 0)
@@ -127,14 +139,14 @@ public class CharacterPrototype2 : MonoBehaviour
                 anim.SetFloat("speed", d);
             }
         }
+    }
 
-        ch.SimpleMove(pos * Time.fixedDeltaTime);
-
-        Quaternion rot_ = planeGrounds.Count != 0 || grounds.Count == 0 ? Quaternion.identity : grounds[grounds.Count-1].transform.rotation;
-
-        if (pos != Vector3.zero)
+    private void SetIdleAnimation()
+    {
+        if (null != anim)
         {
-            transform.rotation = Quaternion.Lerp(transform.rotation, rot_ * Quaternion.LookRotation(pos), Time.fixedDeltaTime * 20);
+            anim.SetBool("jumping", false);
+            anim.SetFloat("speed", 0f);
         }
     }
 
@@ -157,6 +169,7 @@ public class CharacterPrototype2 : MonoBehaviour
             planeGrounds.Add(other);
         }
     }
+    
 
     private void OnTriggerExit(Collider other)
     {
@@ -173,32 +186,39 @@ public class CharacterPrototype2 : MonoBehaviour
 
     public void MakeCrush(Vector3 v)
     {
-        ch.SimpleMove(Vector3.zero);
-        ch.enabled = false;
-        v = v.normalized * 50;
-        v.y = 50;
-        rb.AddForce(v, ForceMode.Impulse);
-        curSpeed = 0;
-        curTime = 0f;
-        TakeDamage();
+
+        if (data != null)
+        {
+            TakeDamage();
+
+            if (!data.isAlive)
+            {
+                StartCoroutine(Die());
+            }
+            else
+            {
+                StartCoroutine(Immobilize());
+            }
+
+            MakeKnockBack(v);
+        }
     }
 
+    private void MakeKnockBack(Vector3 v)
+    {
+        v = v.normalized * 2;
+        v.y = 2;
 
+        rb.AddForce(v, ForceMode.Impulse);
+
+        curSpeed = 0;
+    }
 
     public void TakeDamage()
     {
         if (null != data)
         {
             data.LoseHp(1);
-            if (!isAlive)
-            {
-                StopAllCoroutines();
-                StartCoroutine(Die());
-            }
-            else
-            {
-                StartCoroutine(CantMove());
-            }
         }
     }
 
@@ -206,31 +226,40 @@ public class CharacterPrototype2 : MonoBehaviour
     {
         if (v == true)
         {
-            StartCoroutine(Flash());
+            c = StartCoroutine(Flash());
         }
         else
         {
-            StopAllCoroutines();
-            mesh.enabled = true;
+            if (null != c)
+            {
+                StopCoroutine(c);
+                c = null;
+                mesh.enabled = true;
+            }
         }
     }
 
-    private IEnumerator CantMove()
+    private IEnumerator Immobilize()
     {
-        //currentState = CatState.cantMove;
-        //yield return new WaitForSeconds(0.1f);
-        //currentState = CatState.moving;
+        currentState = CatState.cantMove;
+        ch.enabled = false;
+        yield return new WaitForSeconds(1f);
+        ch.enabled = true;
+        currentState = CatState.moving;
 
         yield return null;
     }
 
     private IEnumerator Die()
     {
-        yield return new WaitForSeconds(2f);
-        SceneManager.LoadScene("prototypeSelectScene", LoadSceneMode.Single);
+        currentState = CatState.dying;
+        ch.enabled = false;
+        yield return new WaitForSeconds(4f);
 
         data.RestoreHp();
         data.Save();
+
+        SceneManager.LoadScene("prototypeSelectScene", LoadSceneMode.Single);
 
         yield return null;
     }
