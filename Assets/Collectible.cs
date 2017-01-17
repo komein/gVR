@@ -4,11 +4,8 @@ using UnityEngine;
 
 public class Collectible : MonoBehaviour {
 
-    MeshRenderer ren;
     RoadPart road;
     protected DataStorage data;
-
-    public int value = 1;
 
     private void Start()
     {
@@ -18,6 +15,7 @@ public class Collectible : MonoBehaviour {
     public virtual void Collect()
     {
         SetVisible(false);
+
         ParticleSystem ps = GetComponent<ParticleSystem>();
         if (null != ps)
         {

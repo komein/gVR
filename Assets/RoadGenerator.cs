@@ -18,6 +18,8 @@ public class RoadGenerator : MonoBehaviour
     public float MinChance = 0.3f;
     public float MaxChance = 0.7f;
 
+    public float multChance = 0.3f;
+
 	void Start ()
     {
         data = FindObjectOfType<DataStorage>();
@@ -68,13 +70,23 @@ public class RoadGenerator : MonoBehaviour
                     
                     if (null != data)
                     {
-                        if (data.GetHp() < 3) // FIXME
+                        if (data.GetHp() < 3) // FIXME someday
                         {
                             CollectiblePlace hpPlace = places[Random.Range(0, places.Count)];
                             if (null != hpPlace)
                             {
                                 pool.PlaceHp(hpPlace.transform.position, nextPart, currentPart);
                                 places.Remove(hpPlace);
+                            }
+                        }
+
+                        if (Random.value < multChance)
+                        {
+                            CollectiblePlace multPlace = places[Random.Range(0, places.Count)];
+                            if (null != multPlace)
+                            {
+                                pool.PlaceMultiplier(multPlace.transform.position + new Vector3(0, 0.05f, 0), nextPart, currentPart);
+                                places.Remove(multPlace);
                             }
                         }
                     }

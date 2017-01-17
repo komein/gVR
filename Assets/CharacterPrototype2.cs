@@ -184,6 +184,16 @@ public class CharacterPrototype2 : MonoBehaviour
 
     public void MakeCrush(Vector3 v)
     {
+        CrushParticle cp = FindObjectOfType<CrushParticle>();
+        if (null != cp)
+        {
+            ParticleSystem cm = cp.GetComponent<ParticleSystem>();
+            if (null != cm)
+            {
+                cm.transform.position = transform.position + new Vector3(0,0.3f,0);
+                cm.Play();
+            }
+        }
 
         if (data != null)
         {
@@ -200,6 +210,7 @@ public class CharacterPrototype2 : MonoBehaviour
 
             MakeKnockBack(v);
         }
+
     }
 
     private void MakeKnockBack(Vector3 v)

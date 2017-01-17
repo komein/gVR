@@ -11,13 +11,20 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
     Text text;
 
     public string caption;
+    public string pressedCaption;
 
     protected bool isGazedOn = false;
+    protected bool pressed = false;
+
     protected float time = 0f;
 
     public float activateTime = 1.2f;
 
+    public Color normalColor;
+    public Color pressedColor;
+
     protected virtual void Start () {
+
         text = GetComponentInChildren<Text>();
         
         if (null != text)
@@ -26,37 +33,45 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
         }
 
         SetGazedAt(false);
-
     }
 
     public virtual void SetGazedAt(bool gazedAt)
     {
+        pressed = false;
         isGazedOn = gazedAt;
         img.fillAmount = 0;
+        img.color = normalColor;
     }
 
     protected virtual void Update()
     {
-        if (isGazedOn)
+        if (!pressed)
         {
-            time += Time.deltaTime;
+            if (isGazedOn)
+            {
+                time += Time.deltaTime;
 
-            img.fillAmount = Mathf.Min(1f, (time / (float)activateTime));
+                img.fillAmount = Mathf.Min(1f, (time / (float)activateTime));
+            }
+            else
+            {
+                time = 0f;
+            }
+
+            if (time >= activateTime)
+            {
+                Function();
+            }
         }
         else
         {
-            time = 0f;
-        }
-
-        if (time >= activateTime)
-        {
-            Function();
+            img.color = pressedColor;
         }
     }
 
     protected virtual void Function()
     {
-
+        pressed = true;
     }
 
     public void OnGazeEnter()
@@ -72,5 +87,19 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
     public void OnGazeTrigger()
     {
         Function();
+    }
+
+
+    protected IEnumerator PressedMessage()
+    {
+        string t = text.text;
+
+        text.text = pressedCaption;
+
+        yield return new WaitForSeconds(2f);
+
+        text.text = t;
+
+        yield return null;
     }
 }

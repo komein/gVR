@@ -25,6 +25,11 @@ public class DataStorage : MonoBehaviour {
 
     const int maxHp = 3;
 
+    public float multiplier {
+        get;
+        private set;
+    }
+
     Action optionalScoreAction;
     Action optionalHpAction;
 
@@ -42,6 +47,7 @@ public class DataStorage : MonoBehaviour {
 
     void Awake ()
     {
+        multiplier = 1;
         RestoreHp();
         DontDestroyOnLoad(transform.gameObject);
     }
@@ -82,6 +88,14 @@ public class DataStorage : MonoBehaviour {
         OptionalAction();
     }
 
+    internal void SetMultiplier(int v)
+    {
+        if (v >= 1)
+            multiplier = v;
+        OptionalAction();
+    }
+
+
     private void OptionalAction()
     {
         if (null != optionalScoreAction)
@@ -111,7 +125,7 @@ public class DataStorage : MonoBehaviour {
 
     public void AddScore(long s)
     {
-        score += s;
+        score += (int)(s * multiplier + 0.5f);
         Save();
         OptionalAction();
     }

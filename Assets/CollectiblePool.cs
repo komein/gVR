@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ public class CollectiblePool : MonoBehaviour {
 
     private ScoreCollectible[] cakePrefabs;
     private HpCollectible hpPrefab;
+    private MultiplierCollectible multPrefab;
 
     private List<ScoreCollectible> pool = new List<ScoreCollectible>();
     private List<HpCollectible> hpPool = new List<HpCollectible>();
@@ -16,6 +18,7 @@ public class CollectiblePool : MonoBehaviour {
 
 	void Awake () {
         hpPrefab = GetComponentInChildren<HpCollectible>();
+        multPrefab = GetComponentInChildren<MultiplierCollectible>();
         cakePrefabs = GetComponentsInChildren<ScoreCollectible>();
         foreach (ScoreCollectible c in cakePrefabs)
         {
@@ -34,7 +37,7 @@ public class CollectiblePool : MonoBehaviour {
         {
             if (pool.Count > 0)
             {
-                int randomSubPoolN = Random.Range(0, pool.Count);
+                int randomSubPoolN = UnityEngine.Random.Range(0, pool.Count);
                 return pool[randomSubPoolN];
             }
         }
@@ -55,7 +58,7 @@ public class CollectiblePool : MonoBehaviour {
         if (null != c)
         {
             c.transform.position = v;
-            c.transform.Rotate(Vector3.up, Random.value * 180);
+            c.transform.Rotate(Vector3.up, UnityEngine.Random.value * 180);
             c.SetRoadPart(r);
             c.SetVisible(true);
 
@@ -80,5 +83,21 @@ public class CollectiblePool : MonoBehaviour {
             hpPrefab.SetVisible(true);
         }
         return hpPrefab;
+    }
+
+    internal Collectible PlaceMultiplier(Vector3 position, RoadPart nextPart, RoadPart currentPart)
+    {
+        if (null != multPrefab)
+        {
+            if (multPrefab.GetRoadPart() == currentPart)
+            {
+                return null;
+            }
+
+            multPrefab.transform.position = position + Vector3.up * 0.1f;
+            multPrefab.SetRoadPart(nextPart);
+            multPrefab.SetVisible(true);
+        }
+        return multPrefab;
     }
 }

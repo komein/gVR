@@ -12,6 +12,7 @@ public class ScoreDisplayer : MonoBehaviour
     public Text nextLvl;
     public Text message;
     public Image pBar;
+    public Image pBarBackground;
 
     public Color minColor;
     public Color midColor;
@@ -70,29 +71,34 @@ public class ScoreDisplayer : MonoBehaviour
             long score = storage.GetScore();
             if (null != message && !messageLockFlag)
             {
-                message.text = "Score: " + score;
+                if (storage.multiplier > 1)
+                    message.text = "Score: " + score + " (x" + storage.multiplier + " bonus!)";
+                else
+                    message.text = "Score: " + score;
             }
 
             if (storage.IsMaxLvl())
             {
                 if (null != nextLvl)
                 {
-                    nextLvl.text = "MAX";
+                    nextLvl.text = "You have unlocked all the levels!";
                 }
                 if (null != pBar)
                 {
-                    pBar.fillAmount = 1;
+                    pBar.fillAmount = 0;
+                    pBarBackground.enabled = false;
                 }
                 return;
             }
             else
             {
+                pBarBackground.enabled = true;
                 long toNextLvl = storage.GetNextLvlUnlock();
                 long toCurrentLvl = storage.GetCurrentLevelUnlock();
 
                 if (null != nextLvl)
                 {
-                    nextLvl.text = toNextLvl.ToString();
+                    nextLvl.text = "To next level: " + toNextLvl.ToString();
                 }
 
                 if (null != pBar)

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class HpCollectible : Collectible {
 
+    public int value = 1;
+
     public override void Collect()
     {
         if (data.GetHp() < 3) // FIXME

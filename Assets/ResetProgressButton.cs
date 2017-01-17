@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ResetProgressButton : LookableButton
 {
-
     DataStorage data;
 
     protected override void Start()
@@ -15,9 +14,13 @@ public class ResetProgressButton : LookableButton
 
     protected override void Function()
     {
-        base.Function();
         data.SetScore(0);
         data.Save();
         data.Load();
+
+        StartCoroutine(PressedMessage());
+
+        base.Function();
     }
+
 }
