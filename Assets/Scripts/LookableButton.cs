@@ -13,6 +13,8 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
     public string caption;
     public string pressedCaption;
 
+    public int levelRequired = 0;
+
     protected bool isGazedOn = false;
     protected bool pressed = false;
 
@@ -23,13 +25,28 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
     public Color normalColor;
     public Color pressedColor;
 
+    bool isActiveButton = true;
+
     protected virtual void Start () {
 
         text = GetComponentInChildren<Text>();
-        
+
         if (null != text)
         {
             text.text = caption;
+        }
+
+        DataStorage store = FindObjectOfType<DataStorage>();
+
+        if (null != store)
+        {
+            int lvl = store.GetCurrentLevel();
+
+            if (lvl < levelRequired)
+            {
+                isActiveButton = false;
+                text.color = text.color / 2f;
+            }
         }
 
         SetGazedAt(false);
@@ -38,6 +55,9 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
     public virtual void SetGazedAt(bool gazedAt)
     {
         pressed = false;
+        if (!isActiveButton)
+            return;
+
         isGazedOn = gazedAt;
         img.fillAmount = 0;
         img.color = normalColor;

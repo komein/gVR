@@ -58,45 +58,48 @@ public class RoadGenerator : MonoBehaviour
             nextCandidates.Remove(prevPart);
             nextCandidates.Remove(currentPart);
 
-            RoadPart nextPart = nextCandidates[Random.Range(0, nextCandidates.Count)];
-
-            if (nextPart != null)
+            if (nextCandidates.Count > 0)
             {
-                nextPart.transform.position = currentPart.transform.position + new Vector3(0, 0, currentPart.partSize);
+                RoadPart nextPart = nextCandidates[Random.Range(0, nextCandidates.Count)];
 
-                if (null != pool)
+                if (nextPart != null)
                 {
-                    List<CollectiblePlace> places = nextPart.GetComponentsInChildren<CollectiblePlace>().ToList();
-                    
-                    if (null != data)
+                    nextPart.transform.position = currentPart.transform.position + new Vector3(0, 0, currentPart.partSize);
+
+                    if (null != pool)
                     {
-                        if (data.GetHp() < 3) // FIXME someday
+                        List<CollectiblePlace> places = nextPart.GetComponentsInChildren<CollectiblePlace>().ToList();
+
+                        if (null != data)
                         {
-                            CollectiblePlace hpPlace = places[Random.Range(0, places.Count)];
-                            if (null != hpPlace)
+                            if (data.GetHp() < 3) // FIXME someday
                             {
-                                pool.PlaceHp(hpPlace.transform.position, nextPart, currentPart);
-                                places.Remove(hpPlace);
+                                CollectiblePlace hpPlace = places[Random.Range(0, places.Count)];
+                                if (null != hpPlace)
+                                {
+                                    pool.PlaceHp(hpPlace.transform.position, nextPart, currentPart);
+                                    places.Remove(hpPlace);
+                                }
+                            }
+
+                            if (Random.value < multChance)
+                            {
+                                CollectiblePlace multPlace = places[Random.Range(0, places.Count)];
+                                if (null != multPlace)
+                                {
+                                    pool.PlaceMultiplier(multPlace.transform.position + new Vector3(0, 0.05f, 0), nextPart, currentPart);
+                                    places.Remove(multPlace);
+                                }
                             }
                         }
 
-                        if (Random.value < multChance)
+                        foreach (var p in places)
                         {
-                            CollectiblePlace multPlace = places[Random.Range(0, places.Count)];
-                            if (null != multPlace)
+                            float chance = Random.Range(MinChance, MaxChance); // WOW
+                            if (Random.value > chance) // MUCH RANDOM
                             {
-                                pool.PlaceMultiplier(multPlace.transform.position + new Vector3(0, 0.05f, 0), nextPart, currentPart);
-                                places.Remove(multPlace);
+                                pool.PlaceRandom(p.transform.position, nextPart);
                             }
-                        }
-                    }
-
-                    foreach(var p in places)
-                    {
-                        float chance = Random.Range(MinChance, MaxChance); // WOW
-                        if (Random.value > chance) // MUCH RANDOM
-                        {
-                            pool.PlaceRandom(p.transform.position, nextPart);
                         }
                     }
                 }
