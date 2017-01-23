@@ -10,6 +10,7 @@ public class RoadGenerator : MonoBehaviour
     List<RoadPart> roadParts;
     RoadPart currentPart;
     RoadPart prevPart;
+    RoadPart nextPart;
     CollectiblePool pool;
     List<RoadPart> nextCandidates;
 
@@ -41,6 +42,15 @@ public class RoadGenerator : MonoBehaviour
                 return;
             }
 
+            if (null != nextPart)
+            {
+                if (r != nextPart)
+                {
+                    Debug.Log("atata!");
+                    return;
+                }
+            }
+
             if (null != prevPart)
                 nextCandidates.Add(prevPart);
 
@@ -60,7 +70,7 @@ public class RoadGenerator : MonoBehaviour
 
             if (nextCandidates.Count > 0)
             {
-                RoadPart nextPart = nextCandidates[Random.Range(0, nextCandidates.Count)];
+                nextPart = nextCandidates[Random.Range(0, nextCandidates.Count)];
 
                 if (nextPart != null)
                 {

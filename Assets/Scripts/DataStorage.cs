@@ -49,6 +49,12 @@ public class DataStorage : MonoBehaviour {
 
     void Awake ()
     {
+        if (null != FindObjectOfType<DataStorage>())
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         multiplier = 1;
         RestoreHp();
         DontDestroyOnLoad(transform.gameObject);

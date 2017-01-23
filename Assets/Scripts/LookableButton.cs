@@ -38,6 +38,8 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
 
         DataStorage store = FindObjectOfType<DataStorage>();
 
+        Debug.Log(store);
+
         if (null != store)
         {
             int lvl = store.GetCurrentLevel();

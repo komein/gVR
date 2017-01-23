@@ -177,7 +177,8 @@ public class CharacterPrototype2 : MonoBehaviour
         }
         else if (other.gameObject.GetComponent<PlaneGround>() != null)
         {
-            planeGrounds.Add(other);
+            if (!planeGrounds.Contains(other))
+                planeGrounds.Add(other);
         }
     }
     

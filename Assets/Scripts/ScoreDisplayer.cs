@@ -56,6 +56,8 @@ public class ScoreDisplayer : MonoBehaviour
                 {
                     message.text = "Kitty is tired, returning to menu!";
                 }
+                if (null != nextLvl)
+                    nextLvl.text = "";
                 return;
             }
 
