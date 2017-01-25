@@ -17,7 +17,6 @@ public class AsyncSceneLoader : MonoBehaviour
     private IEnumerator LoadALevel(string levelName)
     {
         async = SceneManager.LoadSceneAsync(levelName, LoadSceneMode.Single);
-        //async.allowSceneActivation = false;
         yield return async;
     }
 
@@ -45,7 +44,7 @@ public class AsyncSceneLoader : MonoBehaviour
 
         if (null != storage)
         {
-            LoadLevel(storage.sceneToLoad);
+            LoadLevel(storage.levelInfo.title);
         }
     }
 

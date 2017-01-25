@@ -11,7 +11,12 @@ public class ScoreCollectible : Collectible {
         base.Collect();
         if (null != data)
         {
-            data.AddScore(value);
+            ScoreDisplayer d = FindObjectOfType<ScoreDisplayer>();
+            if (null == d)
+            {
+                return;
+            }
+            data.AddScore(d.levelNumber, value);
 
             CaptionText text = FindObjectOfType<CaptionText>();
             if (null != text)

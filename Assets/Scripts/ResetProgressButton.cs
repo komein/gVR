@@ -14,7 +14,11 @@ public class ResetProgressButton : LookableButton
 
     protected override void Function()
     {
-        data.SetScore(0);
+        if (null == data)
+            return;
+
+        data.ResetScore();
+
         data.Save();
         data.Load();
 

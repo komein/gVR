@@ -18,7 +18,6 @@ public class RoadGenerator : MonoBehaviour
 
     public float MinChance = 0.3f;
     public float MaxChance = 0.7f;
-
     public float multChance = 0.3f;
 
 	void Start ()
@@ -46,7 +45,6 @@ public class RoadGenerator : MonoBehaviour
             {
                 if (r != nextPart)
                 {
-                    Debug.Log("atata!");
                     return;
                 }
             }
