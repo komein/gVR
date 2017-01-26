@@ -61,6 +61,7 @@ public class LevelInfo
 public class DataStorage : MonoBehaviour
 {
     private static DataStorage instanceRef;
+	private static InAppManager manager;
 
     public Game savedGame;
 
@@ -93,6 +94,11 @@ public class DataStorage : MonoBehaviour
 
     void Awake ()
     {
+		if (manager == null) 
+		{
+			manager = new InAppManager ();
+		}
+
         // singleton pattern
         if (instanceRef == null)
         {

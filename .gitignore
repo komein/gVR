@@ -10,3 +10,13 @@ VRGoogle1.sln
 Temp
 /*.csproj
 /*.sln
+/VRGoogle1.userprefs
+/obj/Debug/Assembly-CSharp-firstpass.csproj.FileListAbsolute.txt
+/obj/Debug/Assembly-CSharp-firstpass.csprojResolveAssemblyReference.cache
+/obj/Debug/Assembly-CSharp-firstpass.dll
+/obj/Debug/Assembly-CSharp-firstpass.pdb
+/obj/Debug/Assembly-CSharp.csproj.FileListAbsolute.txt
+/obj/Debug/Assembly-CSharp.csprojResolveAssemblyReference.cache
+/obj/Debug/Assembly-CSharp.dll
+/obj/Debug/Assembly-CSharp.pdb
+/obj/Debug/build.force
