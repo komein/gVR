@@ -123,7 +123,7 @@ public class ScoreDisplayer : MonoBehaviour
             if (score >= toNextLvl)
                 nextLvl.text = "Level completed!";
             else
-                nextLvl.text = "Level progress: " + toNextLvl.ToString();
+                nextLvl.text = "To complete: " + (toNextLvl - score).ToString();
         }
 
         DrawProgressBar(score, toNextLvl, toCurrentLvl);
