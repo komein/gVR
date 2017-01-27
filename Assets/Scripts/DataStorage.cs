@@ -17,24 +17,99 @@ public class Game
 
     public bool isLevelUnlocked(int level)
     {
-        int actualLevel = level - 1;
-        if (actualLevel < 0)
+        if (!isValidLevel(level))
             return false;
 
+        int levelIndex = level - 1;
+
+        if (levelIndex == 0) // first level
+            return true;
+
+        LevelProgress previousLevel = GetLevel(level - 1);
+
+        if (null == previousLevel)
+            return false;
+
+        if (previousLevel.score >= previousLevel.maxScore)
+                return true;
+
+        return false;
+    }
+
+    private bool isValidLevel(int level)
+    {
         if (null == levels)
             return false;
 
         if (levels.Count < level)
             return false;
 
-        if (actualLevel == 0) // first level
-            return true;
+        int levelIndex = level - 1;
+        if (levelIndex < 0)
+            return false;
 
-        if (actualLevel > 0) // check if previous is completed
-            if (levels[actualLevel - 1].score >= levels[actualLevel - 1].maxScore)
-                return true;
+        return true;
+    }
 
-        return false;
+    public LevelProgress GetLevel(int level)
+    {
+        if (!isValidLevel(level))
+            return null;
+
+        int levelIndex = level - 1;
+
+        return levels[levelIndex];
+    }
+
+    public bool SetScore(int level, long score)
+    {
+        LevelProgress l = GetLevel(level);
+
+        if (null == l)
+            return false;
+
+        l.score = score;
+
+        return true;
+    }
+
+    public long GetMaxScore(int level)
+    {
+        LevelProgress l = GetLevel(level);
+
+        if (null == l)
+            return -1;
+
+        return l.maxScore;
+    }
+
+    public long GetScore(int level)
+    {
+        LevelProgress l = GetLevel(level);
+
+        if (null == l)
+            return -1;
+
+        return l.score;
+    }
+
+    public bool AddScore(int level, int score)
+    {
+        Debug.Log("adding " + score);
+        long s = GetScore(level);
+        Debug.Log("current is " + s);
+        return SetScore(level, s + score);
+    }
+
+    internal bool ResetScore()
+    {
+        if (null == levels)
+            return false;
+
+        foreach (var v in levels)
+            v.score = 0;
+
+        return true;
     }
 }
 
@@ -42,7 +117,11 @@ public class Game
 public class LevelProgress
 {
     public long score;
-    public long maxScore;
+    public long maxScore // readonly
+    {
+        get;
+        private set;
+    }
 
     public LevelProgress(long s, long max)
     {
@@ -122,25 +201,13 @@ public class DataStorage : MonoBehaviour
 
         return levelInfo.number;
     }
-
-    public void SetScore(int level, long s)
-    {
-        if (!saveIsOk())
-            return;
-
-        savedGame.levels[level].score = s;
-
-        Save();
-        OptionalScoreAction();
-    }
-
+    
     internal void SetMultiplier(int v)
     {
         if (v >= 1)
             multiplier = v;
         OptionalScoreAction();
     }
-
 
     private void OptionalScoreAction()
     {
@@ -164,60 +231,59 @@ public class DataStorage : MonoBehaviour
         OptionalScoreAction();
     }
 
-    internal bool IsMaxLvl(int lvl)
-    {
-        if (!saveIsOk())
-            return false;
-        if (savedGame.levels.Count == (lvl - 1))
-            return true;
-
-        return false;
-    }
-
     public void SetOptionalHpAction(Action a)
     {
         optionalHpAction = a;
     }
 
-    public void AddScore(int lvl, long s)
-    {
-        SetScore(lvl, GetScore(lvl) + (int)(s * multiplier + 0.5f));
-    }
-
-    public long GetScore(int level)
-    {
-        if (!saveIsOk())
-            return -1;
-
-        return savedGame.levels[level].score;
-    }
-
-    public long GetMaxScore(int level)
-    {
-        if (!saveIsOk())
-            return -1;
-
-        if (level <= 0)
-            return -1;
-
-        return savedGame.levels[level-1].maxScore;
-    }
-
-    public void ResetScore()
-    {
-        if (!saveIsOk())
-            return;
-
-        foreach (var v in savedGame.levels)
-            v.score = 0;
-    }
-
-    public bool saveIsOk()
+    public bool SetScore(int level, long s)
     {
         if (null == savedGame)
             return false;
 
+        savedGame.SetScore(level, s);
+
+        Save();
+        OptionalScoreAction();
+
         return true;
+    }
+
+    public bool AddScore(int level, long s)
+    {
+        if (null == savedGame)
+            return false;
+
+        savedGame.AddScore(level, (int)(s * multiplier + 0.5f));
+
+        Save();
+        OptionalScoreAction();
+
+        return true;
+    }
+
+    public long GetScore(int level)
+    {
+        if (null == savedGame)
+            return -1;
+
+        return savedGame.GetScore(level);
+    }
+
+    public long GetMaxScore(int level)
+    {
+        if (null == savedGame)
+            return -1;
+
+        return savedGame.GetMaxScore(level);
+    }
+
+    public bool ResetScore()
+    {
+        if (null == savedGame)
+            return false;
+
+        return savedGame.ResetScore();
     }
 
     public void SetHp(int h)
@@ -256,17 +322,17 @@ public class DataStorage : MonoBehaviour
             return;
 
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Application.persistentDataPath + "/s2.bin");
+        FileStream file = File.Create(Application.persistentDataPath + "/s3.bin");
         bf.Serialize(file, savedGame);
         file.Close();
     }
 
     public void Load()
     {
-        if (File.Exists(Application.persistentDataPath + "/s2.bin"))
+        if (File.Exists(Application.persistentDataPath + "/s3.bin"))
         {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Application.persistentDataPath + "/s2.bin", FileMode.Open);
+            FileStream file = File.Open(Application.persistentDataPath + "/s3.bin", FileMode.Open);
             savedGame = (Game)bf.Deserialize(file);
             file.Close();
         }

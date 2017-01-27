@@ -12,6 +12,11 @@ public class LevelButton : SceneButton
     {
         base.Start();
 
+        Initialize();
+    }
+
+    public void Initialize()
+    {
         DataStorage store = FindObjectOfType<DataStorage>();
         if (null != store)
         {
@@ -22,9 +27,6 @@ public class LevelButton : SceneButton
 
                 isActiveButton = false;
                 text.color = text.color / 2f;
-                //gameObject.SetActive(false);
-                //isActiveButton = false;
-                //text.color = text.color / 2f;
             }
             else
             {
@@ -33,11 +35,11 @@ public class LevelButton : SceneButton
                 isActiveButton = isPurchased;
                 if (!isPurchased)
                 {
+                    isActiveButton = false;
                     text.color = text.color / 2f;
                 }
             }
         }
-
     }
 
     protected override void Function()

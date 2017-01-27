@@ -22,6 +22,16 @@ public class ResetProgressButton : LookableButton
         data.Save();
         data.Load();
 
+        LevelButton[] buttons = FindObjectsOfType<LevelButton>();
+
+        if (null != buttons)
+        {
+            foreach(var v in buttons)
+            {
+                v.Initialize();
+            }
+        }
+
         StartCoroutine(PressedMessage());
 
         base.Function();
