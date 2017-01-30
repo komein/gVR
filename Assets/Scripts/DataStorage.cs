@@ -95,9 +95,7 @@ public class Game
 
     public bool AddScore(int level, int score)
     {
-        Debug.Log("adding " + score);
         long s = GetScore(level);
-        Debug.Log("current is " + s);
         return SetScore(level, s + score);
     }
 

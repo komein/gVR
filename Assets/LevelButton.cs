@@ -47,6 +47,7 @@ public class LevelButton : SceneButton
         DataStorage scoreStorage = FindObjectOfType<DataStorage>();
         if (null != scoreStorage)
         {
+            scoreStorage.SetMultiplier(1);
             scoreStorage.Save();
             scoreStorage.levelInfo.title = scenePath;
             scoreStorage.levelInfo.number = levelNumber;
