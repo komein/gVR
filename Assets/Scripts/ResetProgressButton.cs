@@ -32,6 +32,16 @@ public class ResetProgressButton : LookableButton
             }
         }
 
+        ScoreDisplayer[] displayers = FindObjectsOfType<ScoreDisplayer>();
+
+        if (null != displayers)
+        {
+            foreach (var v in displayers)
+            {
+                v.UpdateText();
+            }
+        }
+
         StartCoroutine(PressedMessage());
 
         base.Function();

@@ -7,6 +7,7 @@ public class LevelButton : SceneButton
     public int levelNumber;
 
     public LevelButtonContainer container;
+    public BuyButton buyButton;
 
     protected override void Start()
     {
@@ -30,16 +31,37 @@ public class LevelButton : SceneButton
             }
             else
             {
-                bool isPurchased = true; // TODO check
-
-                isActiveButton = isPurchased;
-                if (!isPurchased)
+                if (DataStorage.purchaseMode == true)
                 {
-                    isActiveButton = false;
-                    text.color = text.color / 2f;
+                    if (DataStorage.lastFreeLevelNumber < levelNumber)
+                    {
+                        if (!store.LevelsArePurchased())
+                        {
+                            SetActiveLevelButton(false);
+                            ToggleBuyButton(true);
+                            return;
+                        }
+                    }
                 }
+
+                SetActiveLevelButton(true);
             }
         }
+    }
+
+    private void ToggleBuyButton(bool v)
+    {
+        if (null != buyButton)
+        {
+            buyButton.Toggle(v);
+        }
+    }
+
+    private void SetActiveLevelButton(bool v)
+    {
+        isActiveButton = v;
+        if (!v)
+            text.color = text.color / 2f;
     }
 
     protected override void Function()

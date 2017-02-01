@@ -137,8 +137,10 @@ public class LevelInfo
 
 public class DataStorage : MonoBehaviour
 {
+    public InAppManager inAppManagerPrefab;
+
     private static DataStorage instanceRef;
-	private static InAppManager manager;
+    private InAppManager manager;
 
     public Game savedGame;
 
@@ -147,6 +149,9 @@ public class DataStorage : MonoBehaviour
     private int hp;
 
     const int maxHp = 3;
+
+    public const int lastFreeLevelNumber = 1;
+    public const bool purchaseMode = true;
 
     public float multiplier {
         get;
@@ -171,11 +176,6 @@ public class DataStorage : MonoBehaviour
 
     void Awake ()
     {
-		if (manager == null) 
-		{
-			manager = new InAppManager ();
-		}
-
         // singleton pattern
         if (instanceRef == null)
         {
@@ -187,7 +187,13 @@ public class DataStorage : MonoBehaviour
             DestroyImmediate(gameObject);
         }
 
+        if (null == manager)
+        {
+            manager = Instantiate(inAppManagerPrefab);
+        }
+
         multiplier = 1;
+
         RestoreHp();
         Load();
     }
@@ -347,5 +353,23 @@ public class DataStorage : MonoBehaviour
         }
 
         OptionalScoreAction();
+    }
+
+    internal bool LevelsArePurchased()
+    {
+
+        return manager.IsProductBought(InAppManager.pLevels);
+    }
+
+    internal bool PurchaseLevel()
+    {
+
+        return manager.BuyProductID(InAppManager.pLevels);
+    }
+
+    internal void SetActions(Action setSuccessMessage, Action setFailMessage)
+    {
+
+        manager.SetActions(setSuccessMessage, setFailMessage);
     }
 }

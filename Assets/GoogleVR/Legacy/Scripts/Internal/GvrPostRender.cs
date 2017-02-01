@@ -38,8 +38,8 @@ public class GvrPostRender : MonoBehaviour {
   // Distortion mesh parameters.
 
   // Size of one eye's distortion mesh grid.  The whole mesh is two of these grids side by side.
-  private const int kMeshWidth = 16;
-  private const int kMeshHeight = 16;
+  private const int kMeshWidth = 40;
+  private const int kMeshHeight = 40;
   // Whether to apply distortion in the grid coordinates or in the texture coordinates.
   private const bool kDistortVertices = true;
 

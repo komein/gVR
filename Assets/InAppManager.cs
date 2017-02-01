@@ -14,6 +14,9 @@ public class InAppManager : MonoBehaviour, IStoreListener {
 
 	public const string pLevelsGooglePlay = "gp_plvl";
 
+    Action successAction = null;
+    Action failAction = null;
+
 	void Start()
 	{
 		if (m_StoreController == null)
@@ -40,7 +43,7 @@ public class InAppManager : MonoBehaviour, IStoreListener {
 		return m_StoreController != null && m_StoreExtensionProvider != null;
 	}
 
-	public void BuyProductID(string productId)
+	public bool BuyProductID(string productId)
 	{
 		try
 		{
@@ -52,20 +55,24 @@ public class InAppManager : MonoBehaviour, IStoreListener {
 				{
 					Debug.Log(string.Format("Purchasing product asychronously: '{0}'", product.definition.id));// ... buy the product. Expect a response either through ProcessPurchase or OnPurchaseFailed asynchronously.
 					m_StoreController.InitiatePurchase(product);
+                    return true;
 				}
 				else
 				{
 					Debug.Log("BuyProductID: FAIL. Not purchasing product, either is not found or is not available for purchase");
+                    return false;
 				}
 			}
 			else
 			{
 				Debug.Log("BuyProductID FAIL. Not initialized.");
+                return false;
 			}
 		}
 		catch (Exception e)
 		{
 			Debug.Log("BuyProductID: FAIL. Exception during purchase. " + e);
+            return false;
 		}
 	}
 
@@ -111,7 +118,8 @@ public class InAppManager : MonoBehaviour, IStoreListener {
 		Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 		if (String.Equals(args.purchasedProduct.definition.id, pLevels, StringComparison.Ordinal))
 		{
-			
+            if (null != successAction)
+                successAction();
 		}
 		return PurchaseProcessingResult.Complete;
 	}
@@ -119,5 +127,28 @@ public class InAppManager : MonoBehaviour, IStoreListener {
 	public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
 	{
 		Debug.Log(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}", product.definition.storeSpecificId, failureReason));
+        if (null != failAction)
+            failAction();
 	}
+
+    public bool IsProductBought(string id)
+    {
+        foreach(var v in m_StoreController.products.all)
+        {
+            Debug.Log("checking receipt of " + v.definition.id);
+            if (v.definition.id == id)
+            {
+                if (v.receipt != null)
+                    return true;
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public void SetActions(Action s, Action f)
+    {
+        successAction = s;
+        failAction = f;
+    }
 }
