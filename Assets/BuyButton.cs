@@ -29,7 +29,7 @@ public class BuyButton : SceneButton {
     {
         if (null != container)
         {
-            container.enabled = v;
+            container.gameObject.SetActive(v);
         }
     }
 }
