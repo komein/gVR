@@ -106,6 +106,16 @@ public class InAppManager : MonoBehaviour, IStoreListener {
 
 		m_StoreController = controller;
 		m_StoreExtensionProvider = extensions;
+
+        LevelButton[] buttons = FindObjectsOfType<LevelButton>();
+
+        if (null != buttons)
+        {
+            foreach(var v in buttons)
+            {
+                v.inAppPurchaserReadyFlag = true;
+            }
+        }
 	}
 
 	public void OnInitializeFailed(InitializationFailureReason error)
@@ -135,7 +145,6 @@ public class InAppManager : MonoBehaviour, IStoreListener {
     {
         foreach(var v in m_StoreController.products.all)
         {
-            Debug.Log("checking receipt of " + v.definition.id);
             if (v.definition.id == id)
             {
                 if (v.receipt != null)

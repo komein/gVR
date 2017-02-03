@@ -9,11 +9,25 @@ public class LevelButton : SceneButton
     public LevelButtonContainer container;
     public BuyButton buyButton;
 
+    public bool inAppPurchaserReadyFlag = false;
+
     protected override void Start()
     {
         base.Start();
 
+        StartCoroutine(InitCoroutine());
+    }
+
+    IEnumerator InitCoroutine()
+    {
+        while (!inAppPurchaserReadyFlag)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
         Initialize();
+
+        yield return null;
     }
 
     public void Initialize()
@@ -61,7 +75,8 @@ public class LevelButton : SceneButton
     {
         isActiveButton = v;
         if (!v)
-            text.color = text.color / 2f;
+            if (null != text)
+                text.color = text.color / 2f;
     }
 
     protected override void Function()

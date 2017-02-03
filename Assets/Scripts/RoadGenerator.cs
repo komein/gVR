@@ -24,91 +24,144 @@ public class RoadGenerator : MonoBehaviour
     {
         data = FindObjectOfType<DataStorage>();
         roadParts = GetComponentsInChildren<RoadPart>().ToList();
+
         nextCandidates = roadParts;
         pool = FindObjectOfType<CollectiblePool>();
+
 		foreach (RoadPart r in roadParts)
         {
             r.SetDelegate(RoadTriggered);
         }
 	}
-	
+
     void RoadTriggered(RoadPart r)
+    {
+        if (!IsValidRoadPart(r))
+        {
+            return;
+        }
+
+        RemoveCollectiblesFromRoadPart(currentPart);
+
+        UpdateFutureCandidates(r);
+        UpdateRoadParts(r);
+
+        PlaceNextRoadPart();
+    }
+
+    private bool IsValidRoadPart(RoadPart r) // basic meaning - allowed only that was stored in 'nextPart'; some additional conditions just to be safe
+    {
+        if (null == r)
+        {
+            return false;
+        }
+
+        if (r == currentPart || r == prevPart)
+        {
+            return false;
+        }
+
+        if (null != nextPart)
+        {
+            if (r != nextPart)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void PlaceNextRoadPart()
+    {
+        if (nextCandidates.Count > 0)
+        {
+            nextPart = nextCandidates[Random.Range(0, nextCandidates.Count)];
+
+            PlaceNextPart();
+            FillCollectibles();
+        }
+    }
+
+    private void RemoveCollectiblesFromRoadPart(RoadPart r)
     {
         if (null != r)
         {
-            if (r == currentPart || r == prevPart)
+            if (null != pool)
             {
-                return;
+                pool.RemoveAllFromRoad(r);
             }
+        }
+    }
 
-            if (null != nextPart)
+    private void UpdateFutureCandidates(RoadPart r) // making sure we don't use current or previous road as next one
+    {
+        if (null != r)
+        {
+            nextCandidates.Remove(r);
+
+            if (null != currentPart)
             {
-                if (r != nextPart)
-                {
-                    return;
-                }
+                nextCandidates.Remove(currentPart);
             }
 
             if (null != prevPart)
+            {
                 nextCandidates.Add(prevPart);
-
-            prevPart = currentPart;
-            currentPart = r;;
-
-            if (null != prevPart)
-            {
-                if (null != pool)
-                {
-                    pool.RemoveAllFromRoad(prevPart);
-                }
             }
+        }
+    }
 
-            nextCandidates.Remove(prevPart);
-            nextCandidates.Remove(currentPart);
+    private void UpdateRoadParts(RoadPart r)
+    {
+        prevPart = currentPart;
+        currentPart = r;
+    }
 
-            if (nextCandidates.Count > 0)
+    private void PlaceNextPart()
+    {
+        if (currentPart != null && nextPart != null)
+        {
+            nextPart.transform.position = currentPart.transform.position + new Vector3(0, 0, currentPart.partSize);
+        }
+    }
+
+    private void FillCollectibles()
+    {
+        if (null != pool && null != nextPart && null != data)
+        {
+            List<CollectiblePlace> places = nextPart.GetComponentsInChildren<CollectiblePlace>().ToList();
+
+            if (null != places)
             {
-                nextPart = nextCandidates[Random.Range(0, nextCandidates.Count)];
-
-                if (nextPart != null)
-                {
-                    nextPart.transform.position = currentPart.transform.position + new Vector3(0, 0, currentPart.partSize);
-
-                    if (null != pool)
+                if (places.Count > 0)
+                    if (data.GetHp() < 3) // FIXME someday
                     {
-                        List<CollectiblePlace> places = nextPart.GetComponentsInChildren<CollectiblePlace>().ToList();
-
-                        if (null != data)
+                        CollectiblePlace hpPlace = places[Random.Range(0, places.Count)];
+                        if (null != hpPlace)
                         {
-                            if (data.GetHp() < 3) // FIXME someday
-                            {
-                                CollectiblePlace hpPlace = places[Random.Range(0, places.Count)];
-                                if (null != hpPlace)
-                                {
-                                    pool.PlaceHp(hpPlace.transform.position, nextPart, currentPart);
-                                    places.Remove(hpPlace);
-                                }
-                            }
-
-                            if (Random.value < multChance)
-                            {
-                                CollectiblePlace multPlace = places[Random.Range(0, places.Count)];
-                                if (null != multPlace)
-                                {
-                                    pool.PlaceMultiplier(multPlace.transform.position + new Vector3(0, 0.05f, 0), nextPart, currentPart);
-                                    places.Remove(multPlace);
-                                }
-                            }
+                            pool.PlaceHp(hpPlace.transform.position, nextPart, currentPart);
+                            places.Remove(hpPlace);
                         }
+                    }
 
-                        foreach (var p in places)
+                if (places.Count > 0)
+                    if (Random.value < multChance)
+                    {
+                        CollectiblePlace multPlace = places[Random.Range(0, places.Count)];
+                        if (null != multPlace)
                         {
-                            float chance = Random.Range(MinChance, MaxChance); // WOW
-                            if (Random.value > chance) // MUCH RANDOM
-                            {
-                                pool.PlaceRandom(p.transform.position, nextPart);
-                            }
+                            pool.PlaceMultiplier(multPlace.transform.position + new Vector3(0, 0.05f, 0), nextPart, currentPart);
+                            places.Remove(multPlace);
                         }
+                    }
+
+                foreach (var p in places)
+                {
+                    float chance = Random.Range(MinChance, MaxChance); // WOW
+                    if (Random.value > chance) // MUCH RANDOM
+                    {
+                        pool.PlaceRandom(p.transform.position, nextPart);
                     }
                 }
             }

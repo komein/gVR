@@ -67,6 +67,11 @@ public class CollectiblePool : MonoBehaviour {
 
         return c;
     }
+
+    public void Batch()
+    {
+        StaticBatchingUtility.Combine(this.gameObject);
+    }
     
     public Collectible PlaceHp(Vector3 v, RoadPart r, RoadPart c)
     {

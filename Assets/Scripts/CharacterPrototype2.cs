@@ -282,7 +282,7 @@ public class CharacterPrototype2 : MonoBehaviour
         data.RestoreHp();
         data.Save();
 
-        SceneManager.LoadScene("prototypeSelectScene", LoadSceneMode.Single);
+        SceneManager.LoadScene("mainMenu", LoadSceneMode.Single);
 
         yield return null;
     }

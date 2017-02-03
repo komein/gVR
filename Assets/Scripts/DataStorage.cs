@@ -174,8 +174,9 @@ public class DataStorage : MonoBehaviour
         }
     }
 
-    void Awake ()
+    void Awake()
     {
+
         // singleton pattern
         if (instanceRef == null)
         {
@@ -196,6 +197,11 @@ public class DataStorage : MonoBehaviour
 
         RestoreHp();
         Load();
+    }
+
+    private void Start()
+    {
+        Screen.SetResolution(1280, 720, true);
     }
 
     public int GetCurrentLevel()
