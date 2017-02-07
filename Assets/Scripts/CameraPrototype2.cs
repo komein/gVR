@@ -10,7 +10,13 @@ public class CameraPrototype2 : MonoBehaviour
 
     public bool strafeCamera = false;
     public float strafeSpeed = 2f;
-    
+
+    private void Start()
+    {
+        if (null == ch)
+            ch = FindObjectOfType<CharacterPrototype2>();
+    }
+
     void Update()
     {
         if (ch == null)

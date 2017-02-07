@@ -39,7 +39,6 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
 
     public virtual void SetGazedAt(bool gazedAt)
     {
-        Debug.Log("gazed " + gazedAt);
         pressed = false;
         if (!isActiveButton)
             return;

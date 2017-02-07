@@ -22,8 +22,8 @@ public class InAppManager : MonoBehaviour, IStoreListener {
 		if (m_StoreController == null)
 		{
 			InitializePurchasing();
-		}
-	}
+        }
+    }
 
 	public void InitializePurchasing()
 	{

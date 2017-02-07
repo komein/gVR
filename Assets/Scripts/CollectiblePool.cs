@@ -29,7 +29,7 @@ public class CollectiblePool : MonoBehaviour {
             }
         }
 	}
-	
+
     private ScoreCollectible GetRandomCollectible()
     {
         if (null != pool)

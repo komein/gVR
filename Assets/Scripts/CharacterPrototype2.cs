@@ -1,11 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class CharacterPrototype2 : MonoBehaviour
 {
-    enum CatState { paused, cantMove, dying, moving };
+    enum CatState { paused, cantMove, jump, dying, moving };
     CatState currentState;
 
     protected Rigidbody rb;
@@ -28,8 +30,10 @@ public class CharacterPrototype2 : MonoBehaviour
     CharacterController ch;
     Animator anim;
 
-    List<Collider> grounds = new List<Collider>();
-    List<Collider> planeGrounds = new List<Collider>();
+    List<GroundContainer> highGrounds = new List<GroundContainer>();
+    List<GroundContainer> planeGrounds = new List<GroundContainer>();
+
+    Coroutine immobilizeCoroutine = null;
 
     SkinnedMeshRenderer mesh;
 
@@ -53,10 +57,12 @@ public class CharacterPrototype2 : MonoBehaviour
             rb = GetComponentInChildren<Rigidbody>();
         }
 
+        if (null == cam)
+            cam = Camera.main;
+
         ch = GetComponent<CharacterController>();
 
         StartCoroutine(StartRunning());
-
     }
 
     private IEnumerator StartRunning()
@@ -72,28 +78,31 @@ public class CharacterPrototype2 : MonoBehaviour
         {
             return;
         }
+        Vector3 pos = Vector3.zero;
 
-        switch(currentState)
+        switch (currentState)
         {
             case CatState.paused:
-                curSpeed = 0;
-                Vector3 pos = GetMoveVector();
                 MoveAndRotate(pos);
+                curSpeed = 0;
                 return;
             case CatState.dying:
             case CatState.cantMove:
                 curSpeed = 0;
                 SetIdleAnimation();
                 return;
+            case CatState.jump:
+                SetJumpAnimation();
+                return;
             case CatState.moving:
                 if (curSpeed < maxSpeed)
                 {
-                    curSpeed += Time.deltaTime * acceleration;
+                    curSpeed += Time.fixedDeltaTime * acceleration;
                 }
                 pos = GetMoveVector();
                 SetAnimation(pos);
                 MoveAndRotate(pos);
-                break;
+                return;
         }
 
     }
@@ -118,9 +127,30 @@ public class CharacterPrototype2 : MonoBehaviour
         {
             if (data.isAlive && currentState == CatState.moving)
             {
-                ch.SimpleMove(pos * Time.fixedDeltaTime);
+                Quaternion rot_ = Quaternion.identity;
 
-                Quaternion rot_ = planeGrounds.Count != 0 || grounds.Count == 0 ? Quaternion.identity : grounds[grounds.Count - 1].transform.rotation;
+                if (highGrounds.Count > 0)
+                {
+                    rot_ = highGrounds.Last().transform.rotation;
+                    rot_ = Quaternion.Euler(-rot_.eulerAngles.x, 0, 0);
+                    ch.SimpleMove((pos + (rot_ * pos * Mathf.Abs(-rot_.eulerAngles.x) / 360f)) * Time.fixedDeltaTime);
+                }
+                else
+                {
+                    if (planeGrounds.Count > 0)
+                    {
+                        rot_ = planeGrounds.Last().transform.rotation;
+                        if (!planeGrounds.Last().rotationCrutch)
+                        {
+                            rot_ = Quaternion.Euler(rot_.eulerAngles.x, 0, 0);
+                        }
+                        else
+                        {
+                            rot_ = Quaternion.Euler(rot_.eulerAngles.x - 90f, 0, 0);
+                        }
+                    }
+                    ch.SimpleMove(pos * Time.fixedDeltaTime);
+                }
 
                 if (pos != Vector3.zero && curSpeed > 0)
                 {
@@ -134,20 +164,39 @@ public class CharacterPrototype2 : MonoBehaviour
         ch.SimpleMove(Vector3.zero);
     }
 
+    private Quaternion GetNormal()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, -Vector3.up, out hit))
+        {
+            Debug.DrawLine(hit.point, hit.normal + hit.point, Color.red, 5f);
+            return Quaternion.FromToRotation(Vector3.up, hit.normal);
+        }
+
+        return Quaternion.identity;
+    }
+
+    public void Jump()
+    {
+        immobilizeCoroutine = StartCoroutine(JumpCoroutine());
+        MakeKnockBack(Vector3.forward, 2, 0, false);
+    }
+
     private void SetAnimation(Vector3 pos)
     {
         if (null != anim)
         {
-            if (planeGrounds.Count == 0 && grounds.Count == 0)
+            if (planeGrounds.Count == 0 && highGrounds.Count == 0)
             {
-                anim.SetBool("jumping", true);
-                anim.speed = 1;
+                SetJumpAnimation();
             }
             else
             {
                 anim.SetBool("jumping", false);
                 float d = Vector3.Distance(Vector3.zero, pos);
                 anim.SetFloat("speed", d);
+
+                anim.speed = 1f;
             }
         }
     }
@@ -158,6 +207,17 @@ public class CharacterPrototype2 : MonoBehaviour
         {
             anim.SetBool("jumping", false);
             anim.SetFloat("speed", 0f);
+
+            anim.speed = 1f;
+        }
+    }
+
+    private void SetJumpAnimation()
+    {
+        if (null != anim)
+        {
+            anim.SetBool("jumping", true);
+            anim.speed = 0.33f;
         }
     }
 
@@ -171,28 +231,53 @@ public class CharacterPrototype2 : MonoBehaviour
         {
             other.GetComponent<Collectible>().Collect();
         }
-        else if (other.gameObject.GetComponent<Ground>() != null)
+        else if (other.gameObject.GetComponent<HighGround>() != null)
         {
-            grounds.Add(other);
+            GroundContainer cont = other.GetComponent<GroundContainer>();
+            if (null == cont)
+                cont = other.GetComponentInParent<GroundContainer>();
+            if (null != cont)
+                highGrounds.Add(cont);
         }
         else if (other.gameObject.GetComponent<PlaneGround>() != null)
         {
-            if (!planeGrounds.Contains(other))
-                planeGrounds.Add(other);
+            if (null != immobilizeCoroutine)
+            {
+                StopCoroutine(immobilizeCoroutine);
+
+                ch.enabled = true;
+                currentState = CatState.moving;
+
+                immobilizeCoroutine = null;
+            }
+
+            GroundContainer cont = other.GetComponent<GroundContainer>();
+            if (null == cont)
+                cont = other.GetComponentInParent<GroundContainer>();
+            if (null != cont)
+                if (!planeGrounds.Contains(cont))
+                    planeGrounds.Add(cont);
         }
     }
     
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.GetComponent<Ground>() != null)
+
+        GroundContainer cont = other.GetComponent<GroundContainer>();
+        if (null == cont)
+            cont = other.GetComponentInParent<GroundContainer>();
+
+        if (other.gameObject.GetComponent<HighGround>() != null)
         {
-            grounds.Remove(other);
+            highGrounds.RemoveAll(p => p == cont);
+            if (highGrounds.Count == 0)
+                Jump();
         }
 
         else if (other.gameObject.GetComponent<PlaneGround>() != null)
         {
-            planeGrounds.Remove(other);
+            planeGrounds.RemoveAll(p => p == cont);
         }
     }
 
@@ -219,22 +304,23 @@ public class CharacterPrototype2 : MonoBehaviour
             }
             else
             {
-                StartCoroutine(Immobilize());
+                immobilizeCoroutine = StartCoroutine(ImmobilizeCoroutine());
             }
 
-            MakeKnockBack(v);
+            MakeKnockBack(v, 2, 2);
         }
 
     }
 
-    private void MakeKnockBack(Vector3 v)
+    private void MakeKnockBack(Vector3 v, float forceUp, float forceHor, bool resetSpeed = true)
     {
-        v = v.normalized * 2;
-        v.y = 2;
+        v = v.normalized * forceHor;
+        v.y = forceUp;
 
         rb.AddForce(v, ForceMode.Impulse);
 
-        curSpeed = 0;
+        if (resetSpeed)
+            curSpeed = 0;
     }
 
     public void TakeDamage()
@@ -262,11 +348,22 @@ public class CharacterPrototype2 : MonoBehaviour
         }
     }
 
-    private IEnumerator Immobilize()
+    private IEnumerator ImmobilizeCoroutine()
     {
         currentState = CatState.cantMove;
         ch.enabled = false;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
+        ch.enabled = true;
+        currentState = CatState.moving;
+
+        yield return null;
+    }
+
+    private IEnumerator JumpCoroutine()
+    {
+        currentState = CatState.jump;
+        ch.enabled = false;
+        yield return new WaitForSeconds(5f);
         ch.enabled = true;
         currentState = CatState.moving;
 

@@ -67,19 +67,6 @@ public class SceneSelecter : MonoBehaviour, IGvrGazeResponder
         GvrViewer.Instance.VRModeEnabled = !GvrViewer.Instance.VRModeEnabled;
     }
 
-    public void ToggleDistortionCorrection()
-    {
-        GvrViewer.Instance.DistortionCorrectionEnabled =
-          !GvrViewer.Instance.DistortionCorrectionEnabled;
-    }
-
-#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
-    public void ToggleDirectRender()
-    {
-        GvrViewer.Controller.directRender = !GvrViewer.Controller.directRender;
-    }
-#endif
-
     protected virtual void Function()
     {
         DataStorage scoreStorage = FindObjectOfType<DataStorage>();

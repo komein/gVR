@@ -18,7 +18,6 @@ public class ObstacleController : MonoBehaviour
         character = FindObjectOfType<CharacterPrototype2>();
 
         //ToggleObstaclesGhost(true);
-
     }
 
     private void CrushIntoObstacle(Vector3 v)

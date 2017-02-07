@@ -23,8 +23,12 @@ public class CharacterPrototype1 : MonoBehaviour {
 
     Vector3 targetVec = Vector3.zero;
 
+    Camera cam;
+
     private void Start()
     {
+        cam = Camera.main;
+
         rb = GetComponent<Rigidbody>();
         if (null == rb)
             rb = GetComponentInChildren<Rigidbody>();
@@ -56,6 +60,7 @@ public class CharacterPrototype1 : MonoBehaviour {
     }
     */
     void Update () {
+        /*
         if (movMode == MovingMode.inertial)
         {
             if (curSpeed < speed)
@@ -68,28 +73,28 @@ public class CharacterPrototype1 : MonoBehaviour {
         //Debug.Log(target);
 
         if (null != target)
-        {
-            Vector3 gotoPos = gim.GetIntersectionPosition();
+        {/*
+            Vector3 gotoPos = gim.GetIntersectionPosition(cam);
             Vector3 movePos = new Vector3(gotoPos.x, gameObject.transform.position.y, gotoPos.z);
 
             RaycastHit hit;
             Physics.Raycast(gameObject.transform.position, gotoPos - gameObject.transform.position, out hit, Mathf.Infinity, LayerMask.NameToLayer("TransparentFX"));
-
+            */
             //Debug.DrawLine(gameObject.transform.position, movePos, Color.yellow, Time.fixedDeltaTime);
 
             //LineRenderer lr = GetComponent<LineRenderer>();
 
 
             //DrawLine(GetComponent<LineRenderer>(), gameObject.transform.position, hit.point, Color.yellow, 0.1f);
-
+            /*
             if (hit.collider == null)
             {
                 ResetTargetVector();
 
                 GetComponent<Renderer>().material.color = UNSEE_COLOR;
                 return;
-            }
-
+            }*/
+            /*
             if (!Object.Equals(hit.collider.gameObject, target))
             {
                 ResetTargetVector();
@@ -123,7 +128,7 @@ public class CharacterPrototype1 : MonoBehaviour {
                     rb.MovePosition(Vector3.Lerp(gameObject.transform.position, movePos, speed * Time.deltaTime));
                 }
             }
-        }
+        }*/
     }
 
     private void FixedUpdate()

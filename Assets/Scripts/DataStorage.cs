@@ -140,7 +140,7 @@ public class DataStorage : MonoBehaviour
     public InAppManager inAppManagerPrefab;
 
     private static DataStorage instanceRef;
-    private InAppManager manager;
+    private static InAppManager manager;
 
     public Game savedGame;
 
@@ -191,6 +191,7 @@ public class DataStorage : MonoBehaviour
         if (null == manager)
         {
             manager = Instantiate(inAppManagerPrefab);
+            DontDestroyOnLoad(manager);
         }
 
         multiplier = 1;
@@ -201,7 +202,7 @@ public class DataStorage : MonoBehaviour
 
     private void Start()
     {
-        Screen.SetResolution(1280, 720, true);
+       // Screen.SetResolution(1280, 720, true);
     }
 
     public int GetCurrentLevel()

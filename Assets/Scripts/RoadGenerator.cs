@@ -32,7 +32,7 @@ public class RoadGenerator : MonoBehaviour
         {
             r.SetDelegate(RoadTriggered);
         }
-	}
+    }
 
     void RoadTriggered(RoadPart r)
     {
