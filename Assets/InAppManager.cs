@@ -129,7 +129,9 @@ public class InAppManager : MonoBehaviour, IStoreListener {
 		if (String.Equals(args.purchasedProduct.definition.id, pLevels, StringComparison.Ordinal))
 		{
             if (null != successAction)
+            {
                 successAction();
+            }
 		}
 		return PurchaseProcessingResult.Complete;
 	}
@@ -138,7 +140,9 @@ public class InAppManager : MonoBehaviour, IStoreListener {
 	{
 		Debug.Log(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}", product.definition.storeSpecificId, failureReason));
         if (null != failAction)
+        {
             failAction();
+        }
 	}
 
     public bool IsProductBought(string id)
