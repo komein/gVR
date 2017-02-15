@@ -379,4 +379,13 @@ public class DataStorage : MonoBehaviour
 
         manager.SetActions(setSuccessMessage, setFailMessage);
     }
+
+    void LateUpdate()
+    {
+        GvrViewer.Instance.UpdateState();
+        if (GvrViewer.Instance.BackButtonPressed)
+        {
+            Application.Quit();
+        }
+    }
 }

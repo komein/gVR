@@ -946,8 +946,6 @@ ModelImporter:
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -974,13 +972,13 @@ ModelImporter:
     weldVertices: 1
     secondaryUVAngleDistortion: 1
     secondaryUVAreaDistortion: 1
-    secondaryUVHardAngle: 32
-    secondaryUVPackMargin: 32
+    secondaryUVHardAngle: 60
+    secondaryUVPackMargin: 16
     useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 24
-    normalImportMode: 1
-    tangentImportMode: 3
+    normalImportMode: 0
+    tangentImportMode: 0
   importAnimation: 1
   copyAvatar: 0
   humanDescription:

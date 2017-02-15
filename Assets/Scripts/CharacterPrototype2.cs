@@ -26,8 +26,7 @@ public class CharacterPrototype2 : MonoBehaviour
     public bool hasCompensatingForce = false;
  
     float curSpeed = 0f;
-
-    CharacterController ch;
+    
     Animator anim;
 
     List<GroundContainer> highGrounds = new List<GroundContainer>();
@@ -41,7 +40,7 @@ public class CharacterPrototype2 : MonoBehaviour
 
     Coroutine c;
 
-    
+    Vector3 gravity;
 
     private void Start()
     {
@@ -60,9 +59,9 @@ public class CharacterPrototype2 : MonoBehaviour
         if (null == cam)
             cam = Camera.main;
 
-        ch = GetComponent<CharacterController>();
-
         StartCoroutine(StartRunning());
+
+        gravity = Physics.gravity;
     }
 
     private IEnumerator StartRunning()
@@ -80,31 +79,83 @@ public class CharacterPrototype2 : MonoBehaviour
         }
         Vector3 pos = Vector3.zero;
 
+        SetGravity();
+        SelectCatState();
+
         switch (currentState)
         {
             case CatState.paused:
-                MoveAndRotate(pos);
-                curSpeed = 0;
-                return;
             case CatState.dying:
             case CatState.cantMove:
+
                 curSpeed = 0;
                 SetIdleAnimation();
+
                 return;
+
             case CatState.jump:
+
+                pos = GetMoveVector();
+                MoveAndRotate(pos);
                 SetJumpAnimation();
+
                 return;
+
             case CatState.moving:
+
                 if (curSpeed < maxSpeed)
                 {
                     curSpeed += Time.fixedDeltaTime * acceleration;
                 }
                 pos = GetMoveVector();
-                SetAnimation(pos);
                 MoveAndRotate(pos);
+
+                SetAnimation(pos);
+
                 return;
+
         }
 
+    }
+
+    private void SelectCatState()
+    {
+        switch (currentState)
+        {
+            case CatState.paused:
+            case CatState.dying:
+            case CatState.cantMove:
+                return;
+            case CatState.jump:
+            case CatState.moving:
+                break;
+        }
+
+        if (highGrounds.Count == 0 && planeGrounds.Count == 0)
+        {
+            currentState = CatState.jump;
+            return;
+        }
+        else
+        {
+            currentState = CatState.moving;
+        }
+    }
+
+    private void SetGravity()
+    {
+        switch (currentState)
+        {
+            case CatState.paused:
+            case CatState.dying:
+            case CatState.cantMove:
+            case CatState.jump:
+                Physics.gravity = gravity;
+                return;
+            case CatState.moving:
+                Physics.gravity = Vector3.zero;
+                return;
+        }
     }
 
     private Vector3 GetMoveVector()
@@ -125,43 +176,56 @@ public class CharacterPrototype2 : MonoBehaviour
     {
         if (null != data)
         {
-            if (data.isAlive && currentState == CatState.moving)
+
+            if (data.isAlive)
             {
-                Quaternion rot_ = Quaternion.identity;
 
-                if (highGrounds.Count > 0)
+
+                if (currentState == CatState.moving)
                 {
-                    rot_ = highGrounds.Last().transform.rotation;
-                    rot_ = Quaternion.Euler(-rot_.eulerAngles.x, 0, 0);
-                    ch.SimpleMove((pos + (rot_ * pos * Mathf.Abs(-rot_.eulerAngles.x) / 360f)) * Time.fixedDeltaTime);
-                }
-                else
-                {
-                    if (planeGrounds.Count > 0)
+                    Quaternion rot_ = Quaternion.identity;
+
+                    if (highGrounds.Count > 0)
                     {
-                        rot_ = planeGrounds.Last().transform.rotation;
-                        if (!planeGrounds.Last().rotationCrutch)
-                        {
-                            rot_ = Quaternion.Euler(rot_.eulerAngles.x, 0, 0);
-                        }
-                        else
-                        {
-                            rot_ = Quaternion.Euler(rot_.eulerAngles.x - 90f, 0, 0);
-                        }
+                        rot_ = highGrounds.Last().transform.rotation;
+                        rot_ = Quaternion.Euler(-rot_.eulerAngles.x, 0, 0);
+
                     }
-                    ch.SimpleMove(pos * Time.fixedDeltaTime);
-                }
+                    else
+                    {
+                        if (planeGrounds.Count > 0)
+                        {
+                            rot_ = planeGrounds.Last().transform.rotation;
+                            if (!planeGrounds.Last().rotationCrutch)
+                            {
+                                rot_ = Quaternion.Euler(rot_.eulerAngles.x, 0, 0);
+                            }
+                            else
+                            {
+                                rot_ = Quaternion.Euler(rot_.eulerAngles.x - 90f, 0, 0);
+                            }
+                        }
 
-                if (pos != Vector3.zero && curSpeed > 0)
+                        //rb.velocity = pos * Time.fixedDeltaTime;
+                    }
+
+                    rb.velocity = rot_ * pos * Time.fixedDeltaTime;
+
+                    if (pos != Vector3.zero && curSpeed > 0)
+                    {
+                        transform.rotation = Quaternion.Lerp(transform.rotation, rot_ * Quaternion.LookRotation(pos), Time.fixedDeltaTime * 5);
+                    }
+
+                    return;
+                }
+                else if (currentState == CatState.jump)
                 {
-                    transform.rotation = Quaternion.Lerp(transform.rotation, rot_ * Quaternion.LookRotation(pos), Time.fixedDeltaTime * 20);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, Time.fixedDeltaTime);
                 }
-
-                return;
             }
-        }
 
-        ch.SimpleMove(Vector3.zero);
+            
+        }
     }
 
     private Quaternion GetNormal()
@@ -179,7 +243,7 @@ public class CharacterPrototype2 : MonoBehaviour
     public void Jump()
     {
         immobilizeCoroutine = StartCoroutine(JumpCoroutine());
-        MakeKnockBack(Vector3.forward, 2, 0, false);
+        MakeKnockBack(Vector3.forward, 5, 0, false);
     }
 
     private void SetAnimation(Vector3 pos)
@@ -244,8 +308,7 @@ public class CharacterPrototype2 : MonoBehaviour
             if (null != immobilizeCoroutine)
             {
                 StopCoroutine(immobilizeCoroutine);
-
-                ch.enabled = true;
+                
                 currentState = CatState.moving;
 
                 immobilizeCoroutine = null;
@@ -272,7 +335,10 @@ public class CharacterPrototype2 : MonoBehaviour
         {
             highGrounds.RemoveAll(p => p == cont);
             if (highGrounds.Count == 0)
+            {
+                rb.velocity = new Vector3(0, 0, rb.velocity.z);
                 Jump();
+            }
         }
 
         else if (other.gameObject.GetComponent<PlaneGround>() != null)
@@ -351,9 +417,7 @@ public class CharacterPrototype2 : MonoBehaviour
     private IEnumerator ImmobilizeCoroutine()
     {
         currentState = CatState.cantMove;
-        ch.enabled = false;
         yield return new WaitForSeconds(1.5f);
-        ch.enabled = true;
         currentState = CatState.moving;
 
         yield return null;
@@ -362,9 +426,7 @@ public class CharacterPrototype2 : MonoBehaviour
     private IEnumerator JumpCoroutine()
     {
         currentState = CatState.jump;
-        ch.enabled = false;
         yield return new WaitForSeconds(5f);
-        ch.enabled = true;
         currentState = CatState.moving;
 
         yield return null;
@@ -373,7 +435,6 @@ public class CharacterPrototype2 : MonoBehaviour
     private IEnumerator Die()
     {
         currentState = CatState.dying;
-        ch.enabled = false;
         yield return new WaitForSeconds(4f);
 
         data.RestoreHp();
