@@ -134,7 +134,6 @@ public class CharacterPrototype2 : MonoBehaviour
         if (highGrounds.Count == 0 && planeGrounds.Count == 0)
         {
             currentState = CatState.jump;
-            return;
         }
         else
         {

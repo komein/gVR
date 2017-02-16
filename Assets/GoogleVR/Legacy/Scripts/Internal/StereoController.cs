@@ -283,6 +283,7 @@ public class StereoController : MonoBehaviour {
     GameObject go = new GameObject(nm);
     go.transform.SetParent(transform, false);
     go.AddComponent<Camera>().enabled = false;
+    go.AddComponent<FlareLayer>();
     var GvrEye = go.AddComponent<GvrEye>();
     GvrEye.eye = eye;
     GvrEye.CopyCameraAndMakeSideBySide(this);
