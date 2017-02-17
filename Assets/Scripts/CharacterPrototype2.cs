@@ -61,7 +61,8 @@ public class CharacterPrototype2 : MonoBehaviour
 
         StartCoroutine(StartRunning());
 
-        gravity = Physics.gravity;
+        rb.useGravity = true;
+        //gravity = Physics.gravity;
     }
 
     private IEnumerator StartRunning()
@@ -149,10 +150,12 @@ public class CharacterPrototype2 : MonoBehaviour
             case CatState.dying:
             case CatState.cantMove:
             case CatState.jump:
-                Physics.gravity = gravity;
+                rb.useGravity = true;
+                //Physics.gravity = gravity;
                 return;
             case CatState.moving:
-                Physics.gravity = Vector3.zero;
+                rb.useGravity = false;
+                //Physics.gravity = Vector3.zero;
                 return;
         }
     }
@@ -286,6 +289,7 @@ public class CharacterPrototype2 : MonoBehaviour
 
     protected void OnTriggerEnter(Collider other)
     {
+        Debug.Log("enter " + other.name);
         if (other.GetComponent<Obstacle>() != null)
         {
             other.gameObject.SetActive(false);
@@ -325,7 +329,7 @@ public class CharacterPrototype2 : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-
+        Debug.Log("exit " + other.name);
         GroundContainer cont = other.GetComponent<GroundContainer>();
         if (null == cont)
             cont = other.GetComponentInParent<GroundContainer>();

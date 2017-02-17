@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 9ff314d306eba3b4ba007f40e34f28e3
 ModelImporter:
-  serializedVersion: 18
+  serializedVersion: 19
   fileIDToRecycleName:
     100000: House 1 Snowy
     100002: House 2 Snowy
@@ -387,12 +387,18 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    animationImportErrors: "Invalid Avatar Rig Configuration. Missing or invalid transform:\n\tRequired
+      human bone 'Hips' not found\n"
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
     animationCompression: 3
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
     clipAnimations: []
@@ -404,7 +410,7 @@ ModelImporter:
     addColliders: 0
     importBlendShapes: 1
     swapUVChannels: 0
-    generateSecondaryUV: 0
+    generateSecondaryUV: 1
     useFileUnits: 1
     optimizeMeshForGPU: 1
     keepQuads: 0
@@ -416,229 +422,234 @@ ModelImporter:
     useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 4
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 2
     human: []
     skeleton:
     - name: Low Poly Christmas(Clone)
+      parentName: 
       position: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0, w: 1}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: House 1 Snowy
-      position: {x: 42.7519302, y: .595538914, z: 4.35155201}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 42.75193, y: 0.5955389, z: 4.351552}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: House 2 Snowy
-      position: {x: 45.8728981, y: .595538914, z: 4.35155201}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 45.8729, y: 0.5955389, z: 4.351552}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: House 3 Snowy
-      position: {x: 49.1775589, y: .595538914, z: 4.35155201}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 49.17756, y: 0.5955389, z: 4.351552}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: House 4 Snowy
-      position: {x: 43.0750465, y: .595538914, z: .0851309374}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 43.075047, y: 0.5955389, z: 0.08513094}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: House 5 Snowy
-      position: {x: 45.9225235, y: .595538914, z: .19310379}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 45.922523, y: 0.5955389, z: 0.19310379}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: House 6 Snowy
-      position: {x: 48.8544769, y: .595538914, z: .0851304382}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 48.854477, y: 0.5955389, z: 0.08513044}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: House 7 Snowy
-      position: {x: 42.9611702, y: 1.01802278, z: -4.30700302}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 42.96117, y: 1.0180228, z: -4.307003}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: House 8 Snowy
-      position: {x: 45.821228, y: 1.01802278, z: -4.30700302}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 45.821228, y: 1.0180228, z: -4.307003}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: House 9 Snowy
-      position: {x: 48.7122765, y: .994107246, z: -4.40916824}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 48.712276, y: 0.99410725, z: -4.4091682}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Present 1
-      position: {x: 31.0834045, y: .479466677, z: .140345335}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 31.083405, y: 0.47946668, z: 0.14034534}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Present 2
-      position: {x: 31.0824356, y: .840453625, z: -1.31152177}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 31.082436, y: 0.8404536, z: -1.3115218}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Present 3
-      position: {x: 33.385128, y: .405468494, z: .176140547}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 33.385128, y: 0.4054685, z: 0.17614055}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Present 4
-      position: {x: 33.385128, y: .405468494, z: -1.31221056}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 33.385128, y: 0.4054685, z: -1.3122106}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Present 5
-      position: {x: 35.7851219, y: .345178425, z: .215736389}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 35.785122, y: 0.34517843, z: 0.21573639}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Present 6
-      position: {x: 35.7851219, y: .345178425, z: -1.17949963}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 35.785122, y: 0.34517843, z: -1.1794996}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Present 7
-      position: {x: 38.0093727, y: .405468494, z: .176140547}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 38.009373, y: 0.4054685, z: 0.17614055}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Present 8
-      position: {x: 38.0093727, y: .405468494, z: -1.31221056}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 38.009373, y: 0.4054685, z: -1.3122106}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Reindeer
-      position: {x: -28.4382515, y: 0, z: 0}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: -28.438251, y: 0, z: 0}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Santa
-      position: {x: -19.0167255, y: 4.01195955, z: 0}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: -19.016726, y: 4.0119596, z: 0}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Sleigh
-      position: {x: -10.1370506, y: .686234832, z: .751372337}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: -10.137051, y: 0.68623483, z: 0.75137234}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Snowman 1
-      position: {x: 18.8672771, y: 1.48271358, z: -1.23177183}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 18.867277, y: 1.4827136, z: -1.2317718}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Snowman 2
-      position: {x: 21.7966843, y: 1.80044663, z: -1.30813098}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 21.796684, y: 1.8004466, z: -1.308131}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Snowman 3
-      position: {x: 25.0451908, y: 1.80044663, z: -1.30813098}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 25.04519, y: 1.8004466, z: -1.308131}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Snowman 4
-      position: {x: 28.1842499, y: 1.80044663, z: -1.30813098}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 28.18425, y: 1.8004466, z: -1.308131}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 1
-      position: {x: -1.31815434, y: 1.43282437, z: -13.3492966}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: -1.3181543, y: 1.4328244, z: -13.349297}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 2
-      position: {x: 3.3532114, y: 1.43282437, z: -13.3492966}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 3.3532114, y: 1.4328244, z: -13.349297}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 3
-      position: {x: 8.18021202, y: 1.43282437, z: -13.3492966}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 8.180212, y: 1.4328244, z: -13.349297}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 4
-      position: {x: 13.0331497, y: 1.43282437, z: -13.3492966}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 13.03315, y: 1.4328244, z: -13.349297}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 5
-      position: {x: -1.33136034, y: 1.43282437, z: -8.70386982}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: -1.3313603, y: 1.4328244, z: -8.70387}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 6
-      position: {x: 3.34592462, y: 4.8644104, z: -8.70783997}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 3.3459246, y: 4.8644104, z: -8.70784}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 7
-      position: {x: 8.18105602, y: 4.8644104, z: -8.70357227}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 8.181056, y: 4.8644104, z: -8.703572}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 8
-      position: {x: 13.0309544, y: 1.435426, z: -8.70493698}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 13.030954, y: 1.435426, z: -8.704937}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 9
-      position: {x: -1.31815434, y: 2.07234907, z: -4.33867741}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: -1.3181543, y: 2.072349, z: -4.3386774}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 10
-      position: {x: 3.3532114, y: 2.07234907, z: -4.33867741}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 3.3532114, y: 2.072349, z: -4.3386774}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 11
-      position: {x: 8.18021202, y: 2.07234907, z: -4.33867741}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 8.180212, y: 2.072349, z: -4.3386774}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 12
-      position: {x: 13.0331497, y: 2.07234907, z: -4.33867741}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 13.03315, y: 2.072349, z: -4.3386774}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 13
-      position: {x: -1.33136034, y: 2.07234907, z: .306748211}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: -1.3313603, y: 2.072349, z: 0.3067482}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 14
-      position: {x: 3.34592462, y: 5.50393486, z: .302778542}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 3.3459246, y: 5.503935, z: 0.30277854}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 15
-      position: {x: 8.18105602, y: 5.50393486, z: .307045937}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 8.181056, y: 5.503935, z: 0.30704594}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Tree 16
-      position: {x: 13.0309544, y: 2.0749507, z: .305680931}
-      rotation: {x: -4.3297803e-17, y: .707106769, z: .707106888, w: -4.32978096e-17}
+      parentName: 
+      position: {x: 13.030954, y: 2.0749507, z: 0.30568093}
+      rotation: {x: -4.3297803e-17, y: 0.70710677, z: 0.7071069, w: -4.329781e-17}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 3
+  humanoidOversampling: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

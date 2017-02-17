@@ -1,0 +1,717 @@
+fileFormatVersion: 2
+guid: 517ac01a489c52f4b84f6bbf65d92c72
+timeCreated: 1487330033
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: 1M Black Car
+    100002: 1M Black Mini Car
+    100004: 1M Black Truck
+    100006: 1M Blue Car
+    100008: 1M Blue Mini Car
+    100010: 1M Blue Truck
+    100012: 1M Green Car
+    100014: 1M Green Mini Car
+    100016: 1M Green Truck
+    100018: 1M Grey Car
+    100020: 1M Orange Mini Car
+    100022: 1M Orange Truck
+    100024: 1M Purple Mini Car
+    100026: 1M Purple Truck
+    100028: 1M Red Car
+    100030: 1M Red Mini Car
+    100032: 1M Red Truck
+    100034: 1M White Car
+    100036: 1M White Mini Car
+    100038: 1M White Truck
+    100040: 1M Yellow Car
+    100042: Big Dumpster
+    100044: Black Car
+    100046: Black Mini Car
+    100048: Black Truck
+    100050: Blue Car
+    100052: Blue Mini Car
+    100054: Blue Truck
+    100056: Car Back Wheels
+    100058: Car Left Front Wheel
+    100060: Car Right Front Wheel
+    100062: Cardbox
+    100064: Concrete Support Pillar Size 1
+    100066: Concrete Support Pillar Size 2
+    100068: Concrete Support Pillar Size 3
+    100070: Concrete Support Pillar Size 4
+    100072: Concrete Support Pillar Size 5
+    100074: Concrete Support Pillar Size 6
+    100076: Concrete Support Pillar Slope Size 1
+    100078: Concrete Support Pillar Slope Size 2
+    100080: Concrete Support Pillar Slope Size 3
+    100082: Concrete Support Pillar Slope Size 4
+    100084: Concrete Support Pillar Slope Size 5
+    100086: Concrete Support Pillar Slope Size 6
+    100088: Construction Sign
+    100090: Corner Block Type 1
+    100092: Corner Block Type 2
+    100094: Dumpster
+    100096: Firehydrant
+    100098: Green Car
+    100100: Green Mini Car
+    100102: Green Truck
+    100104: Grey Car
+    100106: //RootNode
+    100108: Orange Mini Car
+    100110: Orange Truck
+    100112: Purple Mini Car
+    100114: Purple Truck
+    100116: Racing Track Example 1
+    100118: Red Car
+    100120: Red Mini Car
+    100122: Red Truck
+    100124: Road
+    100126: Road Block 1
+    100128: Road Block 2
+    100130: Road Block 3
+    100132: Road Curved Slope
+    100134: Road Example 1
+    100136: Road Side
+    100138: Road Slope
+    100140: Road Turn Stripe 1
+    100142: Road Turn Stripe 2
+    100144: Road Type 1 Corner 1
+    100146: Road Type 1 Corner 2
+    100148: Road Type 1 Corner 3
+    100150: Road Type 1 Curved Slope Left
+    100152: Road Type 1 Curved Slope Right
+    100154: Road Type 1 Curved Stripeless Slope Left
+    100156: Road Type 1 Curved Stripeless Slope Right
+    100158: Road Type 1 Side
+    100160: Road Type 1 Slope Left
+    100162: Road Type 1 Slope Right
+    100164: Road Type 1 Stripeless Side
+    100166: Road Type 1 Stripeless Slope Left
+    100168: Road Type 1 Stripeless Slope Right
+    100170: Road Type 2 Corner 1
+    100172: Road Type 2 Corner 2
+    100174: Road Type 2 Corner 3
+    100176: Road Type 2 Curved Slope Left
+    100178: Road Type 2 Curved Slope Right
+    100180: Road Type 2 Side
+    100182: Road Type 2 Slope Left
+    100184: Road Type 2 Slope Right
+    100186: Road Type 2 Stripeless Side
+    100188: Road Type 3 Bump
+    100190: Road Type 3 Corner 1
+    100192: Road Type 3 Corner 2
+    100194: Road Type 3 Corner 3
+    100196: Road Type 3 Curved Slope Left
+    100198: Road Type 3 Curved Slope Right
+    100200: Road Type 3 Dent
+    100202: Road Type 3 Side
+    100204: Road Type 3 Slope Left
+    100206: Road Type 3 Slope Right
+    100208: Road Type 3 Striped Curved Slope Right
+    100210: Road Type 3 Stripeless
+    100212: Road Type 3 Stripeless Curved Slope Left
+    100214: Road Type 3 Stripeless Slope Left
+    100216: Road Type 3 Stripeless Slope Right
+    100218: Sign 1
+    100220: Sign 2
+    100222: Sign 3
+    100224: Sign 4
+    100226: Sign 5
+    100228: Street Cone
+    100230: Street Light Off
+    100232: Street Light On
+    100234: Streetlight green
+    100236: Streetlight red
+    100238: Streetlight yellow
+    100240: Trashcan
+    100242: Trashcan Lid
+    100244: Water Barrel 1
+    100246: Water Barrel 2
+    100248: Water Barrel 3
+    100250: White Car
+    100252: White Mini Car
+    100254: White Truck
+    100256: Yellow Car
+    400000: 1M Black Car
+    400002: 1M Black Mini Car
+    400004: 1M Black Truck
+    400006: 1M Blue Car
+    400008: 1M Blue Mini Car
+    400010: 1M Blue Truck
+    400012: 1M Green Car
+    400014: 1M Green Mini Car
+    400016: 1M Green Truck
+    400018: 1M Grey Car
+    400020: 1M Orange Mini Car
+    400022: 1M Orange Truck
+    400024: 1M Purple Mini Car
+    400026: 1M Purple Truck
+    400028: 1M Red Car
+    400030: 1M Red Mini Car
+    400032: 1M Red Truck
+    400034: 1M White Car
+    400036: 1M White Mini Car
+    400038: 1M White Truck
+    400040: 1M Yellow Car
+    400042: Big Dumpster
+    400044: Black Car
+    400046: Black Mini Car
+    400048: Black Truck
+    400050: Blue Car
+    400052: Blue Mini Car
+    400054: Blue Truck
+    400056: Car Back Wheels
+    400058: Car Left Front Wheel
+    400060: Car Right Front Wheel
+    400062: Cardbox
+    400064: Concrete Support Pillar Size 1
+    400066: Concrete Support Pillar Size 2
+    400068: Concrete Support Pillar Size 3
+    400070: Concrete Support Pillar Size 4
+    400072: Concrete Support Pillar Size 5
+    400074: Concrete Support Pillar Size 6
+    400076: Concrete Support Pillar Slope Size 1
+    400078: Concrete Support Pillar Slope Size 2
+    400080: Concrete Support Pillar Slope Size 3
+    400082: Concrete Support Pillar Slope Size 4
+    400084: Concrete Support Pillar Slope Size 5
+    400086: Concrete Support Pillar Slope Size 6
+    400088: Construction Sign
+    400090: Corner Block Type 1
+    400092: Corner Block Type 2
+    400094: Dumpster
+    400096: Firehydrant
+    400098: Green Car
+    400100: Green Mini Car
+    400102: Green Truck
+    400104: Grey Car
+    400106: //RootNode
+    400108: Orange Mini Car
+    400110: Orange Truck
+    400112: Purple Mini Car
+    400114: Purple Truck
+    400116: Racing Track Example 1
+    400118: Red Car
+    400120: Red Mini Car
+    400122: Red Truck
+    400124: Road
+    400126: Road Block 1
+    400128: Road Block 2
+    400130: Road Block 3
+    400132: Road Curved Slope
+    400134: Road Example 1
+    400136: Road Side
+    400138: Road Slope
+    400140: Road Turn Stripe 1
+    400142: Road Turn Stripe 2
+    400144: Road Type 1 Corner 1
+    400146: Road Type 1 Corner 2
+    400148: Road Type 1 Corner 3
+    400150: Road Type 1 Curved Slope Left
+    400152: Road Type 1 Curved Slope Right
+    400154: Road Type 1 Curved Stripeless Slope Left
+    400156: Road Type 1 Curved Stripeless Slope Right
+    400158: Road Type 1 Side
+    400160: Road Type 1 Slope Left
+    400162: Road Type 1 Slope Right
+    400164: Road Type 1 Stripeless Side
+    400166: Road Type 1 Stripeless Slope Left
+    400168: Road Type 1 Stripeless Slope Right
+    400170: Road Type 2 Corner 1
+    400172: Road Type 2 Corner 2
+    400174: Road Type 2 Corner 3
+    400176: Road Type 2 Curved Slope Left
+    400178: Road Type 2 Curved Slope Right
+    400180: Road Type 2 Side
+    400182: Road Type 2 Slope Left
+    400184: Road Type 2 Slope Right
+    400186: Road Type 2 Stripeless Side
+    400188: Road Type 3 Bump
+    400190: Road Type 3 Corner 1
+    400192: Road Type 3 Corner 2
+    400194: Road Type 3 Corner 3
+    400196: Road Type 3 Curved Slope Left
+    400198: Road Type 3 Curved Slope Right
+    400200: Road Type 3 Dent
+    400202: Road Type 3 Side
+    400204: Road Type 3 Slope Left
+    400206: Road Type 3 Slope Right
+    400208: Road Type 3 Striped Curved Slope Right
+    400210: Road Type 3 Stripeless
+    400212: Road Type 3 Stripeless Curved Slope Left
+    400214: Road Type 3 Stripeless Slope Left
+    400216: Road Type 3 Stripeless Slope Right
+    400218: Sign 1
+    400220: Sign 2
+    400222: Sign 3
+    400224: Sign 4
+    400226: Sign 5
+    400228: Street Cone
+    400230: Street Light Off
+    400232: Street Light On
+    400234: Streetlight green
+    400236: Streetlight red
+    400238: Streetlight yellow
+    400240: Trashcan
+    400242: Trashcan Lid
+    400244: Water Barrel 1
+    400246: Water Barrel 2
+    400248: Water Barrel 3
+    400250: White Car
+    400252: White Mini Car
+    400254: White Truck
+    400256: Yellow Car
+    2300000: 1M Black Car
+    2300002: 1M Black Mini Car
+    2300004: 1M Black Truck
+    2300006: 1M Blue Car
+    2300008: 1M Blue Mini Car
+    2300010: 1M Blue Truck
+    2300012: 1M Green Car
+    2300014: 1M Green Mini Car
+    2300016: 1M Green Truck
+    2300018: 1M Grey Car
+    2300020: 1M Orange Mini Car
+    2300022: 1M Orange Truck
+    2300024: 1M Purple Mini Car
+    2300026: 1M Purple Truck
+    2300028: 1M Red Car
+    2300030: 1M Red Mini Car
+    2300032: 1M Red Truck
+    2300034: 1M White Car
+    2300036: 1M White Mini Car
+    2300038: 1M White Truck
+    2300040: 1M Yellow Car
+    2300042: Big Dumpster
+    2300044: Black Car
+    2300046: Black Mini Car
+    2300048: Black Truck
+    2300050: Blue Car
+    2300052: Blue Mini Car
+    2300054: Blue Truck
+    2300056: Car Back Wheels
+    2300058: Car Left Front Wheel
+    2300060: Car Right Front Wheel
+    2300062: Cardbox
+    2300064: Concrete Support Pillar Size 1
+    2300066: Concrete Support Pillar Size 2
+    2300068: Concrete Support Pillar Size 3
+    2300070: Concrete Support Pillar Size 4
+    2300072: Concrete Support Pillar Size 5
+    2300074: Concrete Support Pillar Size 6
+    2300076: Concrete Support Pillar Slope Size 1
+    2300078: Concrete Support Pillar Slope Size 2
+    2300080: Concrete Support Pillar Slope Size 3
+    2300082: Concrete Support Pillar Slope Size 4
+    2300084: Concrete Support Pillar Slope Size 5
+    2300086: Concrete Support Pillar Slope Size 6
+    2300088: Construction Sign
+    2300090: Corner Block Type 1
+    2300092: Corner Block Type 2
+    2300094: Dumpster
+    2300096: Firehydrant
+    2300098: Green Car
+    2300100: Green Mini Car
+    2300102: Green Truck
+    2300104: Grey Car
+    2300106: Orange Mini Car
+    2300108: Orange Truck
+    2300110: Purple Mini Car
+    2300112: Purple Truck
+    2300114: Racing Track Example 1
+    2300116: Red Car
+    2300118: Red Mini Car
+    2300120: Red Truck
+    2300122: Road
+    2300124: Road Block 1
+    2300126: Road Block 2
+    2300128: Road Block 3
+    2300130: Road Curved Slope
+    2300132: Road Example 1
+    2300134: Road Side
+    2300136: Road Slope
+    2300138: Road Turn Stripe 1
+    2300140: Road Turn Stripe 2
+    2300142: Road Type 1 Corner 1
+    2300144: Road Type 1 Corner 2
+    2300146: Road Type 1 Corner 3
+    2300148: Road Type 1 Curved Slope Left
+    2300150: Road Type 1 Curved Slope Right
+    2300152: Road Type 1 Curved Stripeless Slope Left
+    2300154: Road Type 1 Curved Stripeless Slope Right
+    2300156: Road Type 1 Side
+    2300158: Road Type 1 Slope Left
+    2300160: Road Type 1 Slope Right
+    2300162: Road Type 1 Stripeless Side
+    2300164: Road Type 1 Stripeless Slope Left
+    2300166: Road Type 1 Stripeless Slope Right
+    2300168: Road Type 2 Corner 1
+    2300170: Road Type 2 Corner 2
+    2300172: Road Type 2 Corner 3
+    2300174: Road Type 2 Curved Slope Left
+    2300176: Road Type 2 Curved Slope Right
+    2300178: Road Type 2 Side
+    2300180: Road Type 2 Slope Left
+    2300182: Road Type 2 Slope Right
+    2300184: Road Type 2 Stripeless Side
+    2300186: Road Type 3 Bump
+    2300188: Road Type 3 Corner 1
+    2300190: Road Type 3 Corner 2
+    2300192: Road Type 3 Corner 3
+    2300194: Road Type 3 Curved Slope Left
+    2300196: Road Type 3 Curved Slope Right
+    2300198: Road Type 3 Dent
+    2300200: Road Type 3 Side
+    2300202: Road Type 3 Slope Left
+    2300204: Road Type 3 Slope Right
+    2300206: Road Type 3 Striped Curved Slope Right
+    2300208: Road Type 3 Stripeless
+    2300210: Road Type 3 Stripeless Curved Slope Left
+    2300212: Road Type 3 Stripeless Slope Left
+    2300214: Road Type 3 Stripeless Slope Right
+    2300216: Sign 1
+    2300218: Sign 2
+    2300220: Sign 3
+    2300222: Sign 4
+    2300224: Sign 5
+    2300226: Street Cone
+    2300228: Street Light Off
+    2300230: Street Light On
+    2300232: Streetlight green
+    2300234: Streetlight red
+    2300236: Streetlight yellow
+    2300238: Trashcan
+    2300240: Trashcan Lid
+    2300242: Water Barrel 1
+    2300244: Water Barrel 2
+    2300246: Water Barrel 3
+    2300248: White Car
+    2300250: White Mini Car
+    2300252: White Truck
+    2300254: Yellow Car
+    3300000: 1M Black Car
+    3300002: 1M Black Mini Car
+    3300004: 1M Black Truck
+    3300006: 1M Blue Car
+    3300008: 1M Blue Mini Car
+    3300010: 1M Blue Truck
+    3300012: 1M Green Car
+    3300014: 1M Green Mini Car
+    3300016: 1M Green Truck
+    3300018: 1M Grey Car
+    3300020: 1M Orange Mini Car
+    3300022: 1M Orange Truck
+    3300024: 1M Purple Mini Car
+    3300026: 1M Purple Truck
+    3300028: 1M Red Car
+    3300030: 1M Red Mini Car
+    3300032: 1M Red Truck
+    3300034: 1M White Car
+    3300036: 1M White Mini Car
+    3300038: 1M White Truck
+    3300040: 1M Yellow Car
+    3300042: Big Dumpster
+    3300044: Black Car
+    3300046: Black Mini Car
+    3300048: Black Truck
+    3300050: Blue Car
+    3300052: Blue Mini Car
+    3300054: Blue Truck
+    3300056: Car Back Wheels
+    3300058: Car Left Front Wheel
+    3300060: Car Right Front Wheel
+    3300062: Cardbox
+    3300064: Concrete Support Pillar Size 1
+    3300066: Concrete Support Pillar Size 2
+    3300068: Concrete Support Pillar Size 3
+    3300070: Concrete Support Pillar Size 4
+    3300072: Concrete Support Pillar Size 5
+    3300074: Concrete Support Pillar Size 6
+    3300076: Concrete Support Pillar Slope Size 1
+    3300078: Concrete Support Pillar Slope Size 2
+    3300080: Concrete Support Pillar Slope Size 3
+    3300082: Concrete Support Pillar Slope Size 4
+    3300084: Concrete Support Pillar Slope Size 5
+    3300086: Concrete Support Pillar Slope Size 6
+    3300088: Construction Sign
+    3300090: Corner Block Type 1
+    3300092: Corner Block Type 2
+    3300094: Dumpster
+    3300096: Firehydrant
+    3300098: Green Car
+    3300100: Green Mini Car
+    3300102: Green Truck
+    3300104: Grey Car
+    3300106: Orange Mini Car
+    3300108: Orange Truck
+    3300110: Purple Mini Car
+    3300112: Purple Truck
+    3300114: Racing Track Example 1
+    3300116: Red Car
+    3300118: Red Mini Car
+    3300120: Red Truck
+    3300122: Road
+    3300124: Road Block 1
+    3300126: Road Block 2
+    3300128: Road Block 3
+    3300130: Road Curved Slope
+    3300132: Road Example 1
+    3300134: Road Side
+    3300136: Road Slope
+    3300138: Road Turn Stripe 1
+    3300140: Road Turn Stripe 2
+    3300142: Road Type 1 Corner 1
+    3300144: Road Type 1 Corner 2
+    3300146: Road Type 1 Corner 3
+    3300148: Road Type 1 Curved Slope Left
+    3300150: Road Type 1 Curved Slope Right
+    3300152: Road Type 1 Curved Stripeless Slope Left
+    3300154: Road Type 1 Curved Stripeless Slope Right
+    3300156: Road Type 1 Side
+    3300158: Road Type 1 Slope Left
+    3300160: Road Type 1 Slope Right
+    3300162: Road Type 1 Stripeless Side
+    3300164: Road Type 1 Stripeless Slope Left
+    3300166: Road Type 1 Stripeless Slope Right
+    3300168: Road Type 2 Corner 1
+    3300170: Road Type 2 Corner 2
+    3300172: Road Type 2 Corner 3
+    3300174: Road Type 2 Curved Slope Left
+    3300176: Road Type 2 Curved Slope Right
+    3300178: Road Type 2 Side
+    3300180: Road Type 2 Slope Left
+    3300182: Road Type 2 Slope Right
+    3300184: Road Type 2 Stripeless Side
+    3300186: Road Type 3 Bump
+    3300188: Road Type 3 Corner 1
+    3300190: Road Type 3 Corner 2
+    3300192: Road Type 3 Corner 3
+    3300194: Road Type 3 Curved Slope Left
+    3300196: Road Type 3 Curved Slope Right
+    3300198: Road Type 3 Dent
+    3300200: Road Type 3 Side
+    3300202: Road Type 3 Slope Left
+    3300204: Road Type 3 Slope Right
+    3300206: Road Type 3 Striped Curved Slope Right
+    3300208: Road Type 3 Stripeless
+    3300210: Road Type 3 Stripeless Curved Slope Left
+    3300212: Road Type 3 Stripeless Slope Left
+    3300214: Road Type 3 Stripeless Slope Right
+    3300216: Sign 1
+    3300218: Sign 2
+    3300220: Sign 3
+    3300222: Sign 4
+    3300224: Sign 5
+    3300226: Street Cone
+    3300228: Street Light Off
+    3300230: Street Light On
+    3300232: Streetlight green
+    3300234: Streetlight red
+    3300236: Streetlight yellow
+    3300238: Trashcan
+    3300240: Trashcan Lid
+    3300242: Water Barrel 1
+    3300244: Water Barrel 2
+    3300246: Water Barrel 3
+    3300248: White Car
+    3300250: White Mini Car
+    3300252: White Truck
+    3300254: Yellow Car
+    4300000: Concrete Support Pillar Slope Size 6
+    4300002: Concrete Support Pillar Slope Size 4
+    4300004: Concrete Support Pillar Slope Size 3
+    4300006: Concrete Support Pillar Slope Size 1
+    4300008: Concrete Support Pillar Slope Size 2
+    4300010: Concrete Support Pillar Slope Size 5
+    4300012: Concrete Support Pillar Size 6
+    4300014: Concrete Support Pillar Size 5
+    4300016: Concrete Support Pillar Size 4
+    4300018: Concrete Support Pillar Size 3
+    4300020: Concrete Support Pillar Size 2
+    4300022: Concrete Support Pillar Size 1
+    4300024: Trashcan Lid
+    4300026: Water Barrel 2
+    4300028: Water Barrel 3
+    4300030: Water Barrel 1
+    4300032: Road Block 2
+    4300034: Road Type 3 Dent
+    4300036: Road Type 3 Bump
+    4300038: Road Type 3 Stripeless Slope Left
+    4300040: Road Type 3 Slope Left
+    4300042: Road Type 3 Curved Slope Left
+    4300044: Road Type 3 Stripeless Curved Slope Left
+    4300046: Road Type 2 Slope Left
+    4300048: Road Type 2 Curved Slope Left
+    4300050: Racing Track Example 1
+    4300052: Road Type 3 Striped Curved Slope Right
+    4300054: Road Type 3 Curved Slope Right
+    4300056: Road Type 3 Slope Right
+    4300058: Road Type 3 Stripeless Slope Right
+    4300060: Road Turn Stripe 2
+    4300062: Road Turn Stripe 1
+    4300064: Road Type 3 Corner 3
+    4300066: Road Type 3 Corner 2
+    4300068: Road Type 3 Stripeless
+    4300070: Road Type 3 Corner 1
+    4300072: Road Type 2 Curved Slope Right
+    4300074: Road Type 2 Slope Right
+    4300076: Road Curved Slope
+    4300078: Road Slope
+    4300080: Road Type 1 Curved Stripeless Slope Right
+    4300082: Road Type 1 Curved Stripeless Slope Left
+    4300084: Road Type 1 Slope Right
+    4300086: Road Type 1 Slope Left
+    4300088: Road Example 1
+    4300090: Road Type 1 Curved Slope Left
+    4300092: Road Type 1 Stripeless Slope Left
+    4300094: Road Type 1 Curved Slope Right
+    4300096: Road Type 1 Stripeless Slope Right
+    4300098: Corner Block Type 2
+    4300100: Road Type 2 Corner 3
+    4300102: Road Type 2 Corner 2
+    4300104: Road Type 2 Stripeless Side
+    4300106: Road Type 2 Corner 1
+    4300108: Road Type 1 Corner 2
+    4300110: Road Type 1 Corner 3
+    4300112: Corner Block Type 1
+    4300114: Road Side
+    4300116: Road
+    4300118: Road Type 1 Corner 1
+    4300120: Road Type 1 Stripeless Side
+    4300122: Road Type 3 Side
+    4300124: Road Type 2 Side
+    4300126: Road Type 1 Side
+    4300128: Cardbox
+    4300130: Big Dumpster
+    4300132: Dumpster
+    4300134: Trashcan
+    4300136: Street Light On
+    4300138: Street Light Off
+    4300140: Sign 3
+    4300142: Streetlight green
+    4300144: Streetlight yellow
+    4300146: Firehydrant
+    4300148: Sign 4
+    4300150: Sign 5
+    4300152: Sign 2
+    4300154: Sign 1
+    4300156: Construction Sign
+    4300158: Streetlight red
+    4300160: Road Block 3
+    4300162: Road Block 1
+    4300164: Street Cone
+    4300166: 1M Green Truck
+    4300168: 1M Grey Car
+    4300170: 1M Orange Mini Car
+    4300172: 1M Red Truck
+    4300174: 1M Black Truck
+    4300176: 1M Orange Truck
+    4300178: 1M Purple Truck
+    4300180: 1M Blue Truck
+    4300182: 1M White Truck
+    4300184: 1M Red Car
+    4300186: 1M Yellow Car
+    4300188: 1M Green Car
+    4300190: 1M Blue Car
+    4300192: 1M Black Car
+    4300194: 1M White Car
+    4300196: 1M Blue Mini Car
+    4300198: 1M Purple Mini Car
+    4300200: 1M Green Mini Car
+    4300202: 1M Red Mini Car
+    4300204: 1M Black Mini Car
+    4300206: 1M White Mini Car
+    4300208: White Mini Car
+    4300210: Black Mini Car
+    4300212: Red Mini Car
+    4300214: Green Mini Car
+    4300216: Purple Mini Car
+    4300218: Blue Mini Car
+    4300220: White Car
+    4300222: Black Car
+    4300224: Blue Car
+    4300226: Green Car
+    4300228: Yellow Car
+    4300230: Red Car
+    4300232: White Truck
+    4300234: Blue Truck
+    4300236: Purple Truck
+    4300238: Orange Truck
+    4300240: Black Truck
+    4300242: Red Truck
+    4300244: Car Back Wheels
+    4300246: Car Right Front Wheel
+    4300248: Car Left Front Wheel
+    4300250: Orange Mini Car
+    4300252: Grey Car
+    4300254: Green Truck
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
