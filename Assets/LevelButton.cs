@@ -44,11 +44,13 @@ public class LevelButton : SceneButton
 
     public void Initialize()
     {
+        //Debug.Log(gameObject.name + ": enter");
         DataStorage store = FindObjectOfType<DataStorage>();
         if (null != store)
         {
             if (!store.savedGame.isLevelUnlocked(levelNumber))
             {
+                //Debug.Log(gameObject.name + ": locked");
                 if (null != container)
                     container.gameObject.SetActive(false);
 
@@ -60,8 +62,10 @@ public class LevelButton : SceneButton
                 {
                     if (DataStorage.lastFreeLevelNumber < levelNumber)
                     {
+                        //Debug.Log(gameObject.name + ": paid");
                         if (!store.LevelsArePurchased())
                         {
+                            //Debug.Log(gameObject.name + ": not bought");
                             SetActiveLevelButton(false);
                             ToggleBuyButton(true);
                             return;
