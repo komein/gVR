@@ -9,8 +9,6 @@ public class LevelButton : SceneButton
     public LevelButtonContainer container;
     public BuyButton buyButton;
 
-    public bool inAppPurchaserReadyFlag = false;
-
     protected override void Start()
     {
         base.Start();
@@ -20,12 +18,26 @@ public class LevelButton : SceneButton
 
     IEnumerator InitCoroutine()
     {
-        while (!inAppPurchaserReadyFlag)
+        int i = 0;
+
+        InAppManager manager = FindObjectOfType<InAppManager>();
+        while (null == manager && i++ < 1000)
         {
             yield return new WaitForSeconds(0.1f);
         }
 
-        Initialize();
+        i = 0;
+
+        if (i < 1000)
+            while (!manager.readyFlag && i++ < 1000)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+        else
+            Debug.Log("WTF");
+
+        if (i < 1000)
+            Initialize();
 
         yield return null;
     }
@@ -40,8 +52,7 @@ public class LevelButton : SceneButton
                 if (null != container)
                     container.gameObject.SetActive(false);
 
-                isActiveButton = false;
-                text.color = text.color / 2f;
+                SetActiveLevelButton(false);
             }
             else
             {

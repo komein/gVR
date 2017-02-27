@@ -32,6 +32,12 @@ public class Collectible : MonoBehaviour {
     {
         GetComponent<MeshRenderer>().enabled = v;
         GetComponent<BoxCollider>().enabled = v;
+
+        Projector p = GetComponentInChildren<Projector>();
+        if (null != p )
+        {
+            p.enabled = v;
+        }
     }
 
 

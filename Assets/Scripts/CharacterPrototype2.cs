@@ -289,7 +289,6 @@ public class CharacterPrototype2 : MonoBehaviour
 
     protected void OnTriggerEnter(Collider other)
     {
-        Debug.Log("enter " + other.name);
         if (other.GetComponent<Obstacle>() != null)
         {
             other.gameObject.SetActive(false);
@@ -329,7 +328,6 @@ public class CharacterPrototype2 : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("exit " + other.name);
         GroundContainer cont = other.GetComponent<GroundContainer>();
         if (null == cont)
             cont = other.GetComponentInParent<GroundContainer>();

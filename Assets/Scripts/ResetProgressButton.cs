@@ -19,7 +19,7 @@ public class ResetProgressButton : LookableButton
 
         data.ResetScore();
 
-        data.Save();
+        data.MakeNewSaveFile();
         data.Load();
 
         LevelButton[] buttons = FindObjectsOfType<LevelButton>();

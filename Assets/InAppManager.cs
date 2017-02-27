@@ -14,6 +14,8 @@ public class InAppManager : MonoBehaviour, IStoreListener {
 
 	public const string pLevelsGooglePlay = "gp_plvl";
 
+    public bool readyFlag = false;
+
     Action successAction = null;
     Action failAction = null;
 
@@ -107,16 +109,8 @@ public class InAppManager : MonoBehaviour, IStoreListener {
 		m_StoreController = controller;
 		m_StoreExtensionProvider = extensions;
 
-        LevelButton[] buttons = FindObjectsOfType<LevelButton>();
-
-        if (null != buttons)
-        {
-            foreach(var v in buttons)
-            {
-                v.inAppPurchaserReadyFlag = true;
-            }
-        }
-	}
+        readyFlag = true;
+    }
 
 	public void OnInitializeFailed(InitializationFailureReason error)
 	{

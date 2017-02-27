@@ -150,6 +150,11 @@ public class DataStorage : MonoBehaviour
 
     const int maxHp = 3;
 
+    const int LVL_1_SCORE = 50;
+    const int LVL_2_SCORE = 60;
+    const int LVL_3_SCORE = 70;
+
+
     public const int lastFreeLevelNumber = 1;
     public const bool purchaseMode = true;
 
@@ -349,17 +354,22 @@ public class DataStorage : MonoBehaviour
         }
         else
         {
-            List<LevelProgress> levels = new List<LevelProgress>();
-
-            levels.Add(new LevelProgress(0, 200));
-            levels.Add(new LevelProgress(0, 300));
-            levels.Add(new LevelProgress(0, 400));
-
-            savedGame = new Game(levels);
-            Save();
+            MakeNewSaveFile();
         }
 
         OptionalScoreAction();
+    }
+
+    public void MakeNewSaveFile()
+    {
+        List<LevelProgress> levels = new List<LevelProgress>();
+
+        levels.Add(new LevelProgress(0, LVL_1_SCORE));
+        levels.Add(new LevelProgress(0, LVL_2_SCORE));
+        levels.Add(new LevelProgress(0, LVL_3_SCORE));
+
+        savedGame = new Game(levels);
+        Save();
     }
 
     internal bool LevelsArePurchased()
