@@ -165,7 +165,6 @@ public class DataStorage : MonoBehaviour
 
     Action optionalScoreAction;
     Action optionalHpAction;
-    private ScoreDisplayer displayer;
 
     public bool isAlive
     {
@@ -227,9 +226,6 @@ public class DataStorage : MonoBehaviour
 
     private void OptionalScoreAction()
     {
-        if (null == displayer)
-            return;
-
         if (null != optionalScoreAction)
             optionalScoreAction();
     }
@@ -240,9 +236,8 @@ public class DataStorage : MonoBehaviour
             optionalHpAction();
     }
 
-    public void SetOptionalAction(ScoreDisplayer d, Action a)
+    public void SetOptionalAction(Action a)
     {
-        this.displayer = d;
         optionalScoreAction = a;
         OptionalScoreAction();
     }

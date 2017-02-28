@@ -4,17 +4,17 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScoreDisplayer : MonoBehaviour
+public class ScoreDisplayer2 : MonoBehaviour
 {
     private const string DISPLAY_TEXT_FORMAT = "{0}/{1}\n{2}hp";
     private const string DISPLAY_TEXT_FORMAT_MAXED = "{0}(MAXED)\n{1}hp";
 
     public int levelNumber;
 
-    public Text nextLvl;
-    public Text message;
     public Image pBar;
     public Image pBarBackground;
+
+    public Text status;
 
     public Color minColor;
     public Color midColor;
@@ -27,7 +27,7 @@ public class ScoreDisplayer : MonoBehaviour
     int lvl;
 
     bool deadFlag;
-    bool messageLockFlag; 
+    bool messageLockFlag;
 
     void Start()
     {
@@ -41,7 +41,7 @@ public class ScoreDisplayer : MonoBehaviour
         {
             storage.Load(); // для гарантии, что если сейв есть, из него загрузились данные
             lvl = storage.GetCurrentLevel(); // берем загруженный уровень
-            storage.SetOptionalAction(UpdateText); 
+            storage.SetOptionalAction(UpdateText);
         }
     }
 
@@ -50,8 +50,8 @@ public class ScoreDisplayer : MonoBehaviour
         deadFlag = false;
         messageLockFlag = false;
         storage = FindObjectOfType<DataStorage>();
-        message.enabled = true;
-        message.text = "";
+        //message.enabled = true;
+        //message.text = "";
     }
 
     public void UpdateText()
@@ -69,16 +69,15 @@ public class ScoreDisplayer : MonoBehaviour
             if (!storage.isAlive)
             {
                 deadFlag = true;
-                ShowDeadMessage();
+                //ShowDeadMessage();
             }
             else
             {
-                long score = ShowScore();
-                ShowScoreProgressBar(score);
+                ShowScoreProgressBar();
             }
         }
     }
-
+    /*
     private void ShowDeadMessage()
     {
         if (null != message)
@@ -90,27 +89,25 @@ public class ScoreDisplayer : MonoBehaviour
             nextLvl.text = "";
         }
     }
-
-    private long ShowScore()
+    */
+    private void ShowScore(long score, long max)
     {
-        long score = storage.GetScore(levelNumber);
-        if (null != message && !messageLockFlag)
+        if (null != status)
         {
-            if (storage.multiplier > 1)
+            if (score < max)
             {
-                message.text = "Score: " + score + " (x" + storage.multiplier + " bonus!)";
+                status.text = score + "/" + max;
             }
             else
             {
-                message.text = "Score: " + score;
+                status.text = score.ToString();
             }
         }
-
-        return score;
     }
 
-    private void ShowScoreProgressBar(long score)
+    private void ShowScoreProgressBar()
     {
+        long score = storage.GetScore(levelNumber);
         if (null != pBarBackground)
         {
             pBarBackground.enabled = true;
@@ -118,14 +115,7 @@ public class ScoreDisplayer : MonoBehaviour
         long toNextLvl = storage.GetMaxScore(levelNumber);
         long toCurrentLvl = 0;
 
-        if (null != nextLvl)
-        {
-            if (score >= toNextLvl)
-                nextLvl.text = "Level completed!";
-            else
-                nextLvl.text = "To complete: " + (toNextLvl - score).ToString();
-        }
-
+        ShowScore(score, toNextLvl);
         DrawProgressBar(score, toNextLvl, toCurrentLvl);
     }
 
@@ -144,6 +134,10 @@ public class ScoreDisplayer : MonoBehaviour
         {
             pBar.color = Color.Lerp(minColor, midColor, pBar.fillAmount * 2f);
         }
+        else if (pBar.fillAmount == 1f)
+        {
+            pBar.color = Color.blue;
+        }
         else
         {
             pBar.color = Color.Lerp(midColor, maxColor, (pBar.fillAmount - 0.5f) * 2f);
@@ -156,10 +150,10 @@ public class ScoreDisplayer : MonoBehaviour
         {
             pBarBackground.enabled = false;
         }
-        if (null != nextLvl)
-        {
-            nextLvl.text = "You have unlocked all the levels!";
-        }
+        /* if (null != nextLvl)
+         {
+             nextLvl.text = "You have unlocked all the levels!";
+         }*/
         if (null != pBar)
         {
             pBar.fillAmount = 0;
@@ -168,14 +162,14 @@ public class ScoreDisplayer : MonoBehaviour
 
     private IEnumerator ShowCongratulation()
     {
-        if (null != message)
-        {
-            messageLockFlag = true;
-            message.text = "You gained access to a new level!";
-            yield return new WaitForSeconds(congratulationDelay);
-            message.text = "";
-            messageLockFlag = false;
-        }
+        /* if (null != message)
+         {
+             messageLockFlag = true;
+             message.text = "You gained access to a new level!";
+             yield return new WaitForSeconds(congratulationDelay);
+             message.text = "";
+             messageLockFlag = false;
+         }*/
         yield return null;
     }
 
