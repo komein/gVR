@@ -18,21 +18,19 @@ public class ResetProgressButton : LookableButton
             return;
 
         data.ResetScore();
-
         data.MakeNewSaveFile();
-        data.Load();
 
         LevelButton[] buttons = FindObjectsOfType<LevelButton>();
 
         if (null != buttons)
         {
-            foreach(var v in buttons)
+            foreach (var v in buttons)
             {
                 v.Initialize();
             }
         }
 
-        ScoreDisplayer[] displayers = FindObjectsOfType<ScoreDisplayer>();
+        ScoreDisplayer2[] displayers = FindObjectsOfType<ScoreDisplayer2>();
 
         if (null != displayers)
         {
@@ -41,7 +39,6 @@ public class ResetProgressButton : LookableButton
                 v.UpdateText();
             }
         }
-
         StartCoroutine(PressedMessage());
 
         base.Function();

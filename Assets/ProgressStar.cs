@@ -15,24 +15,27 @@ public class ProgressStar : MonoBehaviour
     public float power = 1f;
     public float time = 1f;
 
-	void Start ()
+	void Awake ()
     {
         fillImage = GetComponent<Image>();
         borderImage = GetComponentInChildren<Image>();
 	}
-	
-    public void Click()
+
+    public void FillAnimated()
     {
+        fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 1);
         StopAllCoroutines();
         StartCoroutine(PlayTransition());
     }
 
-    public void Fill()
+    public void FillNoAnimation()
     {
-        if (null == fillImage)
-            fillImage = GetComponent<Image>();
         fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 1);
-        Click();
+    }
+
+    public void MakeEmpty()
+    {
+        fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 0);
     }
 
     private IEnumerator PlayTransition()

@@ -18,7 +18,7 @@ public class SceneButton : LookableButton
         DataStorage scoreStorage = FindObjectOfType<DataStorage>();
         if (null != scoreStorage)
         {
-            scoreStorage.Save();
+            scoreStorage.OnSceneChange();
             scoreStorage.levelInfo.title = scenePath;
         }
 

@@ -8,9 +8,9 @@ using UnityEngine.UI;
 [System.Serializable]
 public class Game
 {
-    public List<LevelProgress> levels;
+    public List<LevelInfo> levels;
 
-    public Game(List<LevelProgress> l)
+    public Game(List<LevelInfo> l)
     {
         levels = l;
     }
@@ -25,12 +25,12 @@ public class Game
         if (levelIndex == 0) // first level
             return true;
 
-        LevelProgress previousLevel = GetLevel(level - 1);
+        LevelInfo previousLevel = GetLevel(level - 1);
 
         if (null == previousLevel)
             return false;
 
-        if (previousLevel.score >= previousLevel.maxScore)
+        if (previousLevel.accumulatedScore >= previousLevel.maxScore)
                 return true;
 
         return false;
@@ -51,7 +51,7 @@ public class Game
         return true;
     }
 
-    public LevelProgress GetLevel(int level)
+    public LevelInfo GetLevel(int level)
     {
         if (!isValidLevel(level))
             return null;
@@ -61,21 +61,26 @@ public class Game
         return levels[levelIndex];
     }
 
+    public LevelInfo GetLevelByName(string name)
+    {
+        return levels.Find(p => p.title == name);
+    }
+
     public bool SetScore(int level, long score)
     {
-        LevelProgress l = GetLevel(level);
+        LevelInfo l = GetLevel(level);
 
         if (null == l)
             return false;
 
-        l.score = score;
+        l.accumulatedScore = score;
 
         return true;
     }
 
     public long GetMaxScore(int level)
     {
-        LevelProgress l = GetLevel(level);
+        LevelInfo l = GetLevel(level);
 
         if (null == l)
             return -1;
@@ -85,12 +90,12 @@ public class Game
 
     public long GetScore(int level)
     {
-        LevelProgress l = GetLevel(level);
+        LevelInfo l = GetLevel(level);
 
         if (null == l)
             return -1;
 
-        return l.score;
+        return l.accumulatedScore;
     }
 
     public bool AddScore(int level, int score)
@@ -105,34 +110,96 @@ public class Game
             return false;
 
         foreach (var v in levels)
-            v.score = 0;
+            v.accumulatedScore = 0;
+
+        return true;
+    }
+
+    internal LevelInfo.StarScore GetStarRecord(int level)
+    {
+        LevelInfo l = GetLevel(level);
+
+        if (null == l)
+            return LevelInfo.StarScore.zero;
+
+        return l.starRecord;
+    }
+
+    internal bool SetStarRecord(int level, LevelInfo.StarScore sc)
+    {
+        LevelInfo l = GetLevel(level);
+
+        if (null == l)
+            return false;
+
+        l.starRecord = sc;
 
         return true;
     }
 }
 
 [System.Serializable]
-public class LevelProgress
+public class LevelInfo
 {
-    public long score;
+    public string title;
+    public int number;
+
+    public enum StarScore { zero, one, two, three };
+    public StarScore starRecord = StarScore.zero;
+
+    public long oneStarRecord // readonly
+    {
+        get;
+        private set;
+    }
+
+    public long twoStarRecord // readonly
+    {
+        get;
+        private set;
+    }
+
+    public long threeStarRecord // readonly
+    {
+        get;
+        private set;
+    }
+
+    public long accumulatedScore;
+    public long bestScoreRecord;
+
     public long maxScore // readonly
     {
         get;
         private set;
     }
 
-    public LevelProgress(long s, long max)
+    public LevelInfo(string t, int n, long max)
     {
-        score = s;
+        title = t;
+        number = n;
+        accumulatedScore = 0;
         maxScore = max;
+    }
+
+    public LevelInfo(string t, int n,long max, StarScore ss) : this(t,n, max)
+    {
+        starRecord = ss;
+    }
+
+    public LevelInfo(string t, int n, long max, StarScore ss, float osr, float twsr, float thsr) : this (t,n, max,ss)
+    {
+        oneStarRecord = (long)(maxScore * osr);
+        twoStarRecord = (long)(maxScore * twsr);
+        threeStarRecord = (long)(maxScore * thsr);
     }
 
 }
 
-public class LevelInfo
+public class SceneInfo
 {
-    public string title;
-    public int number;
+    public string title = "notitle";
+    public long tempScore = 0;
 }
 
 public class DataStorage : MonoBehaviour
@@ -144,16 +211,17 @@ public class DataStorage : MonoBehaviour
 
     public Game savedGame;
 
-    public LevelInfo levelInfo = new LevelInfo();
+    public SceneInfo levelInfo = new SceneInfo();
 
     private int hp;
 
     const int maxHp = 3;
 
+    const int hpDefaultValue = 2;
+
     const int LVL_1_SCORE = 50;
     const int LVL_2_SCORE = 60;
     const int LVL_3_SCORE = 70;
-
 
     public const int lastFreeLevelNumber = 1;
     public const bool purchaseMode = true;
@@ -180,7 +248,6 @@ public class DataStorage : MonoBehaviour
 
     void Awake()
     {
-
         // singleton pattern
         if (instanceRef == null)
         {
@@ -201,20 +268,12 @@ public class DataStorage : MonoBehaviour
         multiplier = 1;
 
         RestoreHp();
-        Load();
+        LoadWithoutAction();
     }
 
-    private void Start()
+    public SceneInfo GetCurrentLevel()
     {
-       // Screen.SetResolution(1280, 720, true);
-    }
-
-    public int GetCurrentLevel()
-    {
-        if (null == levelInfo)
-            return -1;
-
-        return levelInfo.number;
+        return levelInfo;
     }
     
     internal void SetMultiplier(int v)
@@ -224,22 +283,24 @@ public class DataStorage : MonoBehaviour
         OptionalScoreAction();
     }
 
-    private void OptionalScoreAction()
+    public void OptionalScoreAction()
     {
         if (null != optionalScoreAction)
             optionalScoreAction();
     }
 
-    private void OptionalHpAction()
+    public void OptionalHpAction()
     {
         if (null != optionalHpAction)
             optionalHpAction();
     }
 
-    public void SetOptionalAction(Action a)
+    public void SetOptionalScoreAction(Action a)
     {
-        optionalScoreAction = a;
-        OptionalScoreAction();
+        if (null == optionalScoreAction)
+            optionalScoreAction = a;
+        else
+            optionalScoreAction += a;
     }
 
     public void SetOptionalHpAction(Action a)
@@ -253,8 +314,7 @@ public class DataStorage : MonoBehaviour
             return false;
 
         savedGame.SetScore(level, s);
-
-        Save();
+        
         OptionalScoreAction();
 
         return true;
@@ -265,9 +325,8 @@ public class DataStorage : MonoBehaviour
         if (null == savedGame)
             return false;
 
-        savedGame.AddScore(level, (int)(s * multiplier + 0.5f));
-
-        Save();
+        levelInfo.tempScore += (int)(s * multiplier + 0.5f);
+        
         OptionalScoreAction();
 
         return true;
@@ -289,6 +348,26 @@ public class DataStorage : MonoBehaviour
         return savedGame.GetMaxScore(level);
     }
 
+    public LevelInfo.StarScore GetStarRecord(int level)
+    {
+        if (null == savedGame)
+            return LevelInfo.StarScore.zero;
+
+        return savedGame.GetStarRecord(level);
+    }
+
+    public bool SetStarRecord(int level, LevelInfo.StarScore sc)
+    {
+        if (null == savedGame)
+            return false;
+
+        savedGame.SetStarRecord(level, sc);
+        
+        OptionalScoreAction();
+
+        return true;
+    }
+
     public bool ResetScore()
     {
         if (null == savedGame)
@@ -306,6 +385,7 @@ public class DataStorage : MonoBehaviour
     public void AddHp(int v)
     {
         hp += v;
+        hp = Mathf.Min(maxHp, hp);
         OptionalHpAction();
     }
 
@@ -314,7 +394,6 @@ public class DataStorage : MonoBehaviour
         hp -= v;
         hp = Mathf.Max(0, hp);
         OptionalHpAction();
-        OptionalScoreAction();
     }
 
     public int GetHp()
@@ -324,7 +403,7 @@ public class DataStorage : MonoBehaviour
     
     internal void RestoreHp()
     {
-        hp = maxHp;
+        hp = hpDefaultValue;
     }
 
     public void Save()
@@ -333,17 +412,62 @@ public class DataStorage : MonoBehaviour
             return;
 
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Application.persistentDataPath + "/s3.bin");
+        FileStream file = File.Create(Application.persistentDataPath + "/save.bin");
         bf.Serialize(file, savedGame);
         file.Close();
     }
 
+    public void OnSceneChange()
+    {
+        if (null != levelInfo)
+        {
+            LevelInfo p = savedGame.GetLevelByName(levelInfo.title);
+            if (p != null)
+            {
+                if (p.bestScoreRecord < levelInfo.tempScore)
+                {
+                    p.bestScoreRecord = levelInfo.tempScore;
+                    if (p.bestScoreRecord > p.threeStarRecord)
+                    {
+                        p.starRecord = LevelInfo.StarScore.three;
+                    }
+                    else if (p.bestScoreRecord > p.twoStarRecord)
+                    {
+                        p.starRecord = LevelInfo.StarScore.two;
+                    }
+                    else if (p.bestScoreRecord > p.oneStarRecord)
+                    {
+                        p.starRecord = LevelInfo.StarScore.one;
+                    }
+                }
+                p.accumulatedScore += levelInfo.tempScore;
+
+                levelInfo.tempScore = 0;
+            }
+        }
+
+        multiplier = 1;
+        RestoreHp();
+
+        optionalHpAction = null;
+        optionalScoreAction = null;
+
+        Save();
+    }
+
     public void Load()
     {
-        if (File.Exists(Application.persistentDataPath + "/s3.bin"))
+        LoadWithoutAction();
+
+        OptionalScoreAction();
+    }
+
+    public void LoadWithoutAction()
+    {
+        if (File.Exists(Application.persistentDataPath + "/save.bin"))
         {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Application.persistentDataPath + "/s3.bin", FileMode.Open);
+            FileStream file = File.Open(Application.persistentDataPath + "/save.bin", FileMode.Open);
             savedGame = (Game)bf.Deserialize(file);
             file.Close();
         }
@@ -351,20 +475,20 @@ public class DataStorage : MonoBehaviour
         {
             MakeNewSaveFile();
         }
-
-        OptionalScoreAction();
     }
 
     public void MakeNewSaveFile()
     {
-        List<LevelProgress> levels = new List<LevelProgress>();
+        List<LevelInfo> levels = new List<LevelInfo>();
 
-        levels.Add(new LevelProgress(0, LVL_1_SCORE));
-        levels.Add(new LevelProgress(0, LVL_2_SCORE));
-        levels.Add(new LevelProgress(0, LVL_3_SCORE));
+        levels.Add(new LevelInfo("level1", 1, LVL_1_SCORE, LevelInfo.StarScore.zero, 0.2f, 0.5f, 1f));
+        levels.Add(new LevelInfo("level2", 2, LVL_2_SCORE, LevelInfo.StarScore.zero, 0.3f, 0.8f, 1.5f));
+        levels.Add(new LevelInfo("level3", 3, LVL_3_SCORE, LevelInfo.StarScore.zero, 0.5f, 1f, 2f));
 
         savedGame = new Game(levels);
+
         Save();
+        Load();
     }
 
     internal bool LevelsArePurchased()
@@ -392,5 +516,10 @@ public class DataStorage : MonoBehaviour
         {
             Application.Quit();
         }
+    }
+
+    private void OnApplicationQuit()
+    {
+        Save();
     }
 }

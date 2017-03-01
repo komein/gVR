@@ -19,11 +19,11 @@ public class InAppManager : MonoBehaviour, IStoreListener {
     Action successAction = null;
     Action failAction = null;
 
-	void Start()
-	{
-		if (m_StoreController == null)
-		{
-			InitializePurchasing();
+    private void Awake()
+    {
+        if (m_StoreController == null)
+        {
+            InitializePurchasing();
         }
     }
 

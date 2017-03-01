@@ -1,56 +1,49 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LevelButton : SceneButton
 {
-    public int levelNumber;
 
     public LevelButtonContainer container;
     public BuyButton buyButton;
+
+    private StarProgressBar starBar;
+    private ScoreDisplayer2 scoreDisplayer;
+    GameObject lockImage;
+
+    LevelInfo level;
+    DataStorage storage;
+
+    private void Awake()
+    {
+        starBar = GetComponentInChildren<StarProgressBar>();
+
+
+        lockImage = transform.parent.GetComponentsInChildren<Canvas>().ToList().Find(p => p.name == "LockImage").gameObject;
+        scoreDisplayer = transform.parent.GetComponentsInChildren<Canvas>().ToList().Find(p => p.name == "ScoreDisplayer").GetComponent<ScoreDisplayer2>();
+
+        lockImage.SetActive(false);
+
+    }
 
     protected override void Start()
     {
         base.Start();
 
-        StartCoroutine(InitCoroutine());
-    }
+        level = FindObjectOfType<DataStorage>().savedGame.GetLevelByName(scenePath);
+        storage = FindObjectOfType<DataStorage>();
 
-    IEnumerator InitCoroutine()
-    {
-        int i = 0;
-
-        InAppManager manager = FindObjectOfType<InAppManager>();
-        while (null == manager && i++ < 1000)
-        {
-            yield return new WaitForSeconds(0.1f);
-        }
-
-        i = 0;
-
-        if (i < 1000)
-            while (!manager.readyFlag && i++ < 1000)
-            {
-                yield return new WaitForSeconds(0.1f);
-            }
-        else
-            Debug.Log("WTF");
-
-        if (i < 1000)
-            Initialize();
-
-        yield return null;
+        Initialize();
     }
 
     public void Initialize()
     {
-        //Debug.Log(gameObject.name + ": enter");
-        DataStorage store = FindObjectOfType<DataStorage>();
-        if (null != store)
+        if (null != storage && null != level)
         {
-            if (!store.savedGame.isLevelUnlocked(levelNumber))
+            if (!storage.savedGame.isLevelUnlocked(level.number))
             {
-                //Debug.Log(gameObject.name + ": locked");
                 if (null != container)
                     container.gameObject.SetActive(false);
 
@@ -60,12 +53,10 @@ public class LevelButton : SceneButton
             {
                 if (DataStorage.purchaseMode == true)
                 {
-                    if (DataStorage.lastFreeLevelNumber < levelNumber)
+                    if (DataStorage.lastFreeLevelNumber < level.number)
                     {
-                        //Debug.Log(gameObject.name + ": paid");
-                        if (!store.LevelsArePurchased())
+                        if (!storage.LevelsArePurchased())
                         {
-                            //Debug.Log(gameObject.name + ": not bought");
                             SetActiveLevelButton(false);
                             ToggleBuyButton(true);
                             return;
@@ -74,6 +65,8 @@ public class LevelButton : SceneButton
                 }
 
                 SetActiveLevelButton(true);
+
+                starBar.FillStarsNoAnimation((int)storage.GetStarRecord(level.number));
             }
         }
     }
@@ -89,9 +82,16 @@ public class LevelButton : SceneButton
     private void SetActiveLevelButton(bool v)
     {
         isActiveButton = v;
+        lockImage.SetActive(!v);
+        scoreDisplayer.gameObject.SetActive(v);
+
         if (!v)
+        {
             if (null != text)
+            {
                 text.color = text.color / 2f;
+            }
+        }
     }
 
     protected override void Function()
@@ -99,10 +99,14 @@ public class LevelButton : SceneButton
         DataStorage scoreStorage = FindObjectOfType<DataStorage>();
         if (null != scoreStorage)
         {
-            scoreStorage.SetMultiplier(1);
-            scoreStorage.Save();
-            scoreStorage.levelInfo.title = scenePath;
-            scoreStorage.levelInfo.number = levelNumber;
+            if (null != level)
+            {
+                scoreStorage.SetMultiplier(1);
+            }
+            else
+            {
+                Debug.LogError("No such level: " + scenePath);
+            }
         }
 
         base.Function();

@@ -8,11 +8,19 @@ public class StarContainer : MonoBehaviour {
     public Text value;
     public ProgressStar star;
 
-    public void HightlightStar()
+    public void HightlightStarAnimated()
     {
         if (null != star)
         {
-            star.Fill();
+            star.FillAnimated();
+        }
+    }
+
+    public void HightlightStarNoAnimation()
+    {
+        if (null != star)
+        {
+            star.FillNoAnimation();
         }
     }
 }

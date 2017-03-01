@@ -14,34 +14,55 @@ public class ScoreDisplayer2 : MonoBehaviour
     public Image pBar;
     public Image pBarBackground;
 
+    public Image pBarTemp;
+
     public Text status;
 
     public Color minColor;
     public Color midColor;
     public Color maxColor;
 
+    public Color completeColor;
+
     public float congratulationDelay = 5f;
 
     DataStorage storage;
-
-    int lvl;
+    LevelInfo level;
 
     bool deadFlag;
     bool messageLockFlag;
 
-    void Start()
+    bool mainMenuMode = false;
+
+
+    private void Awake()
     {
         InitializeStuff();
+    }
+
+    void Start()
+    {
+        storage = FindObjectOfType<DataStorage>();
+        SceneInfo l = storage.GetCurrentLevel();
+
+        level = storage.savedGame.GetLevelByName(l.title);
+
+        if (null == level) // explicit method for main menu
+        {
+            mainMenuMode = true;
+            level = storage.savedGame.GetLevel(levelNumber);
+        }
+
         LoadScore();
     }
 
-    private void LoadScore() // TODO переделать (см комменты)
+    private void LoadScore()
     {
         if (null != storage)
         {
-            storage.Load(); // для гарантии, что если сейв есть, из него загрузились данные
-            lvl = storage.GetCurrentLevel(); // берем загруженный уровень
-            storage.SetOptionalAction(UpdateText);
+            storage.LoadWithoutAction();
+            storage.SetOptionalScoreAction(UpdateText);
+            storage.OptionalScoreAction();
         }
     }
 
@@ -49,15 +70,15 @@ public class ScoreDisplayer2 : MonoBehaviour
     {
         deadFlag = false;
         messageLockFlag = false;
-        storage = FindObjectOfType<DataStorage>();
-        //message.enabled = true;
-        //message.text = "";
     }
 
     public void UpdateText()
     {
-        if (null == gameObject)
+        if (null == level)
+        {
+            Debug.LogError("null level");
             return;
+        }
 
         if (deadFlag) // нужен из-за особенностей вызовов методов у персистент объектов между загрузками сцен
         {
@@ -69,7 +90,6 @@ public class ScoreDisplayer2 : MonoBehaviour
             if (!storage.isAlive)
             {
                 deadFlag = true;
-                //ShowDeadMessage();
             }
             else
             {
@@ -77,19 +97,7 @@ public class ScoreDisplayer2 : MonoBehaviour
             }
         }
     }
-    /*
-    private void ShowDeadMessage()
-    {
-        if (null != message)
-        {
-            message.text = "Kitty is tired, returning to menu!";
-        }
-        if (null != nextLvl)
-        {
-            nextLvl.text = "";
-        }
-    }
-    */
+
     private void ShowScore(long score, long max)
     {
         if (null != status)
@@ -107,40 +115,68 @@ public class ScoreDisplayer2 : MonoBehaviour
 
     private void ShowScoreProgressBar()
     {
-        long score = storage.GetScore(levelNumber);
         if (null != pBarBackground)
         {
             pBarBackground.enabled = true;
         }
-        long toNextLvl = storage.GetMaxScore(levelNumber);
-        long toCurrentLvl = 0;
 
-        ShowScore(score, toNextLvl);
-        DrawProgressBar(score, toNextLvl, toCurrentLvl);
-    }
+        long accScore = level.accumulatedScore;
+        long tempScore = storage.levelInfo.tempScore;
+        long maxScore = level.maxScore;
 
-    private void DrawProgressBar(long score, long toNextLvl, long toCurrentLvl)
-    {
-        if (null != pBar)
-        {
-            pBar.fillAmount = ((score - toCurrentLvl) / (float)(toNextLvl - toCurrentLvl));
-            ThreeColorsLerp();
-        }
-    }
+        float pBarFill = accScore / (float)(maxScore);
 
-    private void ThreeColorsLerp()
-    {
-        if (pBar.fillAmount < 0.5f)
+        if (mainMenuMode)
         {
-            pBar.color = Color.Lerp(minColor, midColor, pBar.fillAmount * 2f);
-        }
-        else if (pBar.fillAmount == 1f)
-        {
-            pBar.color = Color.blue;
+            pBarTemp.enabled = false;
+            ShowScore(accScore, maxScore);
+            DrawProgressBar(pBar, 0, 1, pBarFill);
         }
         else
         {
-            pBar.color = Color.Lerp(midColor, maxColor, (pBar.fillAmount - 0.5f) * 2f);
+            pBarTemp.enabled = true;
+            ShowScore(tempScore + accScore, maxScore);
+            if (accScore < maxScore)
+            {
+                float pBarTempFill = tempScore / (float)(maxScore - accScore);
+                DrawProgressBar(pBar, 0, pBarFill, 1);
+                DrawProgressBar(pBarTemp, pBarFill, 1, pBarTempFill);
+            }
+            else
+            {
+                pBarTemp.enabled = false;
+                DrawProgressBar(pBar, 0, 1, 1);
+            }
+        }
+    }
+
+    private void DrawProgressBar(Image bar, float startAnchor, float endAnchor, float fillAmount)
+    {
+        if (null != bar)
+        {
+            bar.rectTransform.anchorMin = new Vector2(startAnchor, 0);
+            bar.rectTransform.anchorMax = new Vector3(endAnchor, 1);
+            bar.rectTransform.offsetMax = Vector2.zero;
+            bar.rectTransform.offsetMin = Vector2.zero;
+
+            bar.fillAmount = fillAmount;
+            ThreeColorsLerp(bar);
+        }
+    }
+
+    private void ThreeColorsLerp(Image bar)
+    {
+        if (bar.fillAmount < 0.5f)
+        {
+            bar.color = Color.Lerp(minColor, midColor, pBar.fillAmount * 2f);
+        }
+        else if (bar.fillAmount == 1f)
+        {
+            bar.color = completeColor;
+        }
+        else
+        {
+            bar.color = Color.Lerp(midColor, maxColor, (pBar.fillAmount - 0.5f) * 2f);
         }
     }
 
@@ -150,10 +186,6 @@ public class ScoreDisplayer2 : MonoBehaviour
         {
             pBarBackground.enabled = false;
         }
-        /* if (null != nextLvl)
-         {
-             nextLvl.text = "You have unlocked all the levels!";
-         }*/
         if (null != pBar)
         {
             pBar.fillAmount = 0;
@@ -162,14 +194,6 @@ public class ScoreDisplayer2 : MonoBehaviour
 
     private IEnumerator ShowCongratulation()
     {
-        /* if (null != message)
-         {
-             messageLockFlag = true;
-             message.text = "You gained access to a new level!";
-             yield return new WaitForSeconds(congratulationDelay);
-             message.text = "";
-             messageLockFlag = false;
-         }*/
         yield return null;
     }
 
