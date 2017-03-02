@@ -17,7 +17,7 @@ public class ScoreCollectible : Collectible {
                 return;
             }
 
-            data.AddScore(d.levelNumber, value);
+            data.AddScore(value);
 
             CaptionText text = FindObjectOfType<CaptionText>();
             if (null != text)

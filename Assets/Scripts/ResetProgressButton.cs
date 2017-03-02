@@ -1,6 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+
+public interface IUICanReinitialize : IEventSystemHandler
+{
+    void Reinitialize();
+}
 
 public class ResetProgressButton : LookableButton
 {
@@ -16,29 +22,14 @@ public class ResetProgressButton : LookableButton
     {
         if (null == data)
             return;
-
-        data.ResetScore();
+        
         data.MakeNewSaveFile();
 
-        LevelButton[] buttons = FindObjectsOfType<LevelButton>();
-
-        if (null != buttons)
+        foreach (var c in FindObjectsOfType<Canvas>())
         {
-            foreach (var v in buttons)
-            {
-                v.Initialize();
-            }
+            c.BroadcastMessage("Reinitialize");
         }
-
-        ScoreDisplayer2[] displayers = FindObjectsOfType<ScoreDisplayer2>();
-
-        if (null != displayers)
-        {
-            foreach (var v in displayers)
-            {
-                v.UpdateText();
-            }
-        }
+        
         StartCoroutine(PressedMessage());
 
         base.Function();

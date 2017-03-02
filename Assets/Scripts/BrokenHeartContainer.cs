@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BrokenHeartContainer : MonoBehaviour {
 
-    MeshRenderer [] meshes;
+    Image img;
 
     void Start()
     {
-        meshes = GetComponentsInChildren<MeshRenderer>();
+        img = GetComponentInChildren<Image>();
         SetMeshes(false);
     }
 
@@ -40,9 +41,6 @@ public class BrokenHeartContainer : MonoBehaviour {
 
     private void SetMeshes (bool v)
     {
-        foreach (MeshRenderer m in meshes)
-        {
-            m.enabled = v;
-        }
+        img.enabled = v;
     }
 }

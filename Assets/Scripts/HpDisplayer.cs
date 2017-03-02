@@ -12,15 +12,9 @@ public class HpDisplayer : MonoBehaviour
 
     bool deadFlag;
 
-    public HpContainer hp1;
-    public HpContainer hp2;
-    public HpContainer hp3;
-
-    public BrokenHeartContainer bhp1;
-    public BrokenHeartContainer bhp2;
-    public BrokenHeartContainer bhp3;
-
     int currentHp;
+
+    HpContainer2[] containers;
 
     bool[,] hpMatrix = {
         { false, false, false },
@@ -30,39 +24,42 @@ public class HpDisplayer : MonoBehaviour
 
     public void SetHp(int value)
     {
+        if (containers.Length < 2)
+            Debug.LogError("Hp init fuckup");
+
         if (value < 0 || value > 3)
             return;
 
-        hp1.Set(hpMatrix[value, 0]);
-        hp2.Set(hpMatrix[value, 1]);
-        hp3.Set(hpMatrix[value, 2]);
+        containers[0].SetHeart(hpMatrix[value, 0]);
+        containers[1].SetHeart(hpMatrix[value, 1]);
+        containers[2].SetHeart(hpMatrix[value, 2]);
 
         if (currentHp > value)
         {
             switch (currentHp)
             {
                 case 1:
-                    bhp1.BreakTheHeart();
+                    containers[0].BreakTheHeart();
                     break;
                 case 2:
-                    bhp2.BreakTheHeart();
+                    containers[1].BreakTheHeart();
                     break;
                 case 3:
-                    bhp3.BreakTheHeart();
+                    containers[2].BreakTheHeart();
                     break;
                 default:
                     return;
             }
         }
-        else
+        else if (currentHp < value)
         {
             switch (currentHp)
             {
                 case 1:
-                    hp2.MakeBiggerForSec();
+                    containers[1].MakeBiggerForSec();
                     break;
                 case 2:
-                    hp3.MakeBiggerForSec();
+                    containers[2].MakeBiggerForSec();
                     break;
                 default:
                     return;
@@ -75,12 +72,15 @@ public class HpDisplayer : MonoBehaviour
 
     void Start()
     {
+        containers = GetComponentsInChildren<HpContainer2>();
         deadFlag = false;
 
         storage = FindObjectOfType<DataStorage>();
         if (null != storage)
         {
             currentHp = storage.GetHp();
+
+            SetHp(currentHp);
 
             storage.SetOptionalHpAction(UpdateHp);
         }

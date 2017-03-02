@@ -110,62 +110,64 @@ public class Game
             return false;
 
         foreach (var v in levels)
+        {
             v.accumulatedScore = 0;
+            v.bestScoreRecord = 0;
+        }
 
         return true;
     }
 
-    internal LevelInfo.StarScore GetStarRecord(int level)
+    internal int GetStarRecord(int level)
     {
         LevelInfo l = GetLevel(level);
 
         if (null == l)
-            return LevelInfo.StarScore.zero;
+            return 0;
 
         return l.starRecord;
     }
 
-    internal bool SetStarRecord(int level, LevelInfo.StarScore sc)
-    {
-        LevelInfo l = GetLevel(level);
-
-        if (null == l)
-            return false;
-
-        l.starRecord = sc;
-
-        return true;
-    }
 }
 
 [System.Serializable]
 public class LevelInfo
 {
-    public string title;
+    public string title
+    {
+        get
+        {
+            return "level" + number;
+        }
+    }
+
     public int number;
 
-    public enum StarScore { zero, one, two, three };
-    public StarScore starRecord = StarScore.zero;
-
-    public long oneStarRecord // readonly
+    public int starRecord // readonly
     {
-        get;
-        private set;
+        get
+        {
+            if (bestScoreRecord > threeStarRecord)
+            {
+                return 3;
+            }
+            else if (bestScoreRecord > twoStarRecord)
+            {
+                return 2;
+            }
+            else if (bestScoreRecord > oneStarRecord)
+            {
+                return 1;
+            }
+            return 0;
+        }
     }
 
-    public long twoStarRecord // readonly
-    {
-        get;
-        private set;
-    }
+    public readonly long oneStarRecord;
+    public readonly long twoStarRecord;
+    public readonly long threeStarRecord;
 
-    public long threeStarRecord // readonly
-    {
-        get;
-        private set;
-    }
-
-    public long accumulatedScore;
+    public long accumulatedScore = 0;
     public long bestScoreRecord;
 
     public long maxScore // readonly
@@ -174,20 +176,15 @@ public class LevelInfo
         private set;
     }
 
-    public LevelInfo(string t, int n, long max)
+    public LevelInfo(int n, long max)
     {
-        title = t;
-        number = n;
         accumulatedScore = 0;
+        
+        number = n;
         maxScore = max;
     }
 
-    public LevelInfo(string t, int n,long max, StarScore ss) : this(t,n, max)
-    {
-        starRecord = ss;
-    }
-
-    public LevelInfo(string t, int n, long max, StarScore ss, float osr, float twsr, float thsr) : this (t,n, max,ss)
+    public LevelInfo(int n, long max, float osr, float twsr, float thsr) : this (n, max)
     {
         oneStarRecord = (long)(maxScore * osr);
         twoStarRecord = (long)(maxScore * twsr);
@@ -320,7 +317,7 @@ public class DataStorage : MonoBehaviour
         return true;
     }
 
-    public bool AddScore(int level, long s)
+    public bool AddScore(long s)
     {
         if (null == savedGame)
             return false;
@@ -348,24 +345,12 @@ public class DataStorage : MonoBehaviour
         return savedGame.GetMaxScore(level);
     }
 
-    public LevelInfo.StarScore GetStarRecord(int level)
+    public int GetStarRecord(int level)
     {
         if (null == savedGame)
-            return LevelInfo.StarScore.zero;
+            return 0;
 
         return savedGame.GetStarRecord(level);
-    }
-
-    public bool SetStarRecord(int level, LevelInfo.StarScore sc)
-    {
-        if (null == savedGame)
-            return false;
-
-        savedGame.SetStarRecord(level, sc);
-        
-        OptionalScoreAction();
-
-        return true;
     }
 
     public bool ResetScore()
@@ -427,18 +412,6 @@ public class DataStorage : MonoBehaviour
                 if (p.bestScoreRecord < levelInfo.tempScore)
                 {
                     p.bestScoreRecord = levelInfo.tempScore;
-                    if (p.bestScoreRecord > p.threeStarRecord)
-                    {
-                        p.starRecord = LevelInfo.StarScore.three;
-                    }
-                    else if (p.bestScoreRecord > p.twoStarRecord)
-                    {
-                        p.starRecord = LevelInfo.StarScore.two;
-                    }
-                    else if (p.bestScoreRecord > p.oneStarRecord)
-                    {
-                        p.starRecord = LevelInfo.StarScore.one;
-                    }
                 }
                 p.accumulatedScore += levelInfo.tempScore;
 
@@ -481,14 +454,14 @@ public class DataStorage : MonoBehaviour
     {
         List<LevelInfo> levels = new List<LevelInfo>();
 
-        levels.Add(new LevelInfo("level1", 1, LVL_1_SCORE, LevelInfo.StarScore.zero, 0.2f, 0.5f, 1f));
-        levels.Add(new LevelInfo("level2", 2, LVL_2_SCORE, LevelInfo.StarScore.zero, 0.3f, 0.8f, 1.5f));
-        levels.Add(new LevelInfo("level3", 3, LVL_3_SCORE, LevelInfo.StarScore.zero, 0.5f, 1f, 2f));
+        levels.Add(new LevelInfo(1, LVL_1_SCORE, 0.2f, 0.5f, 1f));
+        levels.Add(new LevelInfo(2, LVL_2_SCORE, 0.3f, 0.8f, 1.5f));
+        levels.Add(new LevelInfo(3, LVL_3_SCORE, 0.5f, 1f, 2f));
 
         savedGame = new Game(levels);
 
         Save();
-        Load();
+        LoadWithoutAction();
     }
 
     internal bool LevelsArePurchased()
@@ -511,10 +484,13 @@ public class DataStorage : MonoBehaviour
 
     void LateUpdate()
     {
-        GvrViewer.Instance.UpdateState();
-        if (GvrViewer.Instance.BackButtonPressed)
+        if (null != GvrViewer.Instance)
         {
-            Application.Quit();
+            GvrViewer.Instance.UpdateState();
+            if (GvrViewer.Instance.BackButtonPressed)
+            {
+                Application.Quit();
+            }
         }
     }
 
