@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: d31703f71b6805046a3ad7963907954f
+timeCreated: 1488466252
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Mathlete
+  fontNames:
+  - Mathlete
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: c6b048333018eed48bbd9d6d466ba2ba, type: 3}
+  - {fileID: 12800000, guid: 46e1a573117400e4e8e84d97b3d0d744, type: 3}
+  - {fileID: 12800000, guid: bc9d9cf7e3c8f014aa98a35cfb8febf3, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
