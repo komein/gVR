@@ -16,6 +16,8 @@ public class ScoreDisplayer2 : MonoBehaviour, IUICanReinitialize
 
     public Text status;
 
+    public StarProgressBar optionalBar;
+
     public Color minColor;
     public Color midColor;
     public Color maxColor;
@@ -34,6 +36,12 @@ public class ScoreDisplayer2 : MonoBehaviour, IUICanReinitialize
         storage = FindObjectOfType<DataStorage>();
 
         UpdateLevelInfo();
+
+        if (null != optionalBar)
+        {
+            optionalBar.FillStarsNoAnimation(level.starRecord);
+        }
+
         LoadScore();
     }
 
@@ -72,6 +80,14 @@ public class ScoreDisplayer2 : MonoBehaviour, IUICanReinitialize
             if (storage.isAlive)
             {
                 ShowScoreProgressBar();
+            }
+
+
+            if (null != optionalBar)
+            {
+                storage.UpdateBestScore();
+                UpdateLevelInfo();
+                optionalBar.FillStarsAnimated(level.starRecord);
             }
         }
     }
@@ -189,6 +205,10 @@ public class ScoreDisplayer2 : MonoBehaviour, IUICanReinitialize
     {
         Debug.Log("reinit " + gameObject.name);
         UpdateLevelInfo();
+        if (null != optionalBar)
+        {
+            optionalBar.UnfillStars();
+        }
         UpdateText();
     }
 }

@@ -13,6 +13,7 @@ public class CharacterPrototype2 : MonoBehaviour
     protected Rigidbody rb;
 
     public Camera cam;
+    CameraPrototype2 cp;
 
     public float maxSpeed = 1f;
     public float acceleration = 50f;
@@ -58,6 +59,8 @@ public class CharacterPrototype2 : MonoBehaviour
 
         if (null == cam)
             cam = Camera.main;
+
+        cp = cam.GetComponentInParent<CameraPrototype2>();
 
         StartCoroutine(StartRunning());
 
@@ -151,18 +154,37 @@ public class CharacterPrototype2 : MonoBehaviour
             case CatState.cantMove:
             case CatState.jump:
                 rb.useGravity = true;
-                //Physics.gravity = gravity;
                 return;
             case CatState.moving:
                 rb.useGravity = false;
-                //Physics.gravity = Vector3.zero;
                 return;
         }
     }
 
+    Vector2 CartesianToPolar(Vector3 point)
+    {
+        Vector2 polar;
+        polar.y = Mathf.Atan2(point.x, point.z);
+        float xzLen = new Vector2(point.x, point.z).magnitude;
+        polar.x = Mathf.Atan2(-point.y, xzLen);
+        polar *= Mathf.Rad2Deg;
+
+        return polar;
+    }
+
+    Vector3 PolarToCartesian(Vector2 polar)
+    {
+        Vector3 origin = new Vector3(0, 0, 1);
+        var rotation = Quaternion.Euler(polar.x, polar.y, 0);
+        Vector3 point = rotation * origin;
+
+        return point;
+    }
+
     private Vector3 GetMoveVector()
     {
-        Vector3 pos = new Vector3(cam.transform.forward.x + (cam.transform.position.x - gameObject.transform.position.x) / 8f, 0, 0) * strafeSpeed;
+        Vector3 ang = cam.transform.rotation.eulerAngles;
+        Vector3 pos = new Vector3(PolarToCartesian(new Vector2(ang.x, ang.y)).x + (cam.transform.position.x - gameObject.transform.position.x) / 4f, 0, 0) * strafeSpeed;
 
         if (Mathf.Abs(pos.x) > strafeStep)
         {
@@ -178,11 +200,8 @@ public class CharacterPrototype2 : MonoBehaviour
     {
         if (null != data)
         {
-
             if (data.isAlive)
             {
-
-
                 if (currentState == CatState.moving)
                 {
                     Quaternion rot_ = Quaternion.identity;
@@ -191,7 +210,6 @@ public class CharacterPrototype2 : MonoBehaviour
                     {
                         rot_ = highGrounds.Last().transform.rotation;
                         rot_ = Quaternion.Euler(-rot_.eulerAngles.x, 0, 0);
-
                     }
                     else
                     {
@@ -207,8 +225,6 @@ public class CharacterPrototype2 : MonoBehaviour
                                 rot_ = Quaternion.Euler(rot_.eulerAngles.x - 90f, 0, 0);
                             }
                         }
-
-                        //rb.velocity = pos * Time.fixedDeltaTime;
                     }
 
                     rb.velocity = rot_ * pos * Time.fixedDeltaTime;

@@ -15,14 +15,18 @@ public class ProgressStar : MonoBehaviour
     public float power = 1f;
     public float time = 1f;
 
+    public bool filled = false;
+
 	void Awake ()
     {
         fillImage = GetComponent<Image>();
         borderImage = GetComponentInChildren<Image>();
-	}
+        MakeEmpty();
+    }
 
     public void FillAnimated()
     {
+        filled = true;
         fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 1);
         StopAllCoroutines();
         StartCoroutine(PlayTransition());
@@ -30,11 +34,13 @@ public class ProgressStar : MonoBehaviour
 
     public void FillNoAnimation()
     {
+        filled = true;
         fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 1);
     }
 
     public void MakeEmpty()
     {
+        filled = false;
         fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 0);
     }
 

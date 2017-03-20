@@ -72,7 +72,9 @@ public class LevelButton : SceneButton, IUICanReinitialize
                 SetActiveLevelButton(true);
 
                 if (null != starBar)
+                {
                     starBar.FillStarsNoAnimation(storage.GetStarRecord(level.number));
+                }
             }
         }
     }

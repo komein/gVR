@@ -23,4 +23,12 @@ public class StarContainer : MonoBehaviour {
             star.FillNoAnimation();
         }
     }
+
+    public void UnhightlightStar()
+    {
+        if (null != star)
+        {
+            star.MakeEmpty();
+        }
+    }
 }

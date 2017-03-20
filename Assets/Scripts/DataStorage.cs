@@ -402,7 +402,7 @@ public class DataStorage : MonoBehaviour
         file.Close();
     }
 
-    public void OnSceneChange()
+    public void UpdateBestScore()
     {
         if (null != levelInfo)
         {
@@ -413,6 +413,18 @@ public class DataStorage : MonoBehaviour
                 {
                     p.bestScoreRecord = levelInfo.tempScore;
                 }
+            }
+        }
+    }
+    public void OnSceneChange()
+    {
+        if (null != levelInfo)
+        {
+            LevelInfo p = savedGame.GetLevelByName(levelInfo.title);
+            if (p != null)
+            {
+                UpdateBestScore();
+
                 p.accumulatedScore += levelInfo.tempScore;
 
                 levelInfo.tempScore = 0;

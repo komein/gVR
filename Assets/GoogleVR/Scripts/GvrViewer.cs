@@ -40,14 +40,14 @@ public class GvrViewer : MonoBehaviour {
       }
 #endif
       if (instance == null) {
-        Debug.LogError("No GvrViewer instance found.  Ensure one exists in the scene, or call "
+        /*Debug.LogError("No GvrViewer instance found.  Ensure one exists in the scene, or call "
             + "GvrViewer.Create() at startup to generate one.\n"
             + "If one does exist but hasn't called Awake() yet, "
             + "then this error is due to order-of-initialization.\n"
             + "In that case, consider moving "
             + "your first reference to GvrViewer.Instance to a later point in time.\n"
             + "If exiting the scene, this indicates that the GvrViewer object has already "
-            + "been destroyed.");
+            + "been destroyed.");*/
       }
       return instance;
     }
