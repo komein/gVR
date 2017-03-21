@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StarProgressBar : MonoBehaviour
 {
@@ -12,7 +13,22 @@ public class StarProgressBar : MonoBehaviour
     {
         List<ProgressStar> s = GetComponentsInChildren<ProgressStar>().ToList();
         if (s.Count > 0)
+        {
             stars = s;
+        }
+        else
+        {
+            List<StarContainer> sc = GetComponentsInChildren<StarContainer>().ToList();
+
+            if (sc.Count > 0)
+            {
+                stars = new List<ProgressStar>();
+                foreach(var v in sc)
+                {
+                    stars.Add(v.star);
+                }
+            }
+        }
     }
 
     public int obtainedStars
@@ -37,13 +53,33 @@ public class StarProgressBar : MonoBehaviour
         }
     }
 
+    public void SetTextValues(LevelInfo level)
+    {
+        List<StarContainer> conts = GetComponentsInChildren<StarContainer>().ToList();
+
+        if (conts.Count > 0)
+        {
+            for (int i = 0; i < conts.Count; i++ )
+            {
+                Text t = conts[i].GetComponentInChildren<Text>();
+                if (null != t)
+                {
+                    t.text = level.starRecords[i].ToString();
+                }
+            }
+        }
+    }
+
     public void FillStarsAnimated(int v)
     {
         if (animationLock)
             return;
 
-        animationLock = true;
-        StartCoroutine(FillStarsCoroutine(v));
+        if (gameObject.activeInHierarchy)
+        {
+            animationLock = true;
+            StartCoroutine(FillStarsCoroutine(v));
+        }
     }
 
     public void FillStarsNoAnimation(int v)

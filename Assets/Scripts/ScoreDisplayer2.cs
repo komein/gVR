@@ -37,10 +37,11 @@ public class ScoreDisplayer2 : MonoBehaviour, IUICanReinitialize
 
         UpdateLevelInfo();
 
-        if (null != optionalBar)
-        {
-            optionalBar.FillStarsNoAnimation(level.starRecord);
-        }
+        if (null != level)
+            if (null != optionalBar)
+            {
+                optionalBar.FillStarsNoAnimation(level.starRecord);
+            }
 
         LoadScore();
     }
@@ -67,11 +68,54 @@ public class ScoreDisplayer2 : MonoBehaviour, IUICanReinitialize
         }
     }
 
+    internal void LerpNewScore()
+    {
+        if (null != pBarBackground)
+        {
+            pBarBackground.enabled = true;
+        }
+
+        if (null == pBar)
+            return;
+
+        long accScore = level.accumulatedScore;
+        long tempScore = storage.sceneInfo.tempScore;
+        long maxScore = level.maxScore;
+
+        float pBarFill = accScore / (float)(maxScore);
+
+        if (mainMenuMode)
+        {
+            return;
+        }
+        else
+        {
+            if (null == pBarTemp)
+                return;
+
+            pBarTemp.enabled = true;
+
+            ShowScore(tempScore + accScore, maxScore);
+
+            if (accScore < maxScore)
+            {
+                float pBarTempFill = tempScore / (float)(maxScore - accScore);
+                DrawProgressBar(pBar, 0, pBarFill, 1);
+                DrawProgressBar(pBarTemp, pBarFill, 1, pBarTempFill);
+            }
+            else
+            {
+                pBarTemp.enabled = false;
+                DrawProgressBar(pBar, 0, 1, 1);
+            }
+        }
+    }
+
     public void UpdateText()
     {
         if (null == level)
         {
-            Debug.LogError("null level");
+            //Debug.LogError("null level");
             return;
         }
 
@@ -85,9 +129,7 @@ public class ScoreDisplayer2 : MonoBehaviour, IUICanReinitialize
 
             if (null != optionalBar)
             {
-                storage.UpdateBestScore();
-                UpdateLevelInfo();
-                optionalBar.FillStarsAnimated(level.starRecord);
+                optionalBar.FillStarsAnimated(level.GetStarRecord(storage.sceneInfo.tempScore));
             }
         }
     }
@@ -118,7 +160,7 @@ public class ScoreDisplayer2 : MonoBehaviour, IUICanReinitialize
             return;
 
         long accScore = level.accumulatedScore;
-        long tempScore = storage.levelInfo.tempScore;
+        long tempScore = storage.sceneInfo.tempScore;
         long maxScore = level.maxScore;
 
         float pBarFill = accScore / (float)(maxScore);

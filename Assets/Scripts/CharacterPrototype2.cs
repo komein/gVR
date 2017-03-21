@@ -25,6 +25,9 @@ public class CharacterPrototype2 : MonoBehaviour
     public float dropSpeed = 50f;
 
     public bool hasCompensatingForce = false;
+
+    public GameCanvas gameCanvas;
+    public WinCanvas winCanvas;
  
     float curSpeed = 0f;
     
@@ -65,7 +68,16 @@ public class CharacterPrototype2 : MonoBehaviour
         StartCoroutine(StartRunning());
 
         rb.useGravity = true;
-        //gravity = Physics.gravity;
+
+        if (null == gameCanvas)
+            gameCanvas = FindObjectOfType<GameCanvas>();
+        if (null != gameCanvas)
+            gameCanvas.gameObject.SetActive(true);
+
+        if (null == winCanvas)
+            winCanvas = FindObjectOfType<WinCanvas>();
+        if (null != winCanvas)
+            winCanvas.gameObject.SetActive(false);
     }
 
     private IEnumerator StartRunning()
@@ -120,6 +132,23 @@ public class CharacterPrototype2 : MonoBehaviour
 
         }
 
+    }
+
+    public void FinishLevel()
+    {
+        currentState = CatState.paused;
+
+        if (null != gameCanvas && null != winCanvas)
+        {
+            gameCanvas.gameObject.SetActive(false);
+            winCanvas.gameObject.SetActive(true);
+
+            winCanvas.ShowScore();
+        }
+        else
+        {
+            StartCoroutine(Die());
+        }
     }
 
     private void SelectCatState()
@@ -383,7 +412,7 @@ public class CharacterPrototype2 : MonoBehaviour
 
             if (!data.isAlive)
             {
-                StartCoroutine(Die());
+                FinishLevel();
             }
             else
             {
@@ -443,7 +472,9 @@ public class CharacterPrototype2 : MonoBehaviour
     private IEnumerator JumpCoroutine()
     {
         currentState = CatState.jump;
+
         yield return new WaitForSeconds(5f);
+
         currentState = CatState.moving;
 
         yield return null;
@@ -452,13 +483,11 @@ public class CharacterPrototype2 : MonoBehaviour
     private IEnumerator Die()
     {
         currentState = CatState.dying;
+        
         yield return new WaitForSeconds(4f);
 
-        data.RestoreHp();
-        data.Save();
-
         SceneManager.LoadScene("mainMenu", LoadSceneMode.Single);
-
+        
         yield return null;
     }
 

@@ -147,25 +147,30 @@ public class LevelInfo
     {
         get
         {
-            if (bestScoreRecord > threeStarRecord)
+            for (int i = starRecords.Count; i > 0; i--)
             {
-                return 3;
-            }
-            else if (bestScoreRecord > twoStarRecord)
-            {
-                return 2;
-            }
-            else if (bestScoreRecord > oneStarRecord)
-            {
-                return 1;
+                if (bestScoreRecord > starRecords[i-1])
+                {
+                    return i;
+                }
             }
             return 0;
         }
     }
 
-    public readonly long oneStarRecord;
-    public readonly long twoStarRecord;
-    public readonly long threeStarRecord;
+    public int GetStarRecord(long r)
+    {
+        for (int i = starRecords.Count; i > 0; i--)
+        {
+            if (r > starRecords[i - 1])
+            {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public readonly List<long> starRecords;
 
     public long accumulatedScore = 0;
     public long bestScoreRecord;
@@ -186,9 +191,11 @@ public class LevelInfo
 
     public LevelInfo(int n, long max, float osr, float twsr, float thsr) : this (n, max)
     {
-        oneStarRecord = (long)(maxScore * osr);
-        twoStarRecord = (long)(maxScore * twsr);
-        threeStarRecord = (long)(maxScore * thsr);
+        starRecords = new List<long>();
+
+        starRecords.Add((long)(maxScore * osr));
+        starRecords.Add((long)(maxScore * twsr));
+        starRecords.Add((long)(maxScore * thsr));
     }
 
 }
@@ -208,7 +215,7 @@ public class DataStorage : MonoBehaviour
 
     public Game savedGame;
 
-    public SceneInfo levelInfo = new SceneInfo();
+    public SceneInfo sceneInfo = new SceneInfo();
 
     private int hp;
 
@@ -270,7 +277,7 @@ public class DataStorage : MonoBehaviour
 
     public SceneInfo GetCurrentLevel()
     {
-        return levelInfo;
+        return sceneInfo;
     }
     
     internal void SetMultiplier(int v)
@@ -320,9 +327,11 @@ public class DataStorage : MonoBehaviour
     public bool AddScore(long s)
     {
         if (null == savedGame)
+        {
             return false;
+        }
 
-        levelInfo.tempScore += (int)(s * multiplier + 0.5f);
+        sceneInfo.tempScore += (int)(s * multiplier + 0.5f);
         
         OptionalScoreAction();
 
@@ -397,37 +406,38 @@ public class DataStorage : MonoBehaviour
             return;
 
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Application.persistentDataPath + "/save.bin");
+        FileStream file = File.Create(Application.persistentDataPath + "/save12.bin");
         bf.Serialize(file, savedGame);
         file.Close();
     }
 
     public void UpdateBestScore()
     {
-        if (null != levelInfo)
+        if (null != sceneInfo)
         {
-            LevelInfo p = savedGame.GetLevelByName(levelInfo.title);
+            LevelInfo p = savedGame.GetLevelByName(sceneInfo.title);
             if (p != null)
             {
-                if (p.bestScoreRecord < levelInfo.tempScore)
+                if (p.bestScoreRecord < sceneInfo.tempScore)
                 {
-                    p.bestScoreRecord = levelInfo.tempScore;
+                    p.bestScoreRecord = sceneInfo.tempScore;
                 }
             }
         }
     }
+
     public void OnSceneChange()
     {
-        if (null != levelInfo)
+        if (null != sceneInfo)
         {
-            LevelInfo p = savedGame.GetLevelByName(levelInfo.title);
+            LevelInfo p = savedGame.GetLevelByName(sceneInfo.title);
             if (p != null)
             {
                 UpdateBestScore();
 
-                p.accumulatedScore += levelInfo.tempScore;
+                p.accumulatedScore += sceneInfo.tempScore;
 
-                levelInfo.tempScore = 0;
+                sceneInfo.tempScore = 0;
             }
         }
 
@@ -449,10 +459,10 @@ public class DataStorage : MonoBehaviour
 
     public void LoadWithoutAction()
     {
-        if (File.Exists(Application.persistentDataPath + "/save.bin"))
+        if (File.Exists(Application.persistentDataPath + "/save12.bin"))
         {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Application.persistentDataPath + "/save.bin", FileMode.Open);
+            FileStream file = File.Open(Application.persistentDataPath + "/save12.bin", FileMode.Open);
             savedGame = (Game)bf.Deserialize(file);
             file.Close();
         }

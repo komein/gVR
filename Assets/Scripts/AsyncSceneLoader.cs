@@ -44,7 +44,7 @@ public class AsyncSceneLoader : MonoBehaviour
 
         if (null != storage)
         {
-            LoadLevel(storage.levelInfo.title);
+            LoadLevel(storage.sceneInfo.title);
         }
     }
 

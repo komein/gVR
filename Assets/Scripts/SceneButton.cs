@@ -19,7 +19,7 @@ public class SceneButton : LookableButton
         if (null != scoreStorage)
         {
             scoreStorage.OnSceneChange();
-            scoreStorage.levelInfo.title = scenePath;
+            scoreStorage.sceneInfo.title = scenePath;
         }
 
         SceneManager.LoadScene("loadingScreen", LoadSceneMode.Single);
