@@ -36,7 +36,9 @@ public class StarProgressBar : MonoBehaviour
         get
         {
             if (null == stars)
+            {
                 return 0;
+            }
 
             return stars.FindAll(p => p.filled == true).Count;
         }
@@ -46,10 +48,13 @@ public class StarProgressBar : MonoBehaviour
 
     public void UnfillStars()
     {
-        foreach(var v in stars)
+        if (null != stars)
         {
-            if (null != v)
-                v.MakeEmpty();
+            foreach (var v in stars)
+            {
+                if (null != v)
+                    v.MakeEmpty();
+            }
         }
     }
 
@@ -73,7 +78,9 @@ public class StarProgressBar : MonoBehaviour
     public void FillStarsAnimated(int v)
     {
         if (animationLock)
+        {
             return;
+        }
 
         if (gameObject.activeInHierarchy)
         {

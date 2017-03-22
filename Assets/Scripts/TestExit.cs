@@ -4,12 +4,4 @@ using UnityEngine;
 
 public class TestExit : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class HpContainer2 : MonoBehaviour
 {
-
     Image heart;
     Image broken;
 

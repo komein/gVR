@@ -7,20 +7,15 @@ using UnityEngine.UI;
 public class WinCanvas : MonoBehaviour
 {
     public StarProgressBar starBar;
-    public ScoreDisplayer2 scoreBar;
+    public ScoreDisplayer scoreBar;
 
     public Text scoreText;
     public Text recordText;
-
-    DataStorage storage;
 
     bool animationLock = false;
 	
     internal void ShowScore()
     {
-        if (null == storage)
-            storage = FindObjectOfType<DataStorage>();
-
         if (!animationLock)
         {
             animationLock = true;
@@ -30,42 +25,53 @@ public class WinCanvas : MonoBehaviour
 
     IEnumerator ScoreCoroutine()
     {
-        Debug.Log(storage);
-
-        if (null != storage)
+        if (null != DataObjects.savedGame && null != DataObjects.sceneInfo)
         {
-            SceneInfo info = storage.sceneInfo;
-
-            if (null != info)
+            LevelInfo p = DataObjects.savedGame.GetLevelByName(DataObjects.sceneInfo.title);
+            if (p != null)
             {
-                Debug.Log(info.title);
-                LevelInfo p = storage.savedGame.GetLevelByName(info.title);
-                if (p != null)
+                scoreText.text = "Score: " + DataObjects.sceneInfo.tempScore;
+
+                if (p.bestScoreRecord < DataObjects.sceneInfo.tempScore)
                 {
-                    scoreText.text = "Score: " + info.tempScore;
+                    recordText.text = "New record: " + DataObjects.sceneInfo.tempScore + "!";
+                }
+                else
+                {
+                    recordText.text = "Record: " + p.bestScoreRecord;
+                }
+                    
+                starBar.SetTextValues(p);
+                scoreBar.ShowScoreProgressBarAnimated(0);
 
-                    if (p.bestScoreRecord < info.tempScore)
+                yield return new WaitForSeconds(1f);
+
+                if (p.accumulatedScore < p.maxScore)
+                {
+                    float time = 1f;
+                    float timeSteps = 60f;
+
+                    float step = time / timeSteps;
+
+                    for (float t = 0; t < time; t += step)
                     {
-                        recordText.text = "New record: " + info.tempScore + "!";
-                        recordText.color = Color.green;
+                        scoreBar.ShowScoreProgressBarAnimated(t, time);
+                        yield return new WaitForSeconds(step);
                     }
-                    else
-                    {
-                        recordText.text = "Record: " + p.bestScoreRecord;
-                    }
-
-                    scoreBar.UpdateText();
-
-                    starBar.SetTextValues(p);
 
                     yield return new WaitForSeconds(1f);
-
-                    storage.UpdateBestScore();
-
-                    p = storage.savedGame.GetLevelByName(info.title);
-
-                    starBar.FillStarsAnimated(p.starRecord);
                 }
+                else
+                {
+                    scoreBar.ShowScoreProgressBar();
+                }
+
+                if (null != DataObjects.gameController)
+                    DataObjects.gameController.UpdateBestScore();
+
+                p = DataObjects.savedGame.GetLevelByName(DataObjects.sceneInfo.title);
+
+                starBar.FillStarsAnimated(p.starRecord);
             }
         }
 

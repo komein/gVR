@@ -7,8 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class BuyButton : SceneButton, IUICanReinitialize
 {
-
-    DataStorage store;
     RectTransform container;
 
     private void Awake()
@@ -20,9 +18,6 @@ public class BuyButton : SceneButton, IUICanReinitialize
     protected override void Start()
     {
         base.Start();
-
-        store = FindObjectOfType<DataStorage>();
-
     }
 
     protected override void Function()
@@ -42,7 +37,6 @@ public class BuyButton : SceneButton, IUICanReinitialize
 
     public void Reinitialize()
     {
-        Debug.Log("reinit " + gameObject.name);
         Toggle(false);
     }
 }

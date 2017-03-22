@@ -16,13 +16,13 @@ public class MultiplierCollectible : Collectible {
 
     private IEnumerator SetMultiplier(int v)
     {
-        if (null != data)
+        if (null != DataObjects.gameController)
         {
-            data.SetMultiplier(v);
+            DataObjects.gameController.SetMultiplier(v);
 
             yield return new WaitForSeconds(period);
 
-            data.SetMultiplier(1);
+            DataObjects.gameController.SetMultiplier(1);
         }
 
         yield return null;

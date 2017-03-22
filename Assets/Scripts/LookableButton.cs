@@ -44,8 +44,12 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
             return;
 
         isGazedOn = gazedAt;
-        img.fillAmount = 0;
-        img.color = normalColor;
+
+        if (null != img)
+        {
+            img.fillAmount = 0;
+            img.color = normalColor;
+        }
     }
 
     protected virtual void Update()
@@ -56,7 +60,10 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
             {
                 time += Time.deltaTime;
 
-                img.fillAmount = Mathf.Min(1f, (time / (float)activateTime));
+                if (null != img)
+                {
+                    img.fillAmount = Mathf.Min(1f, (time / (float)activateTime));
+                }
             }
             else
             {
@@ -70,7 +77,10 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
         }
         else
         {
-            img.color = pressedColor;
+            if (null != img)
+            {
+                img.color = pressedColor;
+            }
         }
     }
 
@@ -94,16 +104,18 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
         Function();
     }
 
-
     protected IEnumerator PressedMessage()
     {
-        string t = text.text;
+        if (null != text)
+        {
+            string t = text.text;
 
-        text.text = pressedCaption;
+            text.text = pressedCaption;
 
-        yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(2f);
 
-        text.text = t;
+            text.text = t;
+        }
 
         yield return null;
     }

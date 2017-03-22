@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CaptionText : MonoBehaviour {
+public class CaptionText : MonoBehaviour
+{
 
     TextMesh text;
     MeshRenderer mesh;
@@ -18,7 +19,10 @@ public class CaptionText : MonoBehaviour {
 	
     public void PlaceText(string t, Vector3 pos)
     {
-        text.text = t;
+        if (null != text)
+        {
+            text.text = t;
+        }
         Toggle(true);
         transform.position = pos;
 
@@ -48,7 +52,10 @@ public class CaptionText : MonoBehaviour {
 
     public void Toggle(bool v)
     {
-        mesh.enabled = v;
+        if (null != mesh)
+        {
+            mesh.enabled = v;
+        }
     }
 
 }

@@ -8,17 +8,20 @@ public class HpCollectible : Collectible {
 
     public override void Collect()
     {
-        if (data.GetHp() < 3) // FIXME
+        if (null != DataObjects.gameController)
         {
-            base.Collect();
-            data.AddHp(value);
-
-            CaptionText text = FindObjectOfType<CaptionText>();
-            if (null != text)
+            if (DataObjects.gameController.GetHp() < SceneInfo.HP_MAX)
             {
-                string v = "+" + value + "hp!";
+                base.Collect();
+                DataObjects.gameController.AddHp(value);
 
-                text.PlaceText(v, transform.position + Vector3.up * 0.5f);
+                CaptionText text = FindObjectOfType<CaptionText>();
+                if (null != text)
+                {
+                    string v = "+" + value + "hp!";
+
+                    text.PlaceText(v, transform.position + Vector3.up * 0.5f);
+                }
             }
         }
     }

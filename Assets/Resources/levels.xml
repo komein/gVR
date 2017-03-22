@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<SavedGame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Levels>
+    <LevelInfo number="1" accScore="0" bestScore="0" maxScore="50">
+      <StarRecords>
+        <StarRecord>10</StarRecord>
+        <StarRecord>25</StarRecord>
+        <StarRecord>50</StarRecord>
+      </StarRecords>
+    </LevelInfo>
+    <LevelInfo number="2" accScore="0" bestScore="0" maxScore="60">
+      <StarRecords>
+        <StarRecord>18</StarRecord>
+        <StarRecord>48</StarRecord>
+        <StarRecord>90</StarRecord>
+      </StarRecords>
+    </LevelInfo>
+    <LevelInfo number="3" accScore="0" bestScore="0" maxScore="70">
+      <StarRecords>
+        <StarRecord>35</StarRecord>
+        <StarRecord>70</StarRecord>
+        <StarRecord>140</StarRecord>
+      </StarRecords>
+    </LevelInfo>
+  </Levels>
+</SavedGame>

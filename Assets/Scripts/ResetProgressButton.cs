@@ -10,20 +10,17 @@ public interface IUICanReinitialize : IEventSystemHandler
 
 public class ResetProgressButton : LookableButton
 {
-    DataStorage data;
-
     protected override void Start()
     {
         base.Start();
-        data = FindObjectOfType<DataStorage>();
     }
 
     protected override void Function()
     {
-        if (null == data)
+        if (null == DataObjects.dataManager)
             return;
-        
-        data.MakeNewSaveFile();
+
+        DataObjects.dataManager.MakeNewSaveFile();
 
         foreach (var c in FindObjectsOfType<Canvas>())
         {

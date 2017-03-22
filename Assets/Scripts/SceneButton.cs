@@ -15,11 +15,10 @@ public class SceneButton : LookableButton
     {
         base.Function();
 
-        DataStorage scoreStorage = FindObjectOfType<DataStorage>();
-        if (null != scoreStorage)
+        if (null != DataObjects.gameController && null != DataObjects.sceneInfo)
         {
-            scoreStorage.OnSceneChange();
-            scoreStorage.sceneInfo.title = scenePath;
+            DataObjects.gameController.OnSceneChange();
+            DataObjects.sceneInfo.title = scenePath;
         }
 
         SceneManager.LoadScene("loadingScreen", LoadSceneMode.Single);

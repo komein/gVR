@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class BuyResult : MonoBehaviour
 {
-
     public string successMessage;
     public string failMessage;
 
@@ -13,34 +12,27 @@ public class BuyResult : MonoBehaviour
 
     public BuyPageButton returnButton;
 
-    DataStorage storage;
-
 	void Start ()
     {
         returnButton.gameObject.SetActive(false);
-
-        storage = FindObjectOfType<DataStorage>();
-
-        if (null != storage)
+        
+        if (null != DataObjects.iapManager)
         {
-            //storage.SetActions(SetSuccessMessage, SetFailMessage);
-            if (true == storage.PurchaseLevel())
-                SetSuccessMessage();
-            else
-                SetFailMessage();
+            SetMessage(DataObjects.iapManager.PurchaseLevel());
         }
 	}
 
-    public void SetSuccessMessage()
+    public void SetMessage(bool result)
     {
-        text.text = successMessage;
-        returnButton.gameObject.SetActive(true);
-    }
+        if (null != text)
+        {
+            text.text = result ? successMessage : failMessage;
+        }
 
-    public void SetFailMessage()
-    {
-        text.text = failMessage;
-        returnButton.gameObject.SetActive(true);
+        if (null != returnButton)
+        {
+            returnButton.gameObject.SetActive(true);
+        }
     }
 	
 }

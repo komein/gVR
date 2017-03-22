@@ -4,14 +4,13 @@ using UnityEngine;
 using UnityEngine.Purchasing;
 using System;
 
-public class InAppManager : MonoBehaviour, IStoreListener {
+public class InAppManager : IStoreListener
+{
 	private static IStoreController m_StoreController;
 	private static IExtensionProvider m_StoreExtensionProvider;
 
 	public const string pLevels = "plvl";
-
 	public const string pLevelsAppStore = "app_plvl";
-
 	public const string pLevelsGooglePlay = "gp_plvl";
 
     public bool readyFlag = false;
@@ -19,7 +18,7 @@ public class InAppManager : MonoBehaviour, IStoreListener {
     Action successAction = null;
     Action failAction = null;
 
-    private void Awake()
+    public InAppManager()
     {
         if (m_StoreController == null)
         {
@@ -158,4 +157,15 @@ public class InAppManager : MonoBehaviour, IStoreListener {
         successAction = s;
         failAction = f;
     }
+
+    internal bool LevelsArePurchased()
+    {
+        return IsProductBought(InAppManager.pLevels);
+    }
+
+    internal bool PurchaseLevel()
+    {
+        return BuyProductID(InAppManager.pLevels);
+    }
+    
 }

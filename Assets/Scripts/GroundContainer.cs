@@ -4,6 +4,5 @@ using UnityEngine;
 
 public class GroundContainer : MonoBehaviour {
 
-
     public bool rotationCrutch = false;
 }

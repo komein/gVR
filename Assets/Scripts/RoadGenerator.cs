@@ -14,15 +14,12 @@ public class RoadGenerator : MonoBehaviour
     CollectiblePool pool;
     List<RoadPart> nextCandidates;
 
-    DataStorage data;
-
     public float MinChance = 0.3f;
     public float MaxChance = 0.7f;
     public float multChance = 0.3f;
 
 	void Start ()
     {
-        data = FindObjectOfType<DataStorage>();
         roadParts = GetComponentsInChildren<RoadPart>().ToList();
 
         nextCandidates = roadParts;
@@ -128,14 +125,14 @@ public class RoadGenerator : MonoBehaviour
 
     private void FillCollectibles()
     {
-        if (null != pool && null != nextPart && null != data)
+        if (null != pool && null != nextPart && null != DataObjects.gameController)
         {
             List<CollectiblePlace> places = nextPart.GetComponentsInChildren<CollectiblePlace>().ToList();
 
             if (null != places)
             {
                 if (places.Count > 0)
-                    if (data.GetHp() < 3) // FIXME someday
+                    if (DataObjects.gameController.GetHp() < SceneInfo.HP_MAX)
                     {
                         CollectiblePlace hpPlace = places[Random.Range(0, places.Count)];
                         if (null != hpPlace)
@@ -151,7 +148,8 @@ public class RoadGenerator : MonoBehaviour
                         CollectiblePlace multPlace = places[Random.Range(0, places.Count)];
                         if (null != multPlace)
                         {
-                            pool.PlaceMultiplier(multPlace.transform.position + new Vector3(0, 0.05f, 0), nextPart, currentPart);
+                            pool.PlaceMultiplier(multPlace.transform.position + new Vector3(0, 0.05f, 0), // bad
+                                nextPart, currentPart);
                             places.Remove(multPlace);
                         }
                     }

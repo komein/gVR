@@ -16,9 +16,11 @@ public class CollectiblePool : MonoBehaviour {
     public int poolDepth = 10;
 
 	void Awake () {
+
         hpPrefab = GetComponentInChildren<HpCollectible>();
         multPrefab = GetComponentInChildren<MultiplierCollectible>();
         cakePrefabs = GetComponentsInChildren<ScoreCollectible>();
+
         foreach (ScoreCollectible c in cakePrefabs)
         {
             for (int i = 0; i < poolDepth; i++)
@@ -46,15 +48,19 @@ public class CollectiblePool : MonoBehaviour {
 
     public void RemoveAllFromRoad(RoadPart r)
     {
-        List<ScoreCollectible> list = placedElements.FindAll(p => p.GetRoadPart() == r);
-        placedElements.RemoveAll(p => p.GetRoadPart() == r);
-        pool.AddRange(list);
+        if (null != placedElements && null != pool)
+        {
+            List<ScoreCollectible> list = placedElements.FindAll(p => p.GetRoadPart() == r);
+            placedElements.RemoveAll(p => p.GetRoadPart() == r);
+
+            pool.AddRange(list);
+        }
     }
 
     public ScoreCollectible PlaceRandom(Vector3 v, RoadPart r)
     {
         ScoreCollectible c = GetRandomCollectible();
-        if (null != c)
+        if (null != c && null != pool && null != placedElements)
         {
             c.transform.position = v;
             c.transform.Rotate(Vector3.up, UnityEngine.Random.value * 180);
@@ -86,6 +92,7 @@ public class CollectiblePool : MonoBehaviour {
             hpPrefab.SetRoadPart(r);
             hpPrefab.SetVisible(true);
         }
+
         return hpPrefab;
     }
 
@@ -102,6 +109,7 @@ public class CollectiblePool : MonoBehaviour {
             multPrefab.SetRoadPart(nextPart);
             multPrefab.SetVisible(true);
         }
+
         return multPrefab;
     }
 }

@@ -10,9 +10,6 @@ public class AsyncSceneLoader : MonoBehaviour
     public Image pBar;
     Text loadMessage;
 
-    DataStorage storage;
-
-
     private AsyncOperation async = null;
     private IEnumerator LoadALevel(string levelName)
     {
@@ -40,11 +37,9 @@ public class AsyncSceneLoader : MonoBehaviour
             transform.SetParent(cam.GetComponent<Transform>(), true);
         }
 
-        storage = FindObjectOfType<DataStorage>();
-
-        if (null != storage)
+        if (null != DataObjects.sceneInfo)
         {
-            LoadLevel(storage.sceneInfo.title);
+            LoadLevel(DataObjects.sceneInfo.title);
         }
     }
 
@@ -58,8 +53,16 @@ public class AsyncSceneLoader : MonoBehaviour
         if (null != async)
         {
             float p = async.progress;
-            pBar.fillAmount = p;
-            loadMessage.text = "Loading progress: " + (p * 100) + "%";
+
+            if (null != pBar)
+            {
+                pBar.fillAmount = p;
+            }
+
+            if (null != loadMessage)
+            {
+                loadMessage.text = "Loading progress: " + (p * 100) + "%";
+            }
         }
     }
 }

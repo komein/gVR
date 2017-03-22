@@ -6,16 +6,26 @@ public delegate void CrushDelegate(Vector3 v);
 public class ObstacleController : MonoBehaviour
 {
     IndestructibleObstacle[] obstacles;
-    CharacterPrototype2 character;
+    RunningCatController character;
 
 	void Start () {
+
         obstacles = FindObjectsOfType<IndestructibleObstacle>();
-        foreach(IndestructibleObstacle i in obstacles)
+
+        if (null != obstacles)
         {
-            i.SetCrushAction(CrushIntoObstacle);
+            foreach (IndestructibleObstacle i in obstacles)
+            {
+                if (null != i)
+                {
+                    i.SetCrushAction(CrushIntoObstacle);
+                }
+            }
         }
+
         ToggleObstaclesGhost(false);
-        character = FindObjectOfType<CharacterPrototype2>();
+
+        character = FindObjectOfType<RunningCatController>();
     }
 
     private void CrushIntoObstacle(Vector3 v)
@@ -26,15 +36,18 @@ public class ObstacleController : MonoBehaviour
 
     private IEnumerator CrushCoroutine(Vector3 v)
     {
-        character.MakeCrush(v);
+        if (null != character)
+        {
+            character.MakeCrush(v);
 
-        ToggleObstaclesGhost(true);
-        character.ToggleFlashing(true);
+            ToggleObstaclesGhost(true);
+            character.ToggleFlashing(true);
 
-        yield return new WaitForSeconds(4.0f);
+            yield return new WaitForSeconds(4.0f);
 
-        ToggleObstaclesGhost(false);
-        character.ToggleFlashing(false);
+            ToggleObstaclesGhost(false);
+            character.ToggleFlashing(false);
+        }
 
         yield return null;
     }
@@ -43,10 +56,13 @@ public class ObstacleController : MonoBehaviour
     {
         foreach(IndestructibleObstacle i in obstacles)
         {
-            BoxCollider c = i.GetComponent<BoxCollider>();
-            if (null != c)
+            if (null != i)
             {
-                c.enabled = !isGhost;
+                BoxCollider c = i.GetComponent<BoxCollider>();
+                if (null != c)
+                {
+                    c.enabled = !isGhost;
+                }
             }
         }
     }

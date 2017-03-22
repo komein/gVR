@@ -5,12 +5,6 @@ using UnityEngine;
 public class Collectible : MonoBehaviour {
 
     RoadPart road;
-    protected DataStorage data;
-
-    private void Start()
-    {
-        data = FindObjectOfType<DataStorage>();
-    }
 
     public virtual void Collect()
     {

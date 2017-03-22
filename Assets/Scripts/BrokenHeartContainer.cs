@@ -41,6 +41,9 @@ public class BrokenHeartContainer : MonoBehaviour {
 
     private void SetMeshes (bool v)
     {
-        img.enabled = v;
+        if (null != img)
+        {
+            img.enabled = v;
+        }
     }
 }

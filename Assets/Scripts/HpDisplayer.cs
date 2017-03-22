@@ -6,23 +6,19 @@ using UnityEngine.UI;
 
 public class HpDisplayer : MonoBehaviour
 {
-    DataStorage storage;
-
     int lvl;
-
     bool deadFlag;
-
     int currentHp;
 
     HpContainer2[] containers;
-
+    /*
     bool[,] hpMatrix = {
         { false, false, false },
         { true, false, false },
         { true, true, false },
-        { true, true, true } };
+        { true, true, true } };*/
 
-    public void SetHp(int value)
+    public void SetHpDisplay(int value)
     {
         if (containers.Length < 2)
             Debug.LogError("Hp init fuckup");
@@ -30,40 +26,18 @@ public class HpDisplayer : MonoBehaviour
         if (value < 0 || value > 3)
             return;
 
-        containers[0].SetHeart(hpMatrix[value, 0]);
-        containers[1].SetHeart(hpMatrix[value, 1]);
-        containers[2].SetHeart(hpMatrix[value, 2]);
+        for (int i = 0; i < containers.Length; i++)
+        {
+            containers[i].SetHeart(value > i);
+        }
 
         if (currentHp > value)
         {
-            switch (currentHp)
-            {
-                case 1:
-                    containers[0].BreakTheHeart();
-                    break;
-                case 2:
-                    containers[1].BreakTheHeart();
-                    break;
-                case 3:
-                    containers[2].BreakTheHeart();
-                    break;
-                default:
-                    return;
-            }
+            containers[value].BreakTheHeart();
         }
         else if (currentHp < value)
         {
-            switch (currentHp)
-            {
-                case 1:
-                    containers[1].MakeBiggerForSec();
-                    break;
-                case 2:
-                    containers[2].MakeBiggerForSec();
-                    break;
-                default:
-                    return;
-            }
+            containers[value-1].MakeBiggerForSec();
         }
 
         currentHp = value;
@@ -75,15 +49,12 @@ public class HpDisplayer : MonoBehaviour
         containers = GetComponentsInChildren<HpContainer2>();
         deadFlag = false;
 
-        storage = FindObjectOfType<DataStorage>();
-        if (null != storage)
+        if (null != DataObjects.gameController)
         {
-            currentHp = storage.GetHp();
-
-            SetHp(currentHp);
-
-            storage.SetOptionalHpAction(UpdateHp);
+            DataObjects.gameController.SetOptionalHpAction(UpdateHp);
         }
+
+        UpdateHp();
     }
 
     public void UpdateHp()
@@ -91,10 +62,10 @@ public class HpDisplayer : MonoBehaviour
         if (deadFlag)
             return;
 
-        if (null != storage)
+        if (null != DataObjects.gameController)
         {
-            int hp = storage.GetHp();
-            SetHp(hp);
+            int hp = DataObjects.gameController.GetHp();
+            SetHpDisplay(hp);
         }
     }
 }
