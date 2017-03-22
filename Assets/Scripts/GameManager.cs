@@ -30,8 +30,6 @@ public class GameManager : MonoBehaviour
         SAVE_PATH = Application.persistentDataPath + "/save.xml";
         LEVELS_PATH = Application.dataPath + "/Resources/levels.xml";
 
-        Debug.Log(LEVELS_PATH);
-
         if (instanceRef == null)
         {
             instanceRef = this;
