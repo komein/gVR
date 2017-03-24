@@ -9,7 +9,8 @@ public class HpContainer2 : MonoBehaviour
     Image heart;
     Image broken;
 
-	void Start () {
+	void Awake ()
+    {
         heart = GetComponentsInChildren<Image>().ToList().Find(p => p.name == "Heart");
         broken = GetComponentsInChildren<Image>().ToList().Find(p => p.name == "Broken");
 

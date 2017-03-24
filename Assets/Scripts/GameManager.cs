@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public bool nonVRMode = true;
+
     public string SAVE_PATH
     {
         get;
@@ -15,19 +17,21 @@ public class GameManager : MonoBehaviour
         private set;
     }
 
-    private static GameManager instanceRef; // singleton pattern
+    public static GameManager instanceRef; // singleton pattern
 
     public InAppManager iapManager;
     public DataManager dataManager;
     public GameController gameController;
 
+    public ResolutionController rcPrefab;
+
     public const int lastFreeLevelNumber = 1;
-    public const bool purchaseMode = true;
+    public bool purchaseMode = true;
 
 
     void Awake()
     {
-        SAVE_PATH = Application.persistentDataPath + "/save.xml";
+        SAVE_PATH = Application.persistentDataPath + "/3.xml";
         LEVELS_PATH = Application.dataPath + "/Resources/levels.xml";
 
         if (instanceRef == null)
@@ -45,6 +49,13 @@ public class GameManager : MonoBehaviour
         else
         {
             DestroyImmediate(gameObject);
+        }
+
+        ResolutionController rc = FindObjectOfType<ResolutionController>();
+
+        if (null == rc)
+        {
+            rc = Instantiate(rcPrefab);
         }
     }
     

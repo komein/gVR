@@ -8,7 +8,7 @@ public static class DataObjects
     {
         get
         {
-            return GameObject.FindObjectOfType<GameManager>();
+            return GameManager.instanceRef;
         }
     }
 

@@ -69,7 +69,7 @@ public class GameController
             return false;
         }
 
-        DataObjects.sceneInfo.tempScore += (int)(s * DataObjects.sceneInfo.multiplier + 0.5f);
+        DataObjects.sceneInfo.tempScore += (long)(s * DataObjects.sceneInfo.multiplier + 0.5f);
 
         TriggerOptionalScoreAction();
 

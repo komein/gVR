@@ -244,6 +244,8 @@ public class StereoController : MonoBehaviour {
   void Awake() {
     GvrViewer.Create();
     cam = GetComponent<Camera>();
+        if (null == cam)
+            cam = Camera.main;
     AddStereoRig();
   }
 
@@ -283,7 +285,6 @@ public class StereoController : MonoBehaviour {
     GameObject go = new GameObject(nm);
     go.transform.SetParent(transform, false);
     go.AddComponent<Camera>().enabled = false;
-    go.AddComponent<FlareLayer>();
     var GvrEye = go.AddComponent<GvrEye>();
     GvrEye.eye = eye;
     GvrEye.CopyCameraAndMakeSideBySide(this);
@@ -340,24 +341,38 @@ public class StereoController : MonoBehaviour {
     StopCoroutine("EndOfFrame");
   }
 
-  void OnPreCull() {
-    if (GvrViewer.Instance.VRModeEnabled) {
-      // Activate the eyes under our control.
-      GvrEye[] eyes = Eyes;
-      for (int i = 0, n = eyes.Length; i < n; i++) {
-        eyes[i].cam.enabled = true;
-      }
-      // Turn off the mono camera so it doesn't waste time rendering.  Remember to reenable.
-      // @note The mono camera is left on from beginning of frame till now in order that other game
-      // logic (e.g. referring to Camera.main) continues to work as expected.
-      cam.enabled = false;
-      renderedStereo = true;
-    } else {
-      GvrViewer.Instance.UpdateState();
+    void OnPreCull()
+    {
+        if (null != GvrViewer.Instance)
+        {
+            if (GvrViewer.Instance.VRModeEnabled)
+            {
+                // Activate the eyes under our control.
+                GvrEye[] eyes = Eyes;
+                if (eyes != null)
+                {
+                    for (int i = 0, n = eyes.Length; i < n; i++)
+                    {
+                        eyes[i].cam.enabled = true;
+                    }
+                }
+                // Turn off the mono camera so it doesn't waste time rendering.  Remember to reenable.
+                // @note The mono camera is left on from beginning of frame till now in order that other game
+                // logic (e.g. referring to Camera.main) continues to work as expected.
+                if (null != cam)
+                {
+                    cam.enabled = false;
+                }
+                renderedStereo = true;
+            }
+            else
+            {
+                GvrViewer.Instance.UpdateState();
+            }
+        }
     }
-  }
 
-  IEnumerator EndOfFrame() {
+    IEnumerator EndOfFrame() {
     while (true) {
       // If *we* turned off the mono cam, turn it back on for next frame.
       if (renderedStereo) {

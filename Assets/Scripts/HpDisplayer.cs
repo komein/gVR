@@ -11,20 +11,13 @@ public class HpDisplayer : MonoBehaviour
     int currentHp;
 
     HpContainer2[] containers;
-    /*
-    bool[,] hpMatrix = {
-        { false, false, false },
-        { true, false, false },
-        { true, true, false },
-        { true, true, true } };*/
 
     public void SetHpDisplay(int value)
     {
-        if (containers.Length < 2)
-            Debug.LogError("Hp init fuckup");
-
         if (value < 0 || value > 3)
+        {
             return;
+        }
 
         for (int i = 0; i < containers.Length; i++)
         {
@@ -52,15 +45,16 @@ public class HpDisplayer : MonoBehaviour
         if (null != DataObjects.gameController)
         {
             DataObjects.gameController.SetOptionalHpAction(UpdateHp);
+            UpdateHp();
         }
-
-        UpdateHp();
     }
 
     public void UpdateHp()
     {
         if (deadFlag)
+        {
             return;
+        }
 
         if (null != DataObjects.gameController)
         {

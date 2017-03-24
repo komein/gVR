@@ -29,7 +29,7 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
     GameManager storage;
     LevelInfo level;
 
-    bool mainMenuMode = false;
+    public bool mainMenuMode = true;
     
     void Start()
     {
@@ -57,9 +57,6 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
     // value of levelTitle, which must be set in inspector therefore
     public void UpdateLevelInfo()
     {
-        if (null == storage)
-            return;
-
         SceneInfo l = DataObjects.sceneInfo;
         SavedGame game = DataObjects.savedGame;
 
@@ -69,7 +66,14 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
 
             if (null == level)
             {
-                mainMenuMode = true;
+                if (!mainMenuMode)
+                {
+                    LevelInfoContainer c = FindObjectOfType<LevelInfoContainer>();
+                    if (null != c)
+                    {
+                        levelTitle = c.levelTitle;
+                    }
+                }
                 level = game.GetLevelByName(levelTitle);
             }
         }
@@ -88,6 +92,8 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
 
     internal void ShowScoreProgressBarAnimated(float t, float time = 1f)
     {
+        UpdateLevelInfo();
+
         long accScore = level.accumulatedScore;
         long tempScore = DataObjects.sceneInfo.tempScore;
         long maxScore = level.maxScore;
@@ -153,6 +159,11 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
             else
             {
                 status.text = score.ToString();
+            }
+
+            if (DataObjects.sceneInfo.multiplier > 1)
+            {
+                status.text = status.text + " (x" + DataObjects.sceneInfo.multiplier + "!)";
             }
         }
     }

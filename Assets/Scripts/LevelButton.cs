@@ -58,7 +58,7 @@ public class LevelButton : SceneButton, IUICanReinitialize
             }
             else
             {
-                if (GameManager.purchaseMode == true)
+                if (DataObjects.gameManager.purchaseMode == true)
                 {
                     if (GameManager.lastFreeLevelNumber < level.number)
                     {

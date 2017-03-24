@@ -29,7 +29,7 @@ using Gvr.Internal;
 /// its starting properties.
 [AddComponentMenu("GoogleVR/GvrViewer")]
 public class GvrViewer : MonoBehaviour {
-  public const string GVR_SDK_VERSION = "1.20";
+  public const string GVR_SDK_VERSION = "1.30";
 
   /// The singleton instance of the GvrViewer class.
   public static GvrViewer Instance {
@@ -105,8 +105,12 @@ public class GvrViewer : MonoBehaviour {
 #endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
     }
   }
+
+// Ignore private field is assigned but its value is never used compile warning.
+#pragma warning disable 414
   [SerializeField]
   private bool vrModeEnabled = true;
+#pragma warning restore 414
 
   /// Methods for performing lens distortion correction.
   public enum DistortionCorrectionMethod {
@@ -470,33 +474,40 @@ public class GvrViewer : MonoBehaviour {
   // Only call device.UpdateState() once per frame.
   private int updatedToFrame = 0;
 
-  /// Reads the latest tracking data from the phone.  This must be
-  /// called before accessing any of the poses and matrices above.
-  ///
-  /// Multiple invocations per frame are OK:  Subsequent calls merely yield the
-  /// cached results of the first call.  To minimize latency, it should be first
-  /// called later in the frame (for example, in `LateUpdate`) if possible.
-  public void UpdateState() {
-    if (updatedToFrame != Time.frameCount) {
-      updatedToFrame = Time.frameCount;
-      device.UpdateState();
+    /// Reads the latest tracking data from the phone.  This must be
+    /// called before accessing any of the poses and matrices above.
+    ///
+    /// Multiple invocations per frame are OK:  Subsequent calls merely yield the
+    /// cached results of the first call.  To minimize latency, it should be first
+    /// called later in the frame (for example, in `LateUpdate`) if possible.
+    public void UpdateState()
+    {
+        if (updatedToFrame != Time.frameCount)
+        {
+            updatedToFrame = Time.frameCount;
+            if (null != device)
+            {
+                device.UpdateState();
+                if (device.profileChanged)
+                {
+                    if (distortionCorrection != DistortionCorrectionMethod.Native &&
+                        device.RequiresNativeDistortionCorrection())
+                    {
+                        DistortionCorrection = DistortionCorrectionMethod.Native;
+                    }
+                    if (stereoScreen != null &&
+                        device.ShouldRecreateStereoScreen(stereoScreen.width, stereoScreen.height))
+                    {
+                        StereoScreen = null;
+                    }
+                }
+            }
 
-      if (device.profileChanged) {
-        if (distortionCorrection != DistortionCorrectionMethod.Native &&
-            device.RequiresNativeDistortionCorrection()) {
-          DistortionCorrection = DistortionCorrectionMethod.Native;
+            DispatchEvents();
         }
-        if (stereoScreen != null &&
-            device.ShouldRecreateStereoScreen(stereoScreen.width, stereoScreen.height)) {
-          StereoScreen = null;
-        }
-      }
-
-      DispatchEvents();
     }
-  }
 
-  private void DispatchEvents() {
+    private void DispatchEvents() {
       // Update flags first by copying from device and other inputs.
     Triggered = Input.GetMouseButtonDown(0);
 #if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)

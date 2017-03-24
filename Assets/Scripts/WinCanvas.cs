@@ -27,7 +27,8 @@ public class WinCanvas : MonoBehaviour
     {
         if (null != DataObjects.savedGame && null != DataObjects.sceneInfo)
         {
-            LevelInfo p = DataObjects.savedGame.GetLevelByName(DataObjects.sceneInfo.title);
+            LevelInfo p = GetLevelInfo();
+
             if (p != null)
             {
                 scoreText.text = "Score: " + DataObjects.sceneInfo.tempScore;
@@ -40,7 +41,7 @@ public class WinCanvas : MonoBehaviour
                 {
                     recordText.text = "Record: " + p.bestScoreRecord;
                 }
-                    
+
                 starBar.SetTextValues(p);
                 scoreBar.ShowScoreProgressBarAnimated(0);
 
@@ -69,7 +70,7 @@ public class WinCanvas : MonoBehaviour
                 if (null != DataObjects.gameController)
                     DataObjects.gameController.UpdateBestScore();
 
-                p = DataObjects.savedGame.GetLevelByName(DataObjects.sceneInfo.title);
+                p = GetLevelInfo();
 
                 starBar.FillStarsAnimated(p.starRecord);
             }
@@ -78,5 +79,20 @@ public class WinCanvas : MonoBehaviour
         animationLock = false;
 
         yield return null;
+    }
+
+    private static LevelInfo GetLevelInfo()
+    {
+        LevelInfo p = DataObjects.savedGame.GetLevelByName(DataObjects.sceneInfo.title);
+        if (null == p)
+        {
+            LevelInfoContainer c = FindObjectOfType<LevelInfoContainer>();
+            if (null != c)
+            {
+                p = DataObjects.savedGame.GetLevelByName(c.levelTitle);
+            }
+        }
+
+        return p;
     }
 }

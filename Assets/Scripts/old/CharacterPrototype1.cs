@@ -6,7 +6,6 @@ public class CharacterPrototype1 : MonoBehaviour {
 
     protected Rigidbody rb;
 
-    public GvrReticle camReticle;
     public float speed = 1f;
     public float maxStepPerTick = 4f;
 
@@ -16,9 +15,6 @@ public class CharacterPrototype1 : MonoBehaviour {
 
     public MovingMode movMode;
 
-    GazeInputModule gim;
-
-    Color SEE_COLOR = Color.green;
     Color UNSEE_COLOR = Color.red;
 
     Vector3 targetVec = Vector3.zero;
@@ -32,8 +28,6 @@ public class CharacterPrototype1 : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
         if (null == rb)
             rb = GetComponentInChildren<Rigidbody>();
-
-        gim = SceneSelecter.FindObjectOfType<GazeInputModule>();
 
         ResetTargetVector();
     }

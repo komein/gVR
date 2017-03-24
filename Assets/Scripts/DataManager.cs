@@ -30,7 +30,7 @@ public class DataManager
         {
             serializer.Serialize(stream, savedGame);
         }
-        catch (System.InvalidOperationException e)
+        catch (Exception e)
         {
             Debug.LogError(e.Message);
         }
@@ -50,7 +50,7 @@ public class DataManager
             {
                 savedGame = serializer.Deserialize(stream) as SavedGame;
             }
-            catch (InvalidOperationException e)
+            catch (Exception e)
             {
                 Debug.LogError(e.Message);
             }
@@ -76,7 +76,7 @@ public class DataManager
             {
                 savedGame = serializer.Deserialize(stream) as SavedGame;
             }
-            catch (InvalidOperationException e)
+            catch (Exception e)
             {
                 Debug.LogError(e.Message);
                 GenerateDefaultLevels();

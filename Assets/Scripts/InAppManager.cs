@@ -32,7 +32,7 @@ public class InAppManager : IStoreListener
 		{
 			return;
 		}
-
+        
 		var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 		builder.AddProduct(pLevels, ProductType.NonConsumable, new IDs() { { pLevelsAppStore, AppleAppStore.Name }, { pLevelsGooglePlay, GooglePlay.Name } });
 
@@ -88,7 +88,7 @@ public class InAppManager : IStoreListener
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.OSXPlayer)
 		{
 			Debug.Log("RestorePurchases started ...");
-
+            
 			var apple = m_StoreExtensionProvider.GetExtension<IAppleExtensions>();
 			apple.RestoreTransactions((result) =>
 				{

@@ -13,7 +13,6 @@ public class RunningCatController : MonoBehaviour
     protected Rigidbody rb;
 
     public Camera cam;
-    PlayerCamera cp;
 
     public float maxSpeed = 1f;
     public float acceleration = 50f;
@@ -40,16 +39,12 @@ public class RunningCatController : MonoBehaviour
 
     SkinnedMeshRenderer mesh;
 
-    GameManager gameManager;
-
     Coroutine flashCoroutine;
     Vector3 gravity;
 
     private void Start()
     {
         currentState = CatState.paused;
-
-        gameManager = DataObjects.gameManager;
 
         mesh = GetComponentInChildren<SkinnedMeshRenderer>();
         anim = GetComponent<Animator>();
@@ -62,8 +57,6 @@ public class RunningCatController : MonoBehaviour
 
         if (null == cam)
             cam = Camera.main;
-
-        cp = cam.GetComponentInParent<PlayerCamera>();
 
         StartCoroutine(StartRunning());
 
@@ -359,7 +352,15 @@ public class RunningCatController : MonoBehaviour
             {
                 StopCoroutine(immobilizeCoroutine);
                 
-                currentState = CatState.moving;
+                if (currentState == CatState.paused)
+                {
+                    // do nothing
+                }
+                else
+                {
+                    // start moving
+                    currentState = CatState.moving;
+                }
 
                 immobilizeCoroutine = null;
             }
