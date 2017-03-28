@@ -37,7 +37,7 @@ public static class DataObjects
             return gameManager.gameController;
         }
     }
-
+    
     public static InAppManager iapManager
     {
         get

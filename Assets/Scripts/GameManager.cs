@@ -3,7 +3,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public bool nonVRMode = true;
+    public enum VRMode { noVR, Daydream, Cardboard, Oculus };
+
+    public VRMode mode;
+
+    //public bool nonVRMode = true;
 
     public string SAVE_PATH
     {

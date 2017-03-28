@@ -11,4 +11,9 @@ public class SceneChangeTrigger : MonoBehaviour
             DataObjects.gameController.OnSceneChange();
         }
     }
+
+    public void WriteSomeShit()
+    {
+        Debug.Log("some shit!");
+    }
 }

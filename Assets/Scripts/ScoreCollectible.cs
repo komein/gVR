@@ -11,13 +11,13 @@ public class ScoreCollectible : Collectible {
         base.Collect();
 
         if (null != DataObjects.gameController)
-        {/*
+        {
             ScoreDisplayer d = FindObjectOfType<ScoreDisplayer>();
             if (null == d)
             {
                 return;
             }
-            */
+            
             DataObjects.gameController.AddScore(value);
 
         }
