@@ -253,7 +253,8 @@ public class GvrPointerInputModule : BaseInputModule {
     if (raycastResult.module != null
       && !(raycastResult.module is GvrPointerGraphicRaycaster)
       && !(raycastResult.module is GvrPointerPhysicsRaycaster)
-      && !(raycastResult.module is CurvedUI.CurvedUIRaycaster)) {
+      && !(raycastResult.module is CurvedUI.CurvedUIRaycaster)
+      && !(raycastResult.module is PhysicsRaycaster)) {
       Debug.LogWarning("Using Raycaster (Raycaster: " + raycastResult.module.GetType() +
         ", Object: " + raycastResult.module.name + "). It is recommended to use " +
         "GvrPointerPhysicsRaycaster or GvrPointerGrahpicRaycaster with GvrPointerInputModule.");

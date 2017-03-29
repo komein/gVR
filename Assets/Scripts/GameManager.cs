@@ -1,11 +1,13 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public enum VRMode { noVR, Daydream, Cardboard, Oculus };
 
     public VRMode mode;
+    public bool noStereoMode = false;
 
     //public bool nonVRMode = true;
 
@@ -27,10 +29,12 @@ public class GameManager : MonoBehaviour
     public DataManager dataManager;
     public GameController gameController;
 
-    public ResolutionController rcPrefab;
+    public GraphicsConfigurator rcPrefab;
 
     public const int lastFreeLevelNumber = 1;
     public bool purchaseMode = true;
+
+    private GraphicsConfigurator gConf;
 
 
     void Awake()
@@ -52,17 +56,22 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            DestroyImmediate(gameObject);
+            Destroy(gameObject);
+            return;
         }
 
-        ResolutionController rc = FindObjectOfType<ResolutionController>();
+    }
 
-        if (null == rc)
+    private void ReinitGraphics()
+    {
+        gConf = FindObjectOfType<GraphicsConfigurator>();
+
+        if (null == gConf)
         {
-            rc = Instantiate(rcPrefab);
+            gConf = Instantiate(rcPrefab);
         }
     }
-    
+
     void LateUpdate()
     {
         if (null != GvrViewer.Instance)
@@ -79,5 +88,25 @@ public class GameManager : MonoBehaviour
     {
         if (null != dataManager)
             dataManager.Save();
+    }
+
+    void OnEnable()
+    {
+        //Tell our 'OnLevelFinishedLoading' function to start listening for a scene change as soon as this script is enabled.
+        SceneManager.sceneLoaded += OnLevelFinishedLoading;
+    }
+
+    void OnDisable()
+    {
+        //Tell our 'OnLevelFinishedLoading' function to stop listening for a scene change as soon as this script is disabled. Remember to always have an unsubscription for every delegate you subscribe to!
+        SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+    }
+
+    void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("Level Loaded");
+        Debug.Log(scene.name);
+        Debug.Log(mode);
+        ReinitGraphics();
     }
 }

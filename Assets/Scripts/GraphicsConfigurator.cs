@@ -3,24 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ResolutionController : MonoBehaviour {
+public class GraphicsConfigurator : MonoBehaviour
+{
 
+    // deprecated
     public int width = 1920;
+    // deprecated
     public int height = 1080;
 
     public GvrReticlePointer reticlePrefab;
     public GvrViewer gvrViewerPrefab;
-
-    //public Canvas cardboardCanvas;
-    //public Canvas daydreamCanvas;
-
-    public EventSystem cardboardEventSystem;
-    public EventSystem daydreamEventSystem;
-
     public GvrController gvrController;
-
     public GvrControllerVisualManager gvrArm;
 
+    public EventSystem eventSystemPrefab;
 
     private void Awake()
     {
@@ -35,21 +31,18 @@ public class ResolutionController : MonoBehaviour {
             {
                 case GameManager.VRMode.Cardboard:
                     {
-                        //MakeCardboardUI();
                         MakeGvrConfiguration();
                         break;
                     }
 
                 case GameManager.VRMode.Daydream:
                     {
-                        //MakeDaydreamUI();
                         MakeDaydreamConfiguration();
                         break;
                     }
 
                 case GameManager.VRMode.noVR:
                     {
-                        //MakeCardboardUI();
                         MakeMouseGazeConfiguration();
                         break;
                     }
@@ -57,7 +50,6 @@ public class ResolutionController : MonoBehaviour {
                 case GameManager.VRMode.Oculus:
                     {
                         // TODO
-                        //MakeCardboardUI();
                         MakeMouseGazeConfiguration();
                         break;
                     }
@@ -65,19 +57,6 @@ public class ResolutionController : MonoBehaviour {
         }
 
     }
-    /*
-    private void MakeCardboardUI()
-    {
-        //Instantiate(cardboardCanvas);
-        Instantiate(cardboardEventSystem);
-    }
-
-    private void MakeDaydreamUI()
-    {
-        //Instantiate(daydreamCanvas);
-        Instantiate(daydreamEventSystem);
-    }
-    */
 
     private void MakeMouseGazeConfiguration()
     {
@@ -87,11 +66,22 @@ public class ResolutionController : MonoBehaviour {
             c.gameObject.AddComponent<MoveCameraScript>();
             c.gameObject.AddComponent<PhysicsRaycaster>();
         }
+        ResetGvrEventSystem();
+    }
+
+    private EventSystem GetEventSystem()
+    {
+        EventSystem es = FindObjectOfType<EventSystem>();
+        if (null == es)
+        {
+            es = Instantiate(eventSystemPrefab);
+        }
+        return es;
     }
 
     private EventSystem ResetGvrEventSystem()
     {
-        EventSystem es = FindObjectOfType<EventSystem>();
+        EventSystem es = GetEventSystem();
         if (null != es)
         {
             es.gameObject.AddComponent<GvrPointerInputModule>();
@@ -117,7 +107,7 @@ public class ResolutionController : MonoBehaviour {
 
         if (null == p)
         {
-            MakeGvrConfiguration();
+            MakeMouseGazeConfiguration();
             return;
         }
 
@@ -134,15 +124,23 @@ public class ResolutionController : MonoBehaviour {
         arm.transform.SetParent(p.transform);
         arm.transform.localPosition = Vector3.zero;
 
-        /*
-        */
-        MakeGvrConfiguration();
-        ResetGvrEventSystem();
+        if (DataObjects.gameManager.noStereoMode)
+        {
+            MakeMouseGazeConfiguration();
+        }
+        else
+        {
+            MakeGvrConfiguration();
+        }
     }
 
-    void Start ()
+    /*
+     * DEPRECATED:
+     * Do not use with Daydream, everything fucks up
+     * ( tested on GoogleVR v1.0 + Unity 5.6 beta )
+    void Start()
     {
-        //if (!DataObjects.gameManager.nonVRMode)
-            //Screen.SetResolution(width, height, true);
+        Screen.SetResolution(width, height, true);
     }
+     */
 }
