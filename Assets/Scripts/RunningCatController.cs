@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class RunningCatController : MonoBehaviour
 {
+    public bool controllerMode;
+
     enum CatState { paused, cantMove, jump, dying, moving };
     CatState currentState;
 
@@ -42,6 +44,8 @@ public class RunningCatController : MonoBehaviour
     Coroutine flashCoroutine;
     Vector3 gravity;
 
+    GvrPointerInputModule gim;
+
     private void Start()
     {
         currentState = CatState.paused;
@@ -71,6 +75,12 @@ public class RunningCatController : MonoBehaviour
             winCanvas = FindObjectOfType<WinCanvas>();
         if (null != winCanvas)
             winCanvas.gameObject.SetActive(false);
+
+        controllerMode = DataObjects.gameManager.mode == GameManager.VRMode.Daydream;
+        if (controllerMode)
+        {
+            gim = FindObjectOfType<GvrPointerInputModule>();
+        }
     }
 
     private IEnumerator StartRunning()
@@ -207,6 +217,66 @@ public class RunningCatController : MonoBehaviour
     }
 
     private Vector3 GetMoveVector()
+    {
+        if (controllerMode)
+        {
+            GvrPointerInputModule im = FindObjectOfType<GvrPointerInputModule>();
+
+            if (null != im)
+            {
+                Debug.Log(im.IsPointerOverGameObject(0));
+            }
+
+            if (null == gim)
+            {
+                return GetCameraMoveVector();
+            }
+
+            GvrLaserPointer pointer = FindObjectOfType<GvrLaserPointer>();
+
+            if (null == pointer)
+            {
+                return GetCameraMoveVector();
+            }
+
+            GameObject reticle = pointer.reticle;
+
+            if (null == reticle)
+            {
+                return GetCameraMoveVector();
+            }
+
+            Vector3 gotoPos = reticle.transform.position;
+
+
+            if (GvrController.ClickButton)
+            {
+                Vector3 pos = Vector3.zero;
+
+                pos.x = Mathf.Min(gotoPos.x - gameObject.transform.position.x, 1f);
+                pos.x *= strafeSpeed;
+                pos.y = 0;
+                pos.z = curSpeed;
+
+                return pos;
+            }
+            else
+                return Vector3.zero;
+        }
+        if (!controllerMode)
+        {
+            return GetCameraMoveVector();
+        }
+
+        else
+        {
+
+
+            return Vector3.zero;
+        }
+    }
+
+    private Vector3 GetCameraMoveVector()
     {
         Vector3 ang = cam.transform.rotation.eulerAngles;
         Vector3 pos = new Vector3(PolarToCartesian(new Vector2(ang.x, ang.y)).x + (cam.transform.position.x - gameObject.transform.position.x) / 4f, 0, 0) * strafeSpeed;

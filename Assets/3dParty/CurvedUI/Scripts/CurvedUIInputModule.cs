@@ -606,8 +606,8 @@ public class CurvedUIInputModule : StandaloneInputModule {
 
         if (null == eventGO)
         {
-            //eventGO = new GameObject().AddComponent<EventSystem>();
-            return null;
+            eventGO = new GameObject().AddComponent<EventSystem>();
+            eventGO.name = "EventSystem";
         }
 
         foreach (BaseInputModule module in eventGO.GetComponents<BaseInputModule>())

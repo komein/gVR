@@ -23,7 +23,7 @@ public class GraphicsConfigurator : MonoBehaviour
         if (null == DataObjects.gameManager)
         {
             // default
-            MakeMouseGazeConfiguration();
+            MakeMouseGazeConfiguration(true);
         }
         else
         {
@@ -43,14 +43,14 @@ public class GraphicsConfigurator : MonoBehaviour
 
                 case GameManager.VRMode.noVR:
                     {
-                        MakeMouseGazeConfiguration();
+                        MakeMouseGazeConfiguration(true);
                         break;
                     }
 
                 case GameManager.VRMode.Oculus:
                     {
                         // TODO
-                        MakeMouseGazeConfiguration();
+                        MakeMouseGazeConfiguration(true);
                         break;
                     }
             }
@@ -58,30 +58,32 @@ public class GraphicsConfigurator : MonoBehaviour
 
     }
 
-    private void MakeMouseGazeConfiguration()
+    private void MakeMouseGazeConfiguration(bool withRaycaster)
     {
         Camera c = Camera.main;
         if (null != c)
         {
             c.gameObject.AddComponent<MoveCameraScript>();
-            c.gameObject.AddComponent<PhysicsRaycaster>();
+            if (withRaycaster)
+                c.gameObject.AddComponent<PhysicsRaycaster>();
         }
         ResetGvrEventSystem();
     }
 
-    private EventSystem GetEventSystem()
+    private EventSystem GetOrCreateEventSystem()
     {
         EventSystem es = FindObjectOfType<EventSystem>();
         if (null == es)
         {
-            es = Instantiate(eventSystemPrefab);
+            es = new GameObject().AddComponent<EventSystem>();
+            es.name = "EventSystem";
         }
         return es;
     }
 
     private EventSystem ResetGvrEventSystem()
     {
-        EventSystem es = GetEventSystem();
+        EventSystem es = GetOrCreateEventSystem();
         if (null != es)
         {
             es.gameObject.AddComponent<GvrPointerInputModule>();
@@ -107,7 +109,7 @@ public class GraphicsConfigurator : MonoBehaviour
 
         if (null == p)
         {
-            MakeMouseGazeConfiguration();
+            MakeMouseGazeConfiguration(true);
             return;
         }
 
@@ -126,7 +128,7 @@ public class GraphicsConfigurator : MonoBehaviour
 
         if (DataObjects.gameManager.noStereoMode)
         {
-            MakeMouseGazeConfiguration();
+            MakeMouseGazeConfiguration(false);
         }
         else
         {
