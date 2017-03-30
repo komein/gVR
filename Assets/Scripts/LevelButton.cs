@@ -51,8 +51,8 @@ public class LevelButton : SceneButton, IUICanReinitialize
         {
             if (!DataObjects.dataManager.savedGame.isLevelUnlocked(level.number))
             {
-                if (null != container)
-                    container.gameObject.SetActive(false);
+                //if (null != container)
+                //    container.gameObject.SetActive(false);
 
                 SetActiveLevelButton(false);
             }

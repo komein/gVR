@@ -81,7 +81,8 @@ public class GvrLaserPointerImpl : GvrBasePointer {
   public override void OnInputModuleDisabled() {
 #if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
     if (LaserLineRenderer != null) {
-      LaserLineRenderer.enabled = false;
+            //Debug.Log("!");
+      //LaserLineRenderer.enabled = false;
     }
 #endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
   }

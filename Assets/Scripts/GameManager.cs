@@ -9,8 +9,6 @@ public class GameManager : MonoBehaviour
     public VRMode mode;
     public bool noStereoMode = false;
 
-    //public bool nonVRMode = true;
-
     public string SAVE_PATH
     {
         get;
@@ -36,6 +34,7 @@ public class GameManager : MonoBehaviour
 
     private GraphicsConfigurator gConf;
 
+    public GvrConnectionState controllerState = GvrConnectionState.Error;
 
     void Awake()
     {
@@ -62,13 +61,46 @@ public class GameManager : MonoBehaviour
 
     }
 
+    private void Start()
+    {
+        controllerState = GvrController.State;
+    }
+
     private void ReinitGraphics()
     {
+        if (null != FindObjectOfType<GraphicsOverrider>())
+        {
+            return;
+        }
+
         gConf = FindObjectOfType<GraphicsConfigurator>();
 
         if (null == gConf)
         {
             gConf = Instantiate(rcPrefab);
+        }
+        else
+        {
+            gConf.Initialize();
+        }
+    }
+
+    private void UpdateController()
+    {
+        if (null != FindObjectOfType<GraphicsOverrider>())
+        {
+            return;
+        }
+
+        gConf = FindObjectOfType<GraphicsConfigurator>();
+
+        if (null == gConf)
+        {
+            gConf = Instantiate(rcPrefab);
+        }
+        else
+        {
+            gConf.ReinitControllerState();
         }
     }
 
@@ -81,6 +113,12 @@ public class GameManager : MonoBehaviour
             {
                 Application.Quit();
             }
+        }
+
+        if (controllerState != GvrController.State)
+        {
+            controllerState = GvrController.State;
+            UpdateController();
         }
     }
 
@@ -107,6 +145,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Level Loaded");
         Debug.Log(scene.name);
         Debug.Log(mode);
+
         ReinitGraphics();
     }
 }

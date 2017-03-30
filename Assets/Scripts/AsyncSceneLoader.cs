@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class AsyncSceneLoader : MonoBehaviour
 {
-    Camera cam;
-
     public Image pBar;
     Text loadMessage;
 
@@ -27,14 +25,9 @@ public class AsyncSceneLoader : MonoBehaviour
     {
         loadMessage = GetComponentInChildren<Text>();
 
-        if (cam == null)
+        if (Camera.main != null)
         {
-            cam = Camera.main;
-        }
-
-        if (cam != null)
-        {
-            transform.SetParent(cam.GetComponent<Transform>(), true);
+            //transform.SetParent(Camera.main.gameObject.transform, true);
         }
 
         if (null != DataObjects.sceneInfo)

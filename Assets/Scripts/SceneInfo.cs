@@ -14,13 +14,13 @@ public class SceneInfo
     {
         title = "notitle";
         tempScore = 0;
-        hp = SceneInfo.HP_DEFAULT;
+        hp = HP_DEFAULT;
         multiplier = 1;
     }
 
     internal void Reset()
     {
         multiplier = 1;
-        hp = SceneInfo.HP_DEFAULT;
+        hp = HP_DEFAULT;
     }
 }

@@ -221,12 +221,12 @@ public class RunningCatController : MonoBehaviour
         if (controllerMode)
         {
             GvrPointerInputModule im = FindObjectOfType<GvrPointerInputModule>();
-
+            /*
             if (null != im)
             {
                 Debug.Log(im.IsPointerOverGameObject(0));
             }
-
+            */
             if (null == gim)
             {
                 return GetCameraMoveVector();

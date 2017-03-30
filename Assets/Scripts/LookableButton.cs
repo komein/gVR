@@ -25,6 +25,25 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
 
     protected bool isActiveButton = true;
 
+    public bool gazeMode
+    {
+        get
+        {
+            return gMode;
+        }
+        set
+        {
+            if (null != img)
+            {
+                img.fillAmount = 0;
+                time = 0f;
+            }
+            gMode = value;
+        }
+    }
+
+    private bool gMode = true;
+
     protected virtual void Start () {
 
         text = GetComponentInChildren<Text>();
@@ -37,56 +56,83 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
         SetGazedAt(false);
     }
 
+    public void UpdateGazeMode()
+    {
+        gazeMode = DataObjects.gameManager.controllerState != GvrConnectionState.Connected;
+    }
+
     public virtual void SetGazedAt(bool gazedAt)
     {
-        pressed = false;
-        if (!isActiveButton)
-            return;
-
-        isGazedOn = gazedAt;
-
-        if (null != img)
+        UpdateGazeMode();
+        if (gMode)
         {
-            img.fillAmount = 0;
-            img.color = normalColor;
+            pressed = false;
+            if (!isActiveButton)
+                return;
+
+            isGazedOn = gazedAt;
+
+            if (null != img)
+            {
+                img.fillAmount = 0;
+                img.color = normalColor;
+            }
+        }
+        else
+        {
+            if (gazedAt)
+            {
+                img.fillAmount = 1;
+                img.color = new Color(normalColor.r, normalColor.g, normalColor.b, 0.2f);
+            }
+            else
+            {
+                img.fillAmount = 0;
+            }
         }
     }
 
     protected virtual void Update()
     {
-        if (!pressed)
+        if (gMode)
         {
-            if (isGazedOn)
+            if (!pressed)
             {
-                time += Time.deltaTime;
-
-                if (null != img)
+                if (isGazedOn)
                 {
-                    img.fillAmount = Mathf.Min(1f, (time / (float)activateTime));
+                    time += Time.deltaTime;
+
+                    if (null != img)
+                    {
+                        img.fillAmount = Mathf.Min(1f, (time / (float)activateTime));
+                    }
+                }
+                else
+                {
+                    time = 0f;
+                }
+
+                if (time >= activateTime)
+                {
+                    Function();
                 }
             }
             else
             {
-                time = 0f;
-            }
-
-            if (time >= activateTime)
-            {
-                Function();
-            }
-        }
-        else
-        {
-            if (null != img)
-            {
-                img.color = pressedColor;
+                if (null != img)
+                {
+                    img.color = pressedColor;
+                }
             }
         }
     }
 
     protected virtual void Function()
     {
-        pressed = true;
+        if (isActiveButton)
+            pressed = true;
+        else
+            pressed = false;
     }
 
     public void OnGazeEnter()

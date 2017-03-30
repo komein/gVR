@@ -118,6 +118,7 @@ public class GvrPointerInputModule : BaseInputModule {
       pointerData = null;
     }
     eventSystem.SetSelectedGameObject(null, GetBaseEventData());
+        isActive = false;
   }
   /// @endcond
 

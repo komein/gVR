@@ -1,11 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class GraphicsConfigurator : MonoBehaviour
 {
-
     // deprecated
     public int width = 1920;
     // deprecated
@@ -18,11 +18,13 @@ public class GraphicsConfigurator : MonoBehaviour
 
     public EventSystem eventSystemPrefab;
 
-    private void Awake()
+
+    internal void Initialize()
     {
+        ResetEverything();
+
         if (null == DataObjects.gameManager)
         {
-            // default
             MakeMouseGazeConfiguration(true);
         }
         else
@@ -31,7 +33,7 @@ public class GraphicsConfigurator : MonoBehaviour
             {
                 case GameManager.VRMode.Cardboard:
                     {
-                        MakeGvrConfiguration();
+                        MakeGvrStereoConfiguration();
                         break;
                     }
 
@@ -55,7 +57,40 @@ public class GraphicsConfigurator : MonoBehaviour
                     }
             }
         }
+    }
 
+    private void Awake()
+    {
+        Initialize();
+    }
+
+    private void ResetEverything()
+    {
+        ResetCamera();
+        ResetEventSystem();
+        ResetController();
+    }
+
+    private static void ResetCamera()
+    {
+        Camera c = Camera.main;
+        if (null != c)
+        {
+            Destroy(c.gameObject.GetComponent<MoveCameraScript>());
+            Destroy(c.gameObject.GetComponent<PhysicsRaycaster>());
+            Destroy(c.gameObject.GetComponent<GvrHead>());
+            Destroy(c.gameObject.GetComponent<StereoController>());
+        }
+    }
+
+    private void ResetEventSystem()
+    {
+        EventSystem es = GetOrCreateEventSystem();
+        if (null != es)
+        {
+            Destroy(es.gameObject.GetComponent<GvrPointerInputModule>());
+            Destroy(es.gameObject.GetComponent<GvrPointerManager>());
+        }
     }
 
     private void MakeMouseGazeConfiguration(bool withRaycaster)
@@ -63,11 +98,15 @@ public class GraphicsConfigurator : MonoBehaviour
         Camera c = Camera.main;
         if (null != c)
         {
+            MoveCameraScript mc = c.gameObject.GetComponent<MoveCameraScript>();
+            Destroy(mc);
+
             c.gameObject.AddComponent<MoveCameraScript>();
             if (withRaycaster)
                 c.gameObject.AddComponent<PhysicsRaycaster>();
         }
-        ResetGvrEventSystem();
+
+        MakeGvrEventSystem();
     }
 
     private EventSystem GetOrCreateEventSystem()
@@ -81,8 +120,9 @@ public class GraphicsConfigurator : MonoBehaviour
         return es;
     }
 
-    private EventSystem ResetGvrEventSystem()
+    private EventSystem MakeGvrEventSystem()
     {
+        ResetEventSystem();
         EventSystem es = GetOrCreateEventSystem();
         if (null != es)
         {
@@ -93,9 +133,9 @@ public class GraphicsConfigurator : MonoBehaviour
         return es;
     }
 
-    private void MakeGvrConfiguration()
+    private void MakeGvrStereoConfiguration()
     {
-        EventSystem es = ResetGvrEventSystem();
+        EventSystem es = MakeGvrEventSystem();
 
         Camera c = Camera.main;
 
@@ -105,26 +145,14 @@ public class GraphicsConfigurator : MonoBehaviour
 
     private void MakeDaydreamConfiguration()
     {
+        // if we don't have a Player object, the scene is just isn't configured correctly to be used with daydream
         Player p = FindObjectOfType<Player>();
-
         if (null == p)
         {
-            MakeMouseGazeConfiguration(true);
+            MakeGvrStereoConfiguration();
             return;
         }
-
-        GvrReticlePointer ret = FindObjectOfType<GvrReticlePointer>();
-        if (null != ret)
-        {
-            Destroy(ret.gameObject);
-        }
-
-        GvrController gc = Instantiate(gvrController);
-
-        GvrControllerVisualManager arm = Instantiate(gvrArm);
-
-        arm.transform.SetParent(p.transform);
-        arm.transform.localPosition = Vector3.zero;
+        //
 
         if (DataObjects.gameManager.noStereoMode)
         {
@@ -132,7 +160,79 @@ public class GraphicsConfigurator : MonoBehaviour
         }
         else
         {
-            MakeGvrConfiguration();
+            MakeGvrStereoConfiguration();
+        }
+
+
+        GvrController gc = FindObjectOfType<GvrController>();
+        if (null == gc)
+        {
+            gc = Instantiate(gvrController);
+        }
+
+        ReinitControllerState();
+    }
+
+    public void ReinitControllerState()
+    {
+        Player p = FindObjectOfType<Player>();
+        if (null == p)
+        {
+            return;
+        }
+
+        ResetController();
+
+        // controller is found
+        if (DataObjects.gameManager.controllerState == GvrConnectionState.Connected)
+        {
+            GvrControllerVisualManager arm = Instantiate(gvrArm);
+
+            arm.transform.SetParent(p.transform);
+            arm.transform.localPosition = Vector3.zero;
+
+            GvrLaserPointer pointer = FindObjectOfType<GvrLaserPointer>();
+
+            if (null != pointer)
+            {
+                pointer.SetAsMainPointer();
+            }
+
+            LookableButton[] buttons = FindObjectsOfType<LookableButton>();
+            foreach(var v in buttons)
+            {
+                v.gazeMode = false;
+            }
+        }
+        // controller is not found
+        else
+        {
+            GvrReticlePointer ret = Instantiate(reticlePrefab);
+
+            ret.transform.SetParent(Camera.main.transform);
+            ret.transform.localPosition = Vector3.zero;
+
+            ret.SetAsMainPointer();
+
+            LookableButton[] buttons = FindObjectsOfType<LookableButton>();
+            foreach (var v in buttons)
+            {
+                v.gazeMode = true;
+            }
+        }
+    }
+
+    private static void ResetController()
+    {
+        GvrReticlePointer ret = FindObjectOfType<GvrReticlePointer>();
+        if (null != ret)
+        {
+            Destroy(ret.gameObject);
+        }
+        GvrControllerVisualManager arm = FindObjectOfType<GvrControllerVisualManager>();
+        if (null != arm)
+        {
+            Destroy(arm.gameObject);
         }
     }
 
