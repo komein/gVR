@@ -147,8 +147,9 @@ public class RunningCatController : MonoBehaviour
         if (null != gameCanvas && null != winCanvas)
         {
             gameCanvas.gameObject.SetActive(false);
+            Destroy(gameCanvas.GetComponent<GvrPointerGraphicRaycaster>());
             winCanvas.gameObject.SetActive(true);
-
+            winCanvas.gameObject.AddComponent<GvrPointerGraphicRaycaster>();
             winCanvas.ShowScore();
         }
         else
@@ -239,6 +240,8 @@ public class RunningCatController : MonoBehaviour
                 return GetCameraMoveVector();
             }
 
+            //Debug.Log(pointer.IsPointerIntersecting);
+
             GameObject reticle = pointer.reticle;
 
             if (null == reticle)
@@ -246,22 +249,42 @@ public class RunningCatController : MonoBehaviour
                 return GetCameraMoveVector();
             }
 
-            Vector3 gotoPos = reticle.transform.position;
-
-
-            if (GvrController.ClickButton)
+            if (pointer.IsPointerIntersecting)
             {
-                Vector3 pos = Vector3.zero;
+                //Debug.Log(pointer.TargetGO.name);
 
-                pos.x = Mathf.Min(gotoPos.x - gameObject.transform.position.x, 1f);
-                pos.x *= strafeSpeed;
-                pos.y = 0;
-                pos.z = curSpeed;
+                if (pointer.TargetGO.GetComponent<CanvasRenderer>() != null)
+                {
+                    return Vector3.zero;
+                }
 
-                return pos;
+                Vector3 gotoPos = reticle.transform.position;
+
+                if (true)
+                    //(GvrController.ClickButton)
+                {
+                    Vector3 pos = Vector3.zero;
+
+                    float zPos = gotoPos.z - gameObject.transform.position.z;
+
+                    if (zPos < -1)
+                        return Vector3.zero;
+
+                    float diff = gotoPos.x - gameObject.transform.position.x;
+
+                    pos.x = Mathf.Min(Mathf.Abs(diff), 0.4f) * Mathf.Sign(diff);
+                    pos.x *= strafeSpeed;
+                    pos.y = 0;
+                    pos.z = curSpeed;
+
+                    return pos;
+                }
+                else
+                    return Vector3.zero;
             }
-            else
-                return Vector3.zero;
+
+            return Vector3.zero;
+
         }
         if (!controllerMode)
         {
@@ -279,7 +302,15 @@ public class RunningCatController : MonoBehaviour
     private Vector3 GetCameraMoveVector()
     {
         Vector3 ang = cam.transform.rotation.eulerAngles;
-        Vector3 pos = new Vector3(PolarToCartesian(new Vector2(ang.x, ang.y)).x + (cam.transform.position.x - gameObject.transform.position.x) / 4f, 0, 0) * strafeSpeed;
+
+        Vector3 polarCoords = PolarToCartesian(new Vector2(ang.x, ang.y));
+
+        if (polarCoords.y > 0)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 pos = new Vector3(polarCoords.x + (cam.transform.position.x - gameObject.transform.position.x) / 4f, 0, 0) * strafeSpeed;
 
         if (Mathf.Abs(pos.x) > strafeStep)
         {

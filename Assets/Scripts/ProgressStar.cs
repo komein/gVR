@@ -19,6 +19,8 @@ public class ProgressStar : MonoBehaviour
 	void Awake ()
     {
         fillImage = GetComponent<Image>();
+        fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 1);
+        fillImage.enabled = false;
         borderImage = GetComponentInChildren<Image>();
         MakeEmpty();
     }
@@ -28,7 +30,7 @@ public class ProgressStar : MonoBehaviour
         filled = true;
         if (null != fillImage)
         {
-            fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 1);
+            fillImage.enabled = true;
         }
         StopAllCoroutines();
         StartCoroutine(PlayTransition());
@@ -39,7 +41,8 @@ public class ProgressStar : MonoBehaviour
         filled = true;
         if (null != fillImage)
         {
-            fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 1);
+            fillImage.enabled = true;
+            //fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 1);
         }
     }
 
@@ -48,7 +51,8 @@ public class ProgressStar : MonoBehaviour
         filled = false;
         if (null != fillImage)
         {
-            fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 0);
+            fillImage.enabled = false;
+            //fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 0);
         }
     }
 

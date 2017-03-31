@@ -7,7 +7,22 @@ public class GameManager : MonoBehaviour
     public enum VRMode { noVR, Daydream, Cardboard, Oculus };
 
     public VRMode mode;
-    public bool noStereoMode = false;
+    public bool noStereoMode
+    {
+        get
+        {
+
+            #if !(UNITY_HAS_GOOGLEVR && (UNITY_ANDROID))
+                        return false;
+            #endif
+
+            #if !(UNITY_HAS_GOOGLEVR && (UNITY_EDITOR))
+                        return true;
+            #endif
+
+            return true;
+        }
+    }
 
     public string SAVE_PATH
     {

@@ -34,7 +34,7 @@ public class GvrLaserPointer : MonoBehaviour {
   public float maxLaserDistance = 0.75f;
 
   /// Maximum distance of the reticle (meters).
-  [Range(0.4f, 10.0f)]
+  [Range(0.4f, 50.0f)]
   public float maxReticleDistance = 2.5f;
 
   public GameObject reticle;
@@ -44,6 +44,34 @@ public class GvrLaserPointer : MonoBehaviour {
   [Range(-32767, 32767)]
   public int reticleSortingOrder = 32767;
 
+    public bool IsPointerIntersecting
+    {
+        get
+        {
+            if (null == laserPointerImpl)
+                return false;
+
+            return laserPointerImpl.IsPointerIntersecting;
+        }
+    }
+
+    public GameObject TargetGO
+    {
+        get
+        {
+            if (null == laserPointerImpl)
+            {
+                return null;
+            }
+
+            if (IsPointerIntersecting)
+            {
+                return laserPointerImpl.targetGO;
+            }
+
+            return null;
+        }
+    }
   void Awake() {
     laserPointerImpl = new GvrLaserPointerImpl();
     laserPointerImpl.LaserLineRenderer = gameObject.GetComponent<LineRenderer>();

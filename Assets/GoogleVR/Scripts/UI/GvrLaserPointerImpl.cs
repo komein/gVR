@@ -48,6 +48,8 @@ public class GvrLaserPointerImpl : GvrBasePointer {
 
   public Ray PointerIntersectionRay { get; private set; }
 
+    public GameObject targetGO;
+
   public override float MaxPointerDistance {
     get {
 #if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
@@ -93,16 +95,18 @@ public class GvrLaserPointerImpl : GvrBasePointer {
     PointerIntersection = intersectionPosition;
     PointerIntersectionRay = intersectionRay;
     IsPointerIntersecting = true;
+        targetGO = targetObject;
 #endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
-  }
+    }
 
   public override void OnPointerHover(GameObject targetObject, Vector3 intersectionPosition,
       Ray intersectionRay, bool isInteractive) {
 #if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
     PointerIntersection = intersectionPosition;
     PointerIntersectionRay = intersectionRay;
+        targetGO = targetObject;
 #endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
-  }
+    }
 
   public override void OnPointerExit(GameObject targetObject) {
 #if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
@@ -110,7 +114,7 @@ public class GvrLaserPointerImpl : GvrBasePointer {
     PointerIntersectionRay = new Ray();
     IsPointerIntersecting = false;
 #endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
-  }
+    }
 
   public override void OnPointerClickDown() {
     // User has performed a click on the target.  In a derived class, you could
@@ -162,7 +166,7 @@ public class GvrLaserPointerImpl : GvrBasePointer {
       float reticleDistanceFromCamera =
         (Reticle.transform.position - MainCamera.transform.position).magnitude;
       float scale = RETICLE_SIZE * reticleDistanceFromCamera;
-      Reticle.transform.localScale = new Vector3(scale, scale, scale);
+            Reticle.transform.localScale = new Vector3(0.01f + scale * 0.1f, 0.01f + scale * 0.1f, 0.01f + scale * 0.1f);// (scale, scale, scale);
     }
 
     if (LaserLineRenderer == null) {

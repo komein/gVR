@@ -198,11 +198,6 @@ public class GraphicsConfigurator : MonoBehaviour
                 pointer.SetAsMainPointer();
             }
 
-            LookableButton[] buttons = FindObjectsOfType<LookableButton>();
-            foreach(var v in buttons)
-            {
-                v.gazeMode = false;
-            }
         }
         // controller is not found
         else
@@ -211,14 +206,10 @@ public class GraphicsConfigurator : MonoBehaviour
 
             ret.transform.SetParent(Camera.main.transform);
             ret.transform.localPosition = Vector3.zero;
+            ret.transform.localRotation = Quaternion.identity;
 
             ret.SetAsMainPointer();
 
-            LookableButton[] buttons = FindObjectsOfType<LookableButton>();
-            foreach (var v in buttons)
-            {
-                v.gazeMode = true;
-            }
         }
     }
 
