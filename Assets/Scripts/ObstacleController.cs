@@ -8,6 +8,8 @@ public class ObstacleController : MonoBehaviour
     IndestructibleObstacle[] obstacles;
     RunningCatController character;
 
+    public bool ghostMode = false;
+
 	void Start () {
 
         obstacles = FindObjectsOfType<IndestructibleObstacle>();
@@ -23,7 +25,7 @@ public class ObstacleController : MonoBehaviour
             }
         }
 
-        ToggleObstaclesGhost(false);
+        ToggleObstaclesGhost(ghostMode);
 
         character = FindObjectOfType<RunningCatController>();
     }

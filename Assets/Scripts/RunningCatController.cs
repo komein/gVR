@@ -10,7 +10,21 @@ public class RunningCatController : MonoBehaviour
     public bool controllerMode;
 
     enum CatState { paused, cantMove, jump, dying, moving };
+    CatState CurrentState
+    {
+        set
+        {
+            currentState = value;
+        }
+
+        get
+        {
+            return currentState;
+        }
+    }
+
     CatState currentState;
+
 
     protected Rigidbody rb;
 
@@ -46,9 +60,13 @@ public class RunningCatController : MonoBehaviour
 
     GvrPointerInputModule gim;
 
+    public TextMesh questionMark;
+
+    Vector3 savedMoveVector = Vector3.zero;
+
     private void Start()
     {
-        currentState = CatState.paused;
+        CurrentState = CatState.paused;
 
         mesh = GetComponentInChildren<SkinnedMeshRenderer>();
         anim = GetComponent<Animator>();
@@ -81,12 +99,14 @@ public class RunningCatController : MonoBehaviour
         {
             gim = FindObjectOfType<GvrPointerInputModule>();
         }
+
+        questionMark = GetComponentInChildren<TextMesh>();
     }
 
     private IEnumerator StartRunning()
     {
         yield return new WaitForSeconds(1);
-        currentState = CatState.moving;
+        CurrentState = CatState.moving;
         yield return null;
     }
 
@@ -101,7 +121,7 @@ public class RunningCatController : MonoBehaviour
         SetGravity();
         SelectCatState();
 
-        switch (currentState)
+        switch (CurrentState)
         {
             case CatState.paused:
             case CatState.dying:
@@ -122,13 +142,31 @@ public class RunningCatController : MonoBehaviour
 
             case CatState.moving:
 
-                if (curSpeed < maxSpeed)
-                {
-                    curSpeed += Time.fixedDeltaTime * acceleration;
-                }
                 pos = GetMoveVector();
-                MoveAndRotate(pos);
 
+                if (pos == Vector3.zero)
+                {
+                    curSpeed = Mathf.Max(0, curSpeed - Time.fixedDeltaTime * acceleration * 8);
+                    if (curSpeed > 0)
+                    {
+                        pos = savedMoveVector;
+                    }
+                }
+                else
+                {
+                    savedMoveVector = pos;
+                    if (curSpeed < maxSpeed)
+                    {
+                        curSpeed += Time.fixedDeltaTime * acceleration;
+                    }
+                }
+
+                if (null != questionMark)
+                {
+                    questionMark.gameObject.SetActive(pos == Vector3.zero);
+                }
+
+                MoveAndRotate(pos);
                 SetAnimation(pos);
 
                 return;
@@ -142,7 +180,7 @@ public class RunningCatController : MonoBehaviour
         StopAllCoroutines();
         ToggleFlashing(false);
 
-        currentState = CatState.paused;
+        CurrentState = CatState.paused;
 
         if (null != gameCanvas && null != winCanvas)
         {
@@ -160,7 +198,7 @@ public class RunningCatController : MonoBehaviour
 
     private void SelectCatState()
     {
-        switch (currentState)
+        switch (CurrentState)
         {
             case CatState.paused:
             case CatState.dying:
@@ -173,17 +211,17 @@ public class RunningCatController : MonoBehaviour
 
         if (highGrounds.Count == 0 && planeGrounds.Count == 0)
         {
-            currentState = CatState.jump;
+            CurrentState = CatState.jump;
         }
         else
         {
-            currentState = CatState.moving;
+            CurrentState = CatState.moving;
         }
     }
 
     private void SetGravity()
     {
-        switch (currentState)
+        switch (CurrentState)
         {
             case CatState.paused:
             case CatState.dying:
@@ -268,9 +306,16 @@ public class RunningCatController : MonoBehaviour
                     float zPos = gotoPos.z - gameObject.transform.position.z;
 
                     if (zPos < -1)
+                    {
                         return Vector3.zero;
+                    }
 
                     float diff = gotoPos.x - gameObject.transform.position.x;
+
+                    //Debug.DrawLine(gameObject.transform.position, gotoPos, Color.red, Time.deltaTime);
+                    //Debug.DrawRay(gotoPos, -Vector3.up, Color.green, Time.deltaTime);
+
+                    //Debug.Log(gotoPos.x + " / " + gameObject.transform.position.x + " / " + diff);
 
                     pos.x = Mathf.Min(Mathf.Abs(diff), 0.4f) * Mathf.Sign(diff);
                     pos.x *= strafeSpeed;
@@ -280,21 +325,21 @@ public class RunningCatController : MonoBehaviour
                     return pos;
                 }
                 else
+                {
                     return Vector3.zero;
+                }
             }
 
             return Vector3.zero;
 
         }
+
         if (!controllerMode)
         {
             return GetCameraMoveVector();
         }
-
         else
         {
-
-
             return Vector3.zero;
         }
     }
@@ -328,7 +373,7 @@ public class RunningCatController : MonoBehaviour
         {
             if (DataObjects.gameController.isAlive)
             {
-                if (currentState == CatState.moving)
+                if (CurrentState == CatState.moving)
                 {
                     Quaternion rot_ = Quaternion.identity;
 
@@ -362,7 +407,7 @@ public class RunningCatController : MonoBehaviour
 
                     return;
                 }
-                else if (currentState == CatState.jump)
+                else if (CurrentState == CatState.jump)
                 {
                     transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, Time.fixedDeltaTime);
                 }
@@ -453,14 +498,14 @@ public class RunningCatController : MonoBehaviour
             {
                 StopCoroutine(immobilizeCoroutine);
                 
-                if (currentState == CatState.paused)
+                if (CurrentState == CatState.paused)
                 {
                     // do nothing
                 }
                 else
                 {
                     // start moving
-                    currentState = CatState.moving;
+                    CurrentState = CatState.moving;
                 }
 
                 immobilizeCoroutine = null;
@@ -567,27 +612,27 @@ public class RunningCatController : MonoBehaviour
 
     private IEnumerator ImmobilizeCoroutine()
     {
-        currentState = CatState.cantMove;
+        CurrentState = CatState.cantMove;
         yield return new WaitForSeconds(1.5f);
-        currentState = CatState.moving;
+        CurrentState = CatState.moving;
 
         yield return null;
     }
 
     private IEnumerator JumpCoroutine()
     {
-        currentState = CatState.jump;
+        CurrentState = CatState.jump;
 
         yield return new WaitForSeconds(5f);
 
-        currentState = CatState.moving;
+        CurrentState = CatState.moving;
 
         yield return null;
     }
 
     private IEnumerator Die()
     {
-        currentState = CatState.dying;
+        CurrentState = CatState.dying;
         
         yield return new WaitForSeconds(4f);
 
