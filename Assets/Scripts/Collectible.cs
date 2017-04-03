@@ -4,7 +4,17 @@ using UnityEngine;
 
 public class Collectible : MonoBehaviour {
 
+    protected AudioSource aus;
     RoadPart road;
+
+    protected virtual void Start()
+    {
+        aus = GetComponent<AudioSource>();
+        if (null == aus)
+        {
+            aus = gameObject.AddComponent<AudioSource>();
+        }
+    }
 
     public virtual void Collect()
     {

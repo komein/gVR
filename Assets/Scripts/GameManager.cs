@@ -132,6 +132,7 @@ public class GameManager : MonoBehaviour
 
         if (controllerState != GvrController.State)
         {
+            //Debug.Log("switching " + controllerState + " to " + GvrController.State);
             controllerState = GvrController.State;
             UpdateController();
         }

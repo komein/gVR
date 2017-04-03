@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 
 public class GraphicsConfigurator : MonoBehaviour
 {
+    public static GraphicsConfigurator instanceRef; // singleton pattern
+
     // deprecated
     public int width = 1920;
     // deprecated
@@ -17,7 +19,7 @@ public class GraphicsConfigurator : MonoBehaviour
     public GvrControllerVisualManager gvrArm;
 
     public EventSystem eventSystemPrefab;
-
+    GvrReticlePointer ret;
 
     internal void Initialize()
     {
@@ -61,7 +63,17 @@ public class GraphicsConfigurator : MonoBehaviour
 
     private void Awake()
     {
-        Initialize();
+        if (null == instanceRef)
+        {
+            instanceRef = this;
+            DontDestroyOnLoad(this.gameObject);
+            Initialize();
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
     }
 
     private void ResetEverything()
@@ -168,6 +180,7 @@ public class GraphicsConfigurator : MonoBehaviour
         if (null == gc)
         {
             gc = Instantiate(gvrController);
+            DontDestroyOnLoad(gc);
         }
 
         ReinitControllerState();
@@ -186,6 +199,11 @@ public class GraphicsConfigurator : MonoBehaviour
         // controller is found
         if (DataObjects.gameManager.controllerState == GvrConnectionState.Connected)
         {
+            if (null != ret)
+            {
+                ret.gameObject.SetActive(false);
+            }
+
             GvrControllerVisualManager arm = Instantiate(gvrArm);
 
             arm.transform.SetParent(p.transform);
@@ -198,15 +216,27 @@ public class GraphicsConfigurator : MonoBehaviour
                 pointer.SetAsMainPointer();
             }
 
+            GvrPointerInputModule inputModule = FindObjectOfType<GvrPointerInputModule>();
+            if (null != inputModule)
+            {
+                inputModule.Process();
+            }
+
         }
         // controller is not found
         else
         {
-            GvrReticlePointer ret = Instantiate(reticlePrefab);
-
-            ret.transform.SetParent(Camera.main.transform);
-            ret.transform.localPosition = Vector3.zero;
-            ret.transform.localRotation = Quaternion.identity;
+            if (null == ret)
+            {
+                ret = Instantiate(reticlePrefab);
+                ret.transform.SetParent(Camera.main.transform);
+                ret.transform.localPosition = Vector3.zero;
+                ret.transform.localRotation = Quaternion.identity;
+            }
+            else
+            {
+                ret.gameObject.SetActive(true);
+            }
 
             ret.SetAsMainPointer();
 
@@ -214,12 +244,12 @@ public class GraphicsConfigurator : MonoBehaviour
     }
 
     private static void ResetController()
-    {
+    {/*
         GvrReticlePointer ret = FindObjectOfType<GvrReticlePointer>();
         if (null != ret)
         {
             Destroy(ret.gameObject);
-        }
+        }*/
         GvrControllerVisualManager arm = FindObjectOfType<GvrControllerVisualManager>();
         if (null != arm)
         {

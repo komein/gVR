@@ -8,10 +8,28 @@ public class IndestructibleObstacle : MonoBehaviour {
 
     CrushDelegate doCrush;
 
+    AudioSource aus;
+    GameMusic gm;
+
     public float crushAngle = 165;
+
+    private void Start()
+    {
+        aus = GetComponent<AudioSource>();
+        if (null == aus)
+        {
+            aus = gameObject.AddComponent<AudioSource>();
+        }
+
+        if (null != DataObjects.music)
+        {
+            aus.clip = DataObjects.music.GetMusic("hit");
+        }
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
+
         RunningCatController chc = collision.collider.GetComponent<RunningCatController>();
         if (chc != null)
         {
@@ -28,7 +46,10 @@ public class IndestructibleObstacle : MonoBehaviour {
                         AudioSource aus = GetComponent<AudioSource>();
                         if (null != aus)
                         {
-                            aus.Play();
+                            if (aus.clip != null)
+                            {
+                                aus.Play();
+                            }
                         }
                     }
                 }

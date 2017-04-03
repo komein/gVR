@@ -6,6 +6,15 @@ public class HpCollectible : Collectible {
 
     public int value = 1;
 
+    protected override void Start()
+    {
+        base.Start();
+        if (null != DataObjects.music)
+        {
+            aus.clip = DataObjects.music.GetMusic("healthPickup");
+        }
+    }
+
     public override void Collect()
     {
         if (null != DataObjects.gameController)

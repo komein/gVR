@@ -12,6 +12,8 @@ public class AsyncSceneLoader : MonoBehaviour
     private IEnumerator LoadALevel(string levelName)
     {
         async = SceneManager.LoadSceneAsync(levelName, LoadSceneMode.Single);
+        async.allowSceneActivation = false;
+
         yield return async;
     }
 
@@ -25,11 +27,6 @@ public class AsyncSceneLoader : MonoBehaviour
     {
         loadMessage = GetComponentInChildren<Text>();
 
-        if (Camera.main != null)
-        {
-            //transform.SetParent(Camera.main.gameObject.transform, true);
-        }
-
         if (null != DataObjects.sceneInfo)
         {
             LoadLevel(DataObjects.sceneInfo.title);
@@ -40,22 +37,33 @@ public class AsyncSceneLoader : MonoBehaviour
     {
         async.allowSceneActivation = true;
     }
-
+    
     private void FixedUpdate()
     {
         if (null != async)
         {
             float p = async.progress;
 
-            if (null != pBar)
-            {
-                pBar.fillAmount = p;
-            }
+            UpdateUI(p / 0.9f);
 
-            if (null != loadMessage)
+            if (p >= 0.9f)
             {
-                loadMessage.text = "Loading progress: " + (p * 100) + "%";
+                async.allowSceneActivation = true;
             }
+        }
+
+    }
+
+    private void UpdateUI(float p)
+    {
+        if (null != pBar)
+        {
+            pBar.fillAmount = p;
+        }
+
+        if (null != loadMessage)
+        {
+            loadMessage.text = "Loading progress: " + (p * 100) + "%";
         }
     }
 }

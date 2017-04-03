@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 public class GameController
 {
@@ -142,7 +143,7 @@ public class GameController
     {
         if (null != DataObjects.sceneInfo)
         {
-            LevelInfo p = DataObjects.savedGame.GetLevelByName(DataObjects.sceneInfo.title);
+            LevelInfo p = DataObjects.savedGame.GetLevelByName(SceneManager.GetActiveScene().name);
             if (p != null)
             {
                 if (p.bestScoreRecord < DataObjects.sceneInfo.tempScore)
@@ -157,7 +158,7 @@ public class GameController
     {
         if (null != DataObjects.sceneInfo && null != DataObjects.savedGame && null != DataObjects.dataManager)
         {
-            LevelInfo p = DataObjects.savedGame.GetLevelByName(DataObjects.sceneInfo.title);
+            LevelInfo p = DataObjects.savedGame.GetLevelByName(SceneManager.GetActiveScene().name);
             if (p != null)
             {
                 p.accumulatedScore += DataObjects.sceneInfo.tempScore;

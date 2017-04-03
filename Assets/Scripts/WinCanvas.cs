@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class WinCanvas : MonoBehaviour
@@ -25,6 +26,12 @@ public class WinCanvas : MonoBehaviour
 
     IEnumerator ScoreCoroutine()
     {
+        GameMusic gm = FindObjectOfType<GameMusic>();
+        if (null != gm)
+        {
+            gm.Play("victory");
+        }
+
         if (null != DataObjects.savedGame && null != DataObjects.sceneInfo)
         {
             LevelInfo p = GetLevelInfo();
@@ -83,7 +90,7 @@ public class WinCanvas : MonoBehaviour
 
     private static LevelInfo GetLevelInfo()
     {
-        LevelInfo p = DataObjects.savedGame.GetLevelByName(DataObjects.sceneInfo.title);
+        LevelInfo p = DataObjects.savedGame.GetLevelByName(SceneManager.GetActiveScene().name);
         if (null == p)
         {
             LevelInfoContainer c = FindObjectOfType<LevelInfoContainer>();

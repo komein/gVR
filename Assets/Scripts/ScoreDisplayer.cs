@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
@@ -57,12 +58,11 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
     // value of levelTitle, which must be set in inspector therefore
     public void UpdateLevelInfo()
     {
-        SceneInfo l = DataObjects.sceneInfo;
         SavedGame game = DataObjects.savedGame;
 
-        if (null != game && null != l)
+        if (null != game)
         {
-            level = game.GetLevelByName(l.title);
+            level = game.GetLevelByName(SceneManager.GetActiveScene().name);
 
             if (null == level)
             {

@@ -6,6 +6,15 @@ public class ScoreCollectible : Collectible {
 
     public int value = 1;
 
+    protected override void Start()
+    {
+        base.Start();
+        if (null != DataObjects.music)
+        {
+            aus.clip = DataObjects.music.GetMusic("scorePickup");
+        }
+    }
+
     public override void Collect()
     {
         base.Collect();

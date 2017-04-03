@@ -12,6 +12,14 @@ public static class DataObjects
         }
     }
 
+    public static GameMusic music
+    {
+        get
+        {
+            return GameMusic.instanceRef;
+        }
+    }
+
     public static DataManager dataManager
     {
         get

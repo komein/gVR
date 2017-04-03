@@ -7,6 +7,15 @@ public class MultiplierCollectible : Collectible {
     public int multiplier = 1;
     public float period = 15;
 
+    protected override void Start()
+    {
+        base.Start();
+        if (null != DataObjects.music)
+        {
+            aus.clip = DataObjects.music.GetMusic("boostPickup");
+        }
+    }
+
     public override void Collect()
     {
         base.Collect();
