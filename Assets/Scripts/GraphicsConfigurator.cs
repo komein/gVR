@@ -8,16 +8,12 @@ public class GraphicsConfigurator : MonoBehaviour
 {
     public static GraphicsConfigurator instanceRef; // singleton pattern
 
-    // deprecated
-    public int width = 1920;
-    // deprecated
-    public int height = 1080;
-
     public GvrReticlePointer reticlePrefab;
     GvrReticlePointer ret;
-    public GvrViewer gvrViewerPrefab;
+
     public GvrController gvrController;
     GvrController gc;
+
     public GvrControllerVisualManager gvrArm;
     GvrControllerVisualManager arm;
 
@@ -43,13 +39,13 @@ public class GraphicsConfigurator : MonoBehaviour
             {
                 case GameManager.VRMode.Cardboard:
                     {
-                        MakeGvrStereoConfiguration();
+                        MakeGoogleVRConfiguration(false);
                         break;
                     }
 
                 case GameManager.VRMode.Daydream:
                     {
-                        MakeDaydreamConfiguration();
+                        MakeGoogleVRConfiguration(true);
                         break;
                     }
 
@@ -74,7 +70,7 @@ public class GraphicsConfigurator : MonoBehaviour
         if (null == instanceRef)
         {
             instanceRef = this;
-            DontDestroyOnLoad(this.gameObject);
+            DontDestroyOnLoad(gameObject);
             Initialize();
         }
         else
@@ -88,7 +84,7 @@ public class GraphicsConfigurator : MonoBehaviour
     {
         ResetCamera();
         ResetEventSystem();
-        ResetController();
+        DeleteController();
     }
 
     private static void ResetCamera()
@@ -105,7 +101,7 @@ public class GraphicsConfigurator : MonoBehaviour
 
     private void ResetEventSystem()
     {
-        es = GetOrCreateEventSystem();
+        es = GetEventSystem();
         if (null != es)
         {
             Destroy(es.gameObject.GetComponent<GvrPointerInputModule>());
@@ -113,25 +109,23 @@ public class GraphicsConfigurator : MonoBehaviour
         }
     }
 
-    private void MakeMouseGazeConfiguration(bool withRaycaster)
+    private void MakeMouseGazeConfiguration(bool withRaycaster) // no physics raycaster is needed in daydream controller case
     {
         Camera c = Camera.main;
         if (null != c)
         {
-            MoveCameraScript mc = c.gameObject.GetComponent<MoveCameraScript>();
-            Destroy(mc);
-
-            c.gameObject.AddComponent<MoveCameraScript>();
+            if (null == c.gameObject.GetComponent<MoveCameraScript>())
+            {
+                c.gameObject.AddComponent<MoveCameraScript>();
+            }
             if (withRaycaster)
             {
                 c.gameObject.AddComponent<PhysicsRaycaster>();
             }
-
-            es = MakeGvrEventSystem();
         }
     }
 
-    private EventSystem GetOrCreateEventSystem()
+    private EventSystem GetEventSystem()
     {
         if (null == es)
         {
@@ -145,9 +139,9 @@ public class GraphicsConfigurator : MonoBehaviour
         return es;
     }
 
-    private EventSystem MakeGvrEventSystem()
+    private EventSystem MakeGoogleVREventSystem()
     {
-        es = GetOrCreateEventSystem();
+        es = GetEventSystem();
         if (null != es)
         {
             if (null == es.GetComponent<GvrPointerInputModule>())
@@ -163,38 +157,41 @@ public class GraphicsConfigurator : MonoBehaviour
         return es;
     }
 
-    private void MakeGvrStereoConfiguration()
+    private void MakeGoogleVRStereoConfiguration()
     {
         Camera c = Camera.main;
         if (null != c)
         {
             c.gameObject.AddComponent<GvrHead>();
             c.gameObject.AddComponent<StereoController>();
-
-            es = MakeGvrEventSystem();
         }
     }
 
-    private void MakeDaydreamConfiguration()
+    private void MakeGoogleVRConfiguration(bool withController)
     {
-        // if we don't have a Player object, the scene is just isn't configured correctly to be used with daydream
-        Player p = FindObjectOfType<Player>();
-        if (null == p)
-        {
-            MakeGvrStereoConfiguration();
-            return;
-        }
-        //
+        MakeGoogleVRCameraConfiguration();
+        MakeGoogleVREventSystem();
 
+        if (withController)
+        {
+            ReinitGoogleVRController();
+        }
+    }
+
+    private void MakeGoogleVRCameraConfiguration()
+    {
         if (DataObjects.gameManager.noStereoMode)
         {
             MakeMouseGazeConfiguration(false);
         }
         else
         {
-            MakeGvrStereoConfiguration();
+            MakeGoogleVRStereoConfiguration();
         }
+    }
 
+    public void ReinitGoogleVRController()
+    {
         if (null == gc)
         {
             gc = FindObjectOfType<GvrController>();
@@ -205,11 +202,6 @@ public class GraphicsConfigurator : MonoBehaviour
             }
         }
 
-        ReinitControllerState();
-    }
-
-    public void ReinitControllerState()
-    {
         // no parent object to put controller into
         Player p = FindObjectOfType<Player>();
         if (null == p)
@@ -217,8 +209,7 @@ public class GraphicsConfigurator : MonoBehaviour
             return;
         }
 
-        ResetController();
-
+        DeleteController();
         // controller is found
         if (DataObjects.gameManager.controllerState == GvrConnectionState.Connected)
         {
@@ -262,11 +253,9 @@ public class GraphicsConfigurator : MonoBehaviour
 
             ret.SetAsMainPointer();
         }
-        //ResetEventSystem();
-        //MakeGvrEventSystem();
     }
 
-    private void ResetController()
+    private void DeleteController()
     {
         if (null != arm)
         {
@@ -274,12 +263,4 @@ public class GraphicsConfigurator : MonoBehaviour
         }
     }
 
-    /*
-     * DEPRECATED:
-     * Do not use with Daydream, proved to fuck up everything with GoogleVR v1.0 + Unity 5.6.0f1 beta
-    void Start()
-    {
-        Screen.SetResolution(width, height, true);
-    }
-     */
 }

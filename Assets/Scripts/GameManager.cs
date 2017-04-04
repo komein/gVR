@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            gConf.ReinitControllerState();
+            gConf.ReinitGoogleVRController();
         }
     }
 
