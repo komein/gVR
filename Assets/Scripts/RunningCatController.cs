@@ -7,7 +7,13 @@ using UnityEngine.SceneManagement;
 
 public class RunningCatController : MonoBehaviour
 {
-    public bool controllerMode;
+    public bool ControllerMode
+    {
+        get
+        {
+            return DataObjects.gameManager.mode == GameManager.VRMode.Daydream;
+        }
+    }
 
     enum CatState { paused, cantMove, jump, dying, moving };
     CatState CurrentState
@@ -64,10 +70,12 @@ public class RunningCatController : MonoBehaviour
 
     Vector3 savedMoveVector = Vector3.zero;
 
-    private void Start()
-    {
-        CurrentState = CatState.paused;
+    GvrPointerInputModule im;
+    GvrLaserPointer pointer;
+    CrushParticle cp;
 
+    private void Awake()
+    {
         mesh = GetComponentInChildren<SkinnedMeshRenderer>();
         anim = GetComponent<Animator>();
 
@@ -77,30 +85,37 @@ public class RunningCatController : MonoBehaviour
             rb = GetComponentInChildren<Rigidbody>();
         }
 
-        if (null == cam)
-            cam = Camera.main;
-
-        StartCoroutine(StartRunning());
+        cam = Camera.main;
 
         rb.useGravity = true;
 
-        if (null == gameCanvas)
-            gameCanvas = FindObjectOfType<GameCanvas>();
+        gameCanvas = FindObjectOfType<GameCanvas>();
         if (null != gameCanvas)
-            gameCanvas.gameObject.SetActive(true);
-
-        if (null == winCanvas)
-            winCanvas = FindObjectOfType<WinCanvas>();
-        if (null != winCanvas)
-            winCanvas.gameObject.SetActive(false);
-
-        controllerMode = DataObjects.gameManager.mode == GameManager.VRMode.Daydream;
-        if (controllerMode)
         {
-            gim = FindObjectOfType<GvrPointerInputModule>();
+            gameCanvas.gameObject.SetActive(true);
         }
 
+        winCanvas = FindObjectOfType<WinCanvas>();
+        if (null != winCanvas)
+        {
+            winCanvas.gameObject.SetActive(false);
+        }
+
+        im = FindObjectOfType<GvrPointerInputModule>();
+        pointer = FindObjectOfType<GvrLaserPointer>();
+        cp = FindObjectOfType<CrushParticle>();
+
         questionMark = GetComponentInChildren<TextMesh>();
+
+    }
+
+    private void Start()
+    {
+        CurrentState = CatState.paused;
+
+        gim = FindObjectOfType<GvrPointerInputModule>();
+        
+        StartCoroutine(StartRunning());
     }
 
     private IEnumerator StartRunning()
@@ -257,22 +272,17 @@ public class RunningCatController : MonoBehaviour
 
     private Vector3 GetMoveVector()
     {
-        if (controllerMode)
+        if (ControllerMode)
         {
-            GvrPointerInputModule im = FindObjectOfType<GvrPointerInputModule>();
-            /*
-            if (null != im)
-            {
-                Debug.Log(im.IsPointerOverGameObject(0));
-            }
-            */
             if (null == gim)
             {
                 return GetCameraMoveVector();
             }
 
-            GvrLaserPointer pointer = FindObjectOfType<GvrLaserPointer>();
-
+            if (null == pointer)
+            {
+                pointer = FindObjectOfType<GvrLaserPointer>();
+            }
             if (null == pointer)
             {
                 return GetCameraMoveVector();
@@ -333,14 +343,9 @@ public class RunningCatController : MonoBehaviour
             return Vector3.zero;
 
         }
-
-        if (!controllerMode)
-        {
-            return GetCameraMoveVector();
-        }
         else
         {
-            return Vector3.zero;
+            return GetCameraMoveVector();
         }
     }
 
@@ -545,7 +550,6 @@ public class RunningCatController : MonoBehaviour
 
     public void MakeCrush(Vector3 v)
     {
-        CrushParticle cp = FindObjectOfType<CrushParticle>();
         if (null != cp)
         {
             ParticleSystem cm = cp.GetComponent<ParticleSystem>();

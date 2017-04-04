@@ -74,6 +74,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        //UnityEditor.PlayerSettings.statusBarHidden = true;
     }
 
     private void Start()

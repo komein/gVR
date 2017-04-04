@@ -60,11 +60,12 @@ public class ObstacleController : MonoBehaviour
         {
             if (null != i)
             {
-                BoxCollider c = i.GetComponent<BoxCollider>();
+                Collider c = i.GetComponent<Collider>();
                 if (null != c)
                 {
                     c.enabled = !isGhost;
                 }
+                
             }
         }
     }

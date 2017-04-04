@@ -63,7 +63,7 @@ public class AsyncSceneLoader : MonoBehaviour
 
         if (null != loadMessage)
         {
-            loadMessage.text = "Loading progress: " + (p * 100) + "%";
+            loadMessage.text = "Loading progress: " + (p * 100f).ToString("F2") + "%";
         }
     }
 }
