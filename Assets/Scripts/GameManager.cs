@@ -83,13 +83,6 @@ public class GameManager : MonoBehaviour
 
     private void ReinitGraphics()
     {
-        if (null != FindObjectOfType<GraphicsOverrider>())
-        {
-            return;
-        }
-
-        gConf = FindObjectOfType<GraphicsConfigurator>();
-
         if (null == gConf)
         {
             gConf = Instantiate(rcPrefab);
@@ -106,8 +99,6 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
-
-        gConf = FindObjectOfType<GraphicsConfigurator>();
 
         if (null == gConf)
         {
@@ -141,7 +132,9 @@ public class GameManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         if (null != dataManager)
+        {
             dataManager.Save();
+        }
     }
 
     void OnEnable()
