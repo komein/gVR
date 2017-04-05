@@ -12,15 +12,15 @@ public class GameManager : MonoBehaviour
         get
         {
 
-            #if !(UNITY_HAS_GOOGLEVR && (UNITY_ANDROID))
+#if (UNITY_HAS_GOOGLEVR && (UNITY_ANDROID))
                         return false;
-            #endif
+#endif
 
-            #if !(UNITY_HAS_GOOGLEVR && (UNITY_EDITOR))
+ #if (UNITY_HAS_GOOGLEVR && (UNITY_EDITOR))
                         return true;
-            #endif
-
+#endif
             return true;
+
         }
     }
 
@@ -49,12 +49,17 @@ public class GameManager : MonoBehaviour
 
     private GraphicsConfigurator gConf;
 
+#if UNITY_HAS_GOOGLEVR
     public GvrConnectionState controllerState = GvrConnectionState.Error;
+#endif
 
     void Awake()
     {
-        SAVE_PATH = Application.persistentDataPath + "/3.xml";
+        SAVE_PATH = Application.persistentDataPath + "/10.xml";
         LEVELS_PATH = Application.dataPath + "/Resources/levels.xml";
+
+        Debug.Log("save path = " + SAVE_PATH);
+        Debug.Log("save path = " + LEVELS_PATH);
 
         if (instanceRef == null)
         {
@@ -79,7 +84,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+#if UNITY_HAS_GOOGLEVR
         controllerState = GvrController.State;
+#endif
     }
 
     private void ReinitGraphics()
@@ -122,12 +129,14 @@ public class GameManager : MonoBehaviour
             }
         }
 
+#if UNITY_HAS_GOOGLEVR
         if (controllerState != GvrController.State)
         {
             //Debug.Log("switching " + controllerState + " to " + GvrController.State);
             controllerState = GvrController.State;
             UpdateController();
         }
+#endif
     }
 
     private void OnApplicationQuit()
@@ -152,10 +161,6 @@ public class GameManager : MonoBehaviour
 
     void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("Level Loaded");
-        Debug.Log(scene.name);
-        Debug.Log(mode);
-
         ReinitGraphics();
     }
 }

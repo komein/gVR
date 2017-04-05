@@ -53,6 +53,7 @@ public class DataManager
             catch (Exception e)
             {
                 Debug.LogError(e.Message);
+                MakeNewSaveFile();
             }
             stream.Close();
         }

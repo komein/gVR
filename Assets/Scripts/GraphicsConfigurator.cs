@@ -209,6 +209,7 @@ public class GraphicsConfigurator : MonoBehaviour
             return;
         }
 
+#if UNITY_HAS_GOOGLEVR
         DeleteController();
         // controller is found
         if (DataObjects.gameManager.controllerState == GvrConnectionState.Connected)
@@ -232,6 +233,7 @@ public class GraphicsConfigurator : MonoBehaviour
         }
         // controller is not found
         else
+#endif
         {
             // this code works because if we hid the reticle then we have it as a variable
             if (null == ret)

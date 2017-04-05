@@ -88,7 +88,10 @@ public class GvrPointerInputModule : BaseInputModule {
 #if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
     isVrModeEnabled |= VRSettings.enabled;
 #else
-    isVrModeEnabled |= GvrViewer.Instance.VRModeEnabled;
+        if (GvrViewer.Instance != null)
+            isVrModeEnabled |= GvrViewer.Instance.VRModeEnabled;
+        else
+            isVrModeEnabled = false;
 #endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
 
     bool activeState = base.ShouldActivateModule() && isVrModeEnabled;

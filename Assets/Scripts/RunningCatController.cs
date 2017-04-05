@@ -272,6 +272,7 @@ public class RunningCatController : MonoBehaviour
 
     private Vector3 GetMoveVector()
     {
+#if UNITY_HAS_GOOGLEVR
         if (ControllerMode)
         {
             if (null == gim)
@@ -347,6 +348,9 @@ public class RunningCatController : MonoBehaviour
         {
             return GetCameraMoveVector();
         }
+#else
+        return GetCameraMoveVector();
+#endif
     }
 
     private Vector3 GetCameraMoveVector()

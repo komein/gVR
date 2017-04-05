@@ -87,7 +87,10 @@ public class GameMusic : MonoBehaviour
         }
         else
         {
-            Debug.Log("Music for title '" + v + "' is not found");
+            if (SceneManager.GetActiveScene().name != "loadingScreen")
+            {
+                Debug.Log("Music for title '" + v + "' is not found");
+            }
         }
     }
 
