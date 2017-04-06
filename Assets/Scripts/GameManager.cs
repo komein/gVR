@@ -7,20 +7,45 @@ public class GameManager : MonoBehaviour
     public enum VRMode { noVR, Daydream, Cardboard, Oculus };
 
     public VRMode mode;
-    public bool noStereoMode
+    public static bool StereoMode
     {
         get
         {
+#if UNITY_HAS_GOOGLEVR
 
-#if (UNITY_HAS_GOOGLEVR && (UNITY_ANDROID))
+#if UNITY_ANDROID
+                        return true;
+#elif UNITY_EDITOR
                         return false;
 #endif
 
- #if (UNITY_HAS_GOOGLEVR && (UNITY_EDITOR))
-                        return true;
+#else
+            return false;
 #endif
-            return true;
+        }
+    }
 
+    public static bool HaveGoogleVR
+    {
+        get
+        {
+#if UNITY_HAS_GOOGLEVR
+            return true;
+#else
+            return false;
+#endif
+        }
+    }
+
+    public static bool IsEditorMode
+    {
+        get
+        {
+#if UNITY_EDITOR
+            return true;
+#else
+            return false;
+#endif
         }
     }
 
@@ -114,7 +139,9 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+#if UNITY_HAS_GOOGLEVR
             gConf.ReinitGoogleVRController();
+#endif
         }
     }
 

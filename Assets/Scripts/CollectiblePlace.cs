@@ -14,5 +14,6 @@ public class CollectiblePlace : MonoBehaviour
         {
             mesh.enabled = false;
         }
+
 	}
 }

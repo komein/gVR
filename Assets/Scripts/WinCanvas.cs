@@ -93,11 +93,7 @@ public class WinCanvas : MonoBehaviour
         LevelInfo p = DataObjects.savedGame.GetLevelByName(SceneManager.GetActiveScene().name);
         if (null == p)
         {
-            LevelInfoContainer c = FindObjectOfType<LevelInfoContainer>();
-            if (null != c)
-            {
-                p = DataObjects.savedGame.GetLevelByName(c.levelTitle);
-            }
+            p = DataObjects.savedGame.GetLevelByName(SceneManager.GetActiveScene().name);
         }
 
         return p;

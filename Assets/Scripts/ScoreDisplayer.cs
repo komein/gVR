@@ -66,14 +66,6 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
 
             if (null == level)
             {
-                if (!mainMenuMode)
-                {
-                    LevelInfoContainer c = FindObjectOfType<LevelInfoContainer>();
-                    if (null != c)
-                    {
-                        levelTitle = c.levelTitle;
-                    }
-                }
                 level = game.GetLevelByName(levelTitle);
             }
         }
