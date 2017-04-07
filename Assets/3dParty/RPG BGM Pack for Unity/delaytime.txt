@@ -1,0 +1,25 @@
+﻿//////////////For people who use plugins and set loop marker//////////////////////////
+
+Please set loop marker as follows. (sampling rate :44.1kHz)
+
+track name	start(sample)	end(sample)
+battle_01	:70114		5677509(end)
+battle_02	:88200		2910599(end)	
+battle_03	:141120		3527999(end)
+battle_08	:457961		3931678(end)
+field_04	:6016169	12032337(end)
+shop_01 	:2195193	4076795(end)
+
+
+//////////////For people who use delay function///////////////////////////////////////
+
+This delay times are just example. Please fix if there are deviation of the timing.
+(Because adjustment in sample scene is not accurate.)
+
+track name	:delaytime(s)
+battle_01	:1.565
+battle_02	:2
+battle_03	:3.19
+battle_08	:10.361
+field_04	:136.389
+shop_01		:7.1

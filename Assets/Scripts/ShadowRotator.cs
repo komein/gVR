@@ -15,7 +15,7 @@ public class ShadowRotator : MonoBehaviour
         if (null != sun)
         {
             rotation = sun.transform.rotation;
-            pos = rotation * Vector3.up;
+            pos = rotation * -Vector3.forward;
         }
         else
         {
@@ -27,6 +27,6 @@ public class ShadowRotator : MonoBehaviour
     void LateUpdate()
     {
         transform.rotation = rotation;
-        transform.localPosition = pos;
+        //transform.localPosition = pos;
     }
 }
