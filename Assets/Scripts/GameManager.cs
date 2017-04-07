@@ -13,10 +13,10 @@ public class GameManager : MonoBehaviour
         {
 #if UNITY_HAS_GOOGLEVR
 
-#if UNITY_ANDROID
-                        return true;
-#elif UNITY_EDITOR
-                        return false;
+#if UNITY_EDITOR
+            return false;
+#elif UNITY_ANDROID
+             return true;
 #endif
 
 #else

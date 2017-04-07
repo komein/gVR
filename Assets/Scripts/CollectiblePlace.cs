@@ -7,7 +7,8 @@ public class CollectiblePlace : MonoBehaviour
 
     MeshRenderer mesh;
 
-	void Start () {
+	void Start ()
+    {
         mesh = GetComponent<MeshRenderer>();
 
         if (null != mesh)
