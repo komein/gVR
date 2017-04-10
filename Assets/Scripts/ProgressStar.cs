@@ -1,12 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ProgressStar : MonoBehaviour
 {
-    Image fillImage;
-    Image borderImage;
+    public Image fillImage;
+    public Image borderImageActive;
+    public Image borderImageInactive;
 
     public float step = 0.1f;
     public float period = 4f;
@@ -14,46 +16,70 @@ public class ProgressStar : MonoBehaviour
     public float power = 1f;
     public float time = 1f;
 
-    public bool filled = false;
+    public enum StarState { invalid, inactive, empty, filled };
+    public StarState state;
+
+    public bool IsFilled
+    {
+        get
+        {
+            return state == StarState.filled;
+        }
+    }
 
 	void Awake ()
     {
-        fillImage = GetComponent<Image>();
-        fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 1);
-        fillImage.enabled = false;
-        borderImage = GetComponentInChildren<Image>();
-        MakeEmpty();
+        state = StarState.invalid;
+        ResetStarImages();
     }
 
-    public void FillAnimated()
+    private void ResetStarImages()
     {
-        filled = true;
-        if (null != fillImage)
-        {
-            fillImage.enabled = true;
-        }
-        StopAllCoroutines();
-        StartCoroutine(PlayTransition());
+        ToggleImage(fillImage, false);
+        ToggleImage(borderImageActive, false);
+        ToggleImage(borderImageInactive, false);
     }
 
-    public void FillNoAnimation()
+    public void SetState(StarState s, bool animated = false)
     {
-        filled = true;
-        if (null != fillImage)
+        switch(s)
         {
-            fillImage.enabled = true;
-            //fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 1);
+            case StarState.invalid:
+                Debug.LogError("That isn't the state you should set.");
+                return;
+            case StarState.inactive:
+                ResetStarImages();
+                if (ToggleImage(borderImageInactive, true))
+                    state = s;
+                return;
+            case StarState.empty:
+                ResetStarImages();
+                if (ToggleImage(borderImageActive, true))
+                    state = s;
+                return;
+            case StarState.filled:
+                ResetStarImages();
+                if (ToggleImage(fillImage, true))
+                {
+                    if (animated)
+                    {
+                        StopAllCoroutines();
+                        StartCoroutine(PlayTransition());
+                    }
+                    state = s;
+                }
+                return;
         }
     }
 
-    public void MakeEmpty()
+    private bool ToggleImage(Image i, bool v)
     {
-        filled = false;
-        if (null != fillImage)
+        if (null != i)
         {
-            fillImage.enabled = false;
-            //fillImage.color = new Color(fillImage.color.r, fillImage.color.g, fillImage.color.b, 0);
+            i.enabled = v;
+            return true;
         }
+        return false;
     }
 
     private IEnumerator PlayTransition()

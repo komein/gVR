@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,19 +33,6 @@ public class StarProgressBar : MonoBehaviour
         }
     }
 
-    public int obtainedStars
-    {
-        get
-        {
-            if (null == stars)
-            {
-                return 0;
-            }
-
-            return stars.FindAll(p => p.filled == true).Count;
-        }
-    }
-
     private bool animationLock = false;
 
     public void UnfillStars()
@@ -53,7 +42,9 @@ public class StarProgressBar : MonoBehaviour
             foreach (var v in stars)
             {
                 if (null != v)
-                    v.MakeEmpty();
+                {
+                    v.SetState(ProgressStar.StarState.empty);
+                }
             }
         }
     }
@@ -66,7 +57,7 @@ public class StarProgressBar : MonoBehaviour
         {
             for (int i = 0; i < conts.Count; i++ )
             {
-                Text t = conts[i].GetComponentInChildren<Text>();
+                TextMeshProUGUI t = conts[i].GetComponentInChildren<TextMeshProUGUI>();
                 if (null != t)
                 {
                     t.text = level.starRecords[i].ToString();
@@ -89,6 +80,20 @@ public class StarProgressBar : MonoBehaviour
         }
     }
 
+    internal void SetStarsInactive()
+    {
+        if (null != stars)
+        {
+            foreach (var v in stars)
+            {
+                if (null != v)
+                {
+                    v.SetState(ProgressStar.StarState.inactive);
+                }
+            }
+        }
+    }
+
     public void FillStarsNoAnimation(int v)
     {
         UnfillStars();
@@ -104,7 +109,7 @@ public class StarProgressBar : MonoBehaviour
                 {
                     if (null != stars[i])
                     {
-                        stars[i].FillNoAnimation();
+                        stars[i].SetState(ProgressStar.StarState.filled);
                     }
                 }
             }
@@ -129,9 +134,9 @@ public class StarProgressBar : MonoBehaviour
                 {
                     if (null != stars[i])
                     {
-                        if (!stars[i].filled)
+                        if (!stars[i].IsFilled)
                         {
-                            stars[i].FillAnimated();
+                            stars[i].SetState(ProgressStar.StarState.filled, true);
                             yield return new WaitForSeconds(0.5f);
                         }
                     }

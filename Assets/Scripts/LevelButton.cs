@@ -14,21 +14,40 @@ public class LevelButton : SceneButton, IUICanReinitialize
     private ScoreDisplayer scoreDisplayer;
 
     Image lockImage;
+    Image activeBg;
+    Image inactiveBg;
 
     LevelInfo level;
 
-    private void Awake()
-    {
-        starBar = GetComponentInChildren<StarProgressBar>();
+    bool isInitialized = false;
 
-        lockImage = transform.parent.GetComponentsInChildren<Image>().ToList().Find(p => p.name == "LockImage");
-        scoreDisplayer = transform.parent.GetComponentInChildren<ScoreDisplayer>();
+    public void Initialize()
+    {
+        container = GetComponentInParent<LevelButtonContainer>();
+        scoreDisplayer = GetComponentInChildren<ScoreDisplayer>();
 
         if (null != scoreDisplayer)
+        {
             scoreDisplayer.levelTitle = scenePath;
+            scoreDisplayer.UpdateLevelInfo();
 
+            isInitialized = true;
+            RefreshButtonState();
+        }
+    }
+
+    private void Awake()
+    {
+        scoreDisplayer = GetComponentInChildren<ScoreDisplayer>();
+        starBar = GetComponentInChildren<StarProgressBar>();
+
+        lockImage = GetComponentsInChildren<Image>().ToList().Find(p => p.name == "lock");
         if (null != lockImage)
             lockImage.gameObject.SetActive(false);
+
+        activeBg = GetComponentsInChildren<Image>().ToList().Find(p => p.name == "back_active");
+        inactiveBg = GetComponentsInChildren<Image>().ToList().Find(p => p.name == "back_inactive");
+
     }
 
     protected override void Start()
@@ -41,13 +60,13 @@ public class LevelButton : SceneButton, IUICanReinitialize
         {
             level = game.GetLevelByName(scenePath);
             buyButton = FindObjectOfType<BuyButton>();
-            Initialize();
+            RefreshButtonState();
         }
     }
 
-    public void Initialize()
+    public void RefreshButtonState()
     {
-        if (null != DataObjects.gameManager && null != DataObjects.dataManager && null != level && null != DataObjects.iapManager)
+        if (isInitialized && null != DataObjects.gameManager && null != DataObjects.dataManager && null != level && null != DataObjects.iapManager)
         {
             if (!DataObjects.dataManager.savedGame.isLevelUnlocked(level.number))
             {
@@ -55,6 +74,7 @@ public class LevelButton : SceneButton, IUICanReinitialize
                 //    container.gameObject.SetActive(false);
 
                 SetActiveLevelButton(false);
+                starBar.SetStarsInactive();
             }
             else
             {
@@ -65,6 +85,7 @@ public class LevelButton : SceneButton, IUICanReinitialize
                         if (!DataObjects.iapManager.LevelsArePurchased())
                         {
                             SetActiveLevelButton(false);
+                            starBar.SetStarsInactive();
                             ToggleBuyButton(true);
                             return;
                         }
@@ -99,6 +120,12 @@ public class LevelButton : SceneButton, IUICanReinitialize
         if (null != scoreDisplayer)
             scoreDisplayer.gameObject.SetActive(v);
 
+        if (null != activeBg)
+            activeBg.enabled = v;
+
+        if (null != inactiveBg)
+            inactiveBg.enabled = !v;
+
         if (!v)
         {
             if (null != text)
@@ -121,6 +148,6 @@ public class LevelButton : SceneButton, IUICanReinitialize
 
     public void Reinitialize()
     {
-        Initialize();
+        RefreshButtonState();
     }
 }

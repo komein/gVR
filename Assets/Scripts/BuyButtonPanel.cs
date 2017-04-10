@@ -4,10 +4,4 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class BuyButtonPanel : MonoBehaviour {
-
-    public Text text;
-
-	void Start () {
-		
-	}
 }

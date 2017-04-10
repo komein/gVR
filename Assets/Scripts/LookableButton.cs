@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -8,7 +9,7 @@ using UnityEngine.UI;
 public class LookableButton : MonoBehaviour, IGvrGazeResponder
 {
     public Image img;
-    protected Text text;
+    protected TextMeshProUGUI text;
 
     public string caption;
     public string pressedCaption;
@@ -46,7 +47,7 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
 
     protected virtual void Start () {
 
-        text = GetComponentInChildren<Text>();
+        text = GetComponentInChildren<TextMeshProUGUI>();
 
         if (null != text)
         {
@@ -87,7 +88,7 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
             if (gazedAt)
             {
                 img.fillAmount = 1;
-                img.color = new Color(normalColor.r, normalColor.g, normalColor.b, 0.2f);
+                img.color = new Color(normalColor.r, normalColor.g, normalColor.b, 1f);
             }
             else
             {

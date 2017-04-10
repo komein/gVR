@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +9,7 @@ public class BuyResult : MonoBehaviour
     public string successMessage;
     public string failMessage;
 
-    public Text text;
+    public TextMeshProUGUI text;
 
     public BuyPageButton returnButton;
 

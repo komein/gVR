@@ -2,6 +2,7 @@
 using System.Collections;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -15,7 +16,7 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
 
     public Image pBarTemp;
 
-    public Text status;
+    public TextMeshProUGUI status;
 
     public StarProgressBar optionalBar;
 

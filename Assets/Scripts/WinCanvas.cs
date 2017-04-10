@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,8 +11,8 @@ public class WinCanvas : MonoBehaviour
     public StarProgressBar starBar;
     public ScoreDisplayer scoreBar;
 
-    public Text scoreText;
-    public Text recordText;
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI recordText;
 
     bool animationLock = false;
 	
