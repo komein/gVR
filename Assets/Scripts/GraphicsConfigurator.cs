@@ -141,8 +141,6 @@ public class GraphicsConfigurator : MonoBehaviour
             {
                 es = Instantiate(eventSystemPrefab);
             }
-
-            DontDestroyOnLoad(es.gameObject);
         }
         return es;
     }
