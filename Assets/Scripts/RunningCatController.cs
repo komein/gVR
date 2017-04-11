@@ -70,7 +70,6 @@ public class RunningCatController : MonoBehaviour
 
     Vector3 savedMoveVector = Vector3.zero;
 
-    GvrPointerInputModule im;
     GvrLaserPointer pointer;
     CrushParticle cp;
 
@@ -101,7 +100,6 @@ public class RunningCatController : MonoBehaviour
             winCanvas.gameObject.SetActive(false);
         }
 
-        im = FindObjectOfType<GvrPointerInputModule>();
         pointer = FindObjectOfType<GvrLaserPointer>();
         cp = FindObjectOfType<CrushParticle>();
 

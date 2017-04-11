@@ -10,7 +10,7 @@ public class HpDisplayer : MonoBehaviour
     bool deadFlag;
     int currentHp;
 
-    HpContainer2[] containers;
+    HpContainer[] containers;
 
     public void SetHpDisplay(int value)
     {
@@ -39,7 +39,7 @@ public class HpDisplayer : MonoBehaviour
 
     void Start()
     {
-        containers = GetComponentsInChildren<HpContainer2>();
+        containers = GetComponentsInChildren<HpContainer>();
         deadFlag = false;
 
         if (null != DataObjects.gameController)
