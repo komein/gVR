@@ -1,11 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Collectible : MonoBehaviour {
 
     protected AudioSource aus;
     RoadPart road;
+
+    ParticleSystem collectionFX;
+    ParticleSystem persistentFX;
 
     protected virtual void Start()
     {
@@ -14,17 +18,20 @@ public class Collectible : MonoBehaviour {
         {
             aus = gameObject.AddComponent<AudioSource>();
         }
+
+        collectionFX = GetComponentsInChildren<ParticleSystem>().ToList().Find(p => p.name == "Particle");
+        persistentFX = GetComponentsInChildren<ParticleSystem>().ToList().Find(p => p.name == "PersistentParticle");
     }
 
     public virtual void Collect()
     {
         SetVisible(false);
 
-        ParticleSystem ps = GetComponent<ParticleSystem>();
-        if (null != ps)
+        if (null != collectionFX)
         {
-            ps.Play();
+            collectionFX.Play();
         }
+
         AudioSource aus = GetComponent<AudioSource>();
         if (null != aus)
         {
@@ -34,14 +41,27 @@ public class Collectible : MonoBehaviour {
 
     public void SetVisible(bool v)
     {
-        GetComponent<MeshRenderer>().enabled = v;
+        if (null != persistentFX)
+        {
+            if (!v)
+            {
+                persistentFX.Stop();
+            }
+            else
+            {
+                persistentFX.Play();
+            }
+        }
+
+        GetComponentInChildren<MeshRenderer>().enabled = v;
         GetComponent<Collider>().enabled = v;
 
+        /*
         Projector p = GetComponentInChildren<Projector>();
         if (null != p )
         {
             p.enabled = v;
-        }
+        }*/
     }
 
 

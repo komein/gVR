@@ -19,6 +19,12 @@ public class CollectiblePool : MonoBehaviour {
 
         hpPrefab = GetComponentInChildren<HpCollectible>();
         multPrefab = GetComponentInChildren<MultiplierCollectible>();
+
+        if (null != multPrefab)
+        {
+            multPrefab.SetActions(MultipleStartAction, MultipleStopAction);
+        }
+
         cakePrefabs = GetComponentsInChildren<ScoreCollectible>();
 
         foreach (ScoreCollectible c in cakePrefabs)
@@ -31,6 +37,24 @@ public class CollectiblePool : MonoBehaviour {
             }
         }
 	}
+
+    private void MultipleStartAction()
+    {
+        // double the cakes
+        foreach (var v in pool)
+        {
+
+        }
+    }
+
+    private void MultipleStopAction()
+    {
+        // make one again
+        foreach (var v in pool)
+        {
+
+        }
+    }
 
     private ScoreCollectible GetRandomCollectible()
     {
@@ -73,12 +97,14 @@ public class CollectiblePool : MonoBehaviour {
 
         return c;
     }
-
+    
+    /* won't work here
     public void Batch()
     {
         StaticBatchingUtility.Combine(this.gameObject);
     }
-    
+    */
+
     public Collectible PlaceHp(Vector3 v, RoadPart r, RoadPart c)
     {
         if (null != hpPrefab)

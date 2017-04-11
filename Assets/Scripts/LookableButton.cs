@@ -24,6 +24,8 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
     public Color normalColor;
     public Color pressedColor;
 
+    AudioSource aus;
+
     protected bool isActiveButton = true;
 
     public bool gazeMode
@@ -45,7 +47,11 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
 
     private bool gMode = true;
 
-    protected virtual void Start () {
+    protected virtual void Start ()
+    {
+        aus = GetComponent<AudioSource>();
+        if (null == aus)
+            aus = gameObject.AddComponent<AudioSource>();
 
         text = GetComponentInChildren<TextMeshProUGUI>();
 
@@ -68,6 +74,7 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
 
     public virtual void SetGazedAt(bool gazedAt)
     {
+        aus.Stop();
         UpdateGazeMode();
         if (gMode)
         {
@@ -76,6 +83,12 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
                 return;
 
             isGazedOn = gazedAt;
+
+            if (isGazedOn)
+            {
+                aus.clip = DataObjects.music.GetMusic("gaze");
+                aus.Play();
+            }
 
             if (null != img)
             {
@@ -87,6 +100,8 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
         {
             if (gazedAt)
             {
+                aus.clip = DataObjects.music.GetMusic("hover");
+                aus.Play();
                 img.fillAmount = 1;
                 img.color = new Color(normalColor.r, normalColor.g, normalColor.b, 1f);
             }
@@ -134,6 +149,10 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
 
     protected virtual void Function()
     {
+        aus.Stop();
+        aus.clip = DataObjects.music.GetMusic("click");
+        aus.Play();
+
         if (isActiveButton)
             pressed = true;
         else

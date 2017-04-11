@@ -23,14 +23,14 @@ public class HpCollectible : Collectible {
             {
                 base.Collect();
                 DataObjects.gameController.AddHp(value);
-
+                /*
                 CaptionText text = FindObjectOfType<CaptionText>();
                 if (null != text)
                 {
                     string v = "+" + value + "hp!";
 
                     text.PlaceText(v, transform.position + Vector3.up * 0.5f);
-                }
+                }*/
             }
         }
     }

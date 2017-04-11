@@ -32,6 +32,7 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
     LevelInfo level;
 
     public bool mainMenuMode = true;
+    public bool AutoUpdate = true;
     
     void Start()
     {
@@ -78,8 +79,15 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
         if (null != DataObjects.gameController && null != DataObjects.dataManager)
         {
             DataObjects.dataManager.LoadWithoutAction();
-            DataObjects.gameController.AddOptionalScoreAction(UpdateText);
-            DataObjects.gameController.TriggerOptionalScoreAction();
+            if (AutoUpdate)
+            {
+                DataObjects.gameController.AddOptionalScoreAction(UpdateText);
+                DataObjects.gameController.TriggerOptionalScoreAction();
+            }
+            else
+            {
+                UpdateText();
+            }
         }
     }
 
@@ -115,9 +123,11 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
 
         ShowScore(tempScore + accScore, maxScore);
 
-        float pBarTempFill = tempScore * t / time / (float)(maxScore - accScore);
-        DrawProgressBar(pBar, 0, pBarFill, 1);
-        DrawProgressBar(pBarTemp, pBarFill, 1, pBarTempFill);
+        float pBarTempFill = tempScore * t / time / (float)(maxScore);
+        Debug.Log(t + "/" + pBarFill + "/" + pBarTempFill);
+
+        DrawProgressBar(pBar, 0, 1, pBarFill);
+        DrawProgressBar(pBarTemp, 0, 1, pBarFill + pBarTempFill);
     }
 
     public void UpdateText()
@@ -205,9 +215,16 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
             if (accScore < maxScore)
             {
                 pBarTemp.enabled = true;
-                float pBarTempFill = tempScore / (float)(maxScore - accScore);
-                DrawProgressBar(pBar, 0, pBarFill, 1);
-                DrawProgressBar(pBarTemp, pBarFill, 1, pBarTempFill);
+                float pBarTempFill = tempScore / (float)(maxScore);
+                DrawProgressBar(pBar, 0, 1, pBarFill);
+                if (AutoUpdate)
+                {
+                    DrawProgressBar(pBarTemp, 0, 1, pBarFill + pBarTempFill);
+                }
+                else
+                {
+                    pBarTemp.enabled = false;
+                }
             }
             else
             {

@@ -8,8 +8,9 @@ using UnityEngine.UI;
 
 public class StarProgressBar : MonoBehaviour
 {
-
     public List <ProgressStar> stars;
+
+    AudioSource aus;
 
     private void Awake()
     {
@@ -31,6 +32,8 @@ public class StarProgressBar : MonoBehaviour
                 }
             }
         }
+
+        aus = gameObject.AddComponent<AudioSource>();
     }
 
     private bool animationLock = false;
@@ -137,6 +140,15 @@ public class StarProgressBar : MonoBehaviour
                         if (!stars[i].IsFilled)
                         {
                             stars[i].SetState(ProgressStar.StarState.filled, true);
+                            if (null != aus)
+                            {
+                                aus.Stop();
+                                aus.clip = DataObjects.music.GetMusic("star" + (i+1));
+                                if (null != aus.clip)
+                                {
+                                    aus.Play();
+                                }
+                            }
                             yield return new WaitForSeconds(0.5f);
                         }
                     }
