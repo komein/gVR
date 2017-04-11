@@ -86,7 +86,7 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
 
             if (isGazedOn)
             {
-                aus.clip = DataObjects.music.GetMusic("gaze");
+                aus.clip = DataObjects.Music("gaze");
                 aus.Play();
             }
 
@@ -100,7 +100,7 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
         {
             if (gazedAt)
             {
-                aus.clip = DataObjects.music.GetMusic("hover");
+                aus.clip = DataObjects.Music("hover");
                 aus.Play();
                 img.fillAmount = 1;
                 img.color = new Color(normalColor.r, normalColor.g, normalColor.b, 1f);
@@ -150,7 +150,7 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
     protected virtual void Function()
     {
         aus.Stop();
-        aus.clip = DataObjects.music.GetMusic("click");
+        aus.clip = DataObjects.Music("click");
         aus.Play();
 
         if (isActiveButton)

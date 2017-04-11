@@ -8,8 +8,8 @@ public class Collectible : MonoBehaviour {
     protected AudioSource aus;
     RoadPart road;
 
-    ParticleSystem collectionFX;
-    ParticleSystem persistentFX;
+    protected ParticleSystem collectionFX;
+    protected ParticleSystem persistentFX;
 
     protected virtual void Start()
     {
@@ -39,7 +39,7 @@ public class Collectible : MonoBehaviour {
         }
     }
 
-    public void SetVisible(bool v)
+    public virtual void SetVisible(bool v)
     {
         if (null != persistentFX)
         {
@@ -55,13 +55,6 @@ public class Collectible : MonoBehaviour {
 
         GetComponentInChildren<MeshRenderer>().enabled = v;
         GetComponent<Collider>().enabled = v;
-
-        /*
-        Projector p = GetComponentInChildren<Projector>();
-        if (null != p )
-        {
-            p.enabled = v;
-        }*/
     }
 
 

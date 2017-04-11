@@ -121,7 +121,7 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
 
         float pBarFill = accScore / (float)(maxScore);
 
-        ShowScore(tempScore + accScore, maxScore);
+        ShowScore(tempScore + accScore, maxScore, true);
 
         float pBarTempFill = tempScore * t / time / (float)(maxScore);
         Debug.Log(t + "/" + pBarFill + "/" + pBarTempFill);
@@ -151,7 +151,7 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
         }
     }
 
-    private void ShowScore(long score, long max)
+    private void ShowScore(long score, long max, bool showMultiplier)
     {
         if (null != status)
         {
@@ -164,7 +164,7 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
                 status.text = score.ToString();
             }
 
-            if (DataObjects.sceneInfo.multiplier > 1)
+            if (DataObjects.sceneInfo.multiplier > 1 && showMultiplier)
             {
                 status.text = status.text + " (x" + DataObjects.sceneInfo.multiplier + "!)";
             }
@@ -199,12 +199,12 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
                 pBarTemp.enabled = false;
             }
 
-            ShowScore(accScore, maxScore);
+            ShowScore(accScore, maxScore, AutoUpdate);
             DrawProgressBar(pBar, 0, 1, pBarFill);
         }
         else
         {
-            ShowScore(tempScore + accScore, maxScore);
+            ShowScore(tempScore + accScore, maxScore, AutoUpdate);
 
             if (null == pBarTemp)
             {

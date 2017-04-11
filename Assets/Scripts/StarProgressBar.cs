@@ -143,7 +143,7 @@ public class StarProgressBar : MonoBehaviour
                             if (null != aus)
                             {
                                 aus.Stop();
-                                aus.clip = DataObjects.music.GetMusic("star" + (i+1));
+                                aus.clip = DataObjects.Music("star" + (i+1));
                                 if (null != aus.clip)
                                 {
                                     aus.Play();

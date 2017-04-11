@@ -11,13 +11,23 @@ public static class DataObjects
             return GameManager.instanceRef;
         }
     }
-
-    public static GameMusic music
+    
+    public static GameMusic MusicStorage
     {
         get
         {
             return GameMusic.instanceRef;
         }
+    }
+    
+    public static AudioClip Music(string s)
+    {
+        if (null == MusicStorage)
+        {
+            return null;
+        }
+
+        return MusicStorage.GetMusic(s);
     }
 
     public static DataManager dataManager

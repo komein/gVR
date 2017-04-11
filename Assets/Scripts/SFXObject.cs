@@ -22,7 +22,7 @@ public class SFXObject : MonoBehaviour {
 
     private void ChooseClip()
     {
-        GameMusic gm = DataObjects.music;
+        GameMusic gm = DataObjects.MusicStorage;
         if (null != gm)
         {
             aus.clip = gm.GetRandomMusic(title);

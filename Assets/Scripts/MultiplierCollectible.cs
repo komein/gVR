@@ -14,10 +14,7 @@ public class MultiplierCollectible : Collectible {
     protected override void Start()
     {
         base.Start();
-        if (null != DataObjects.music)
-        {
-            aus.clip = DataObjects.music.GetMusic("boostPickup");
-        }
+        aus.clip = DataObjects.Music("boostPickup");
     }
 
     public override void Collect()

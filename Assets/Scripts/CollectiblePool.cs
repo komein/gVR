@@ -10,7 +10,7 @@ public class CollectiblePool : MonoBehaviour {
     private MultiplierCollectible multPrefab;
 
     private List<ScoreCollectible> pool = new List<ScoreCollectible>();
-
+    private List<ScoreCollectible> persistentPool = new List<ScoreCollectible>();
     private List<ScoreCollectible> placedElements = new List<ScoreCollectible>();
 
     public int poolDepth = 10;
@@ -33,6 +33,7 @@ public class CollectiblePool : MonoBehaviour {
             {
                 ScoreCollectible instance = GameObject.Instantiate<ScoreCollectible>(c);
                 pool.Add(instance);
+                persistentPool.Add(instance);
                 instance.transform.SetParent(this.transform);
             }
         }
@@ -40,19 +41,17 @@ public class CollectiblePool : MonoBehaviour {
 
     private void MultipleStartAction()
     {
-        // double the cakes
-        foreach (var v in pool)
+        foreach (var v in persistentPool)
         {
-
+            v.Split();
         }
     }
 
     private void MultipleStopAction()
     {
-        // make one again
-        foreach (var v in pool)
+        foreach (var v in persistentPool)
         {
-
+            v.MakeWhole();
         }
     }
 

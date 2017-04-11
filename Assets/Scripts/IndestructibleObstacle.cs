@@ -21,10 +21,7 @@ public class IndestructibleObstacle : MonoBehaviour {
             aus = gameObject.AddComponent<AudioSource>();
         }
 
-        if (null != DataObjects.music)
-        {
-            aus.clip = DataObjects.music.GetMusic("hit");
-        }
+        aus.clip = DataObjects.Music("hit");
     }
 
     private void OnCollisionEnter(Collision collision)

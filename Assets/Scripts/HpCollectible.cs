@@ -9,10 +9,7 @@ public class HpCollectible : Collectible {
     protected override void Start()
     {
         base.Start();
-        if (null != DataObjects.music)
-        {
-            aus.clip = DataObjects.music.GetMusic("healthPickup");
-        }
+        aus.clip = DataObjects.Music("healthPickup");
     }
 
     public override void Collect()
