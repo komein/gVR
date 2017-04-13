@@ -4,8 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IndestructibleObstacle : MonoBehaviour {
-
+public class IndestructibleObstacle : MonoBehaviour
+{
     CrushDelegate doCrush;
 
     AudioSource aus;
@@ -27,7 +27,7 @@ public class IndestructibleObstacle : MonoBehaviour {
     private void OnCollisionEnter(Collision collision)
     {
 
-        RunningCatController chc = collision.collider.GetComponent<RunningCatController>();
+        PlayerController chc = collision.collider.GetComponent<PlayerController>();
         if (chc != null)
         {
             if (collision.contacts.Length > 0)
@@ -40,7 +40,6 @@ public class IndestructibleObstacle : MonoBehaviour {
                     if (null != doCrush)
                     {
                         doCrush(v);
-                        AudioSource aus = GetComponent<AudioSource>();
                         if (null != aus)
                         {
                             if (aus.clip != null)

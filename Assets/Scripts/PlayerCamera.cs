@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-    public RunningCatController ch;
+    public PlayerController ch;
     public float distance = 3f;
     public float height = 3f;
 
@@ -15,7 +15,7 @@ public class PlayerCamera : MonoBehaviour
     {
         if (null == ch)
         {
-            ch = FindObjectOfType<RunningCatController>();
+            ch = FindObjectOfType<PlayerController>();
         }
     }
 

@@ -54,7 +54,7 @@ public class InAppManager : IStoreListener
 
 				if (product != null && product.availableToPurchase)
 				{
-					Debug.Log(string.Format("Purchasing product asychronously: '{0}'", product.definition.id));// ... buy the product. Expect a response either through ProcessPurchase or OnPurchaseFailed asynchronously.
+					Debug.Log(string.Format("Purchasing product asychronously: '{0}'", product.definition.id));
 					m_StoreController.InitiatePurchase(product);
                     return true;
 				}
@@ -84,7 +84,7 @@ public class InAppManager : IStoreListener
 			Debug.Log("RestorePurchases FAIL. Not initialized.");
 			return;
 		}
-
+        /*
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.OSXPlayer)
 		{
 			Debug.Log("RestorePurchases started ...");
@@ -95,7 +95,7 @@ public class InAppManager : IStoreListener
 					Debug.Log("RestorePurchases continuing: " + result + ". If no further messages, no purchases available to restore.");
 				});
 		}
-		else
+		else*/
 		{
 			Debug.Log("RestorePurchases FAIL. Not supported on this platform. Current = " + Application.platform);
 		}
@@ -158,14 +158,14 @@ public class InAppManager : IStoreListener
         failAction = f;
     }
 
-    internal bool LevelsArePurchased()
+    internal bool AreLevelsPurchased()
     {
-        return IsProductBought(InAppManager.pLevels);
+        return IsProductBought(pLevels);
     }
 
     internal bool PurchaseLevel()
     {
-        return BuyProductID(InAppManager.pLevels);
+        return BuyProductID(pLevels);
     }
     
 }

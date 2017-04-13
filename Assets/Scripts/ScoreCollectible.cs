@@ -114,18 +114,14 @@ public class ScoreCollectible : Collectible {
 
     public override void Collect()
     {
-        base.Collect();
-
         if (null != DataObjects.gameController)
         {
-            ScoreDisplayer d = FindObjectOfType<ScoreDisplayer>();
-            if (null == d)
+            if (null != currentCoroutine)
             {
-                return;
+                StopCoroutine(currentCoroutine);
             }
-            
+            base.Collect();
             DataObjects.gameController.AddScore(value);
-
         }
     }
 

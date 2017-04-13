@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(UnityEngine.CharacterController))]
 public class FPSWalkerEnhanced : MonoBehaviour
 {
 
@@ -41,7 +41,7 @@ public class FPSWalkerEnhanced : MonoBehaviour
 
     private Vector3 moveDirection = Vector3.zero;
     private bool grounded = false;
-    private CharacterController controller;
+    private UnityEngine.CharacterController controller;
     private Transform myTransform;
     private float speed;
     private RaycastHit hit;
@@ -55,7 +55,7 @@ public class FPSWalkerEnhanced : MonoBehaviour
 
     void Start()
     {
-        controller = GetComponent<CharacterController>();
+        controller = GetComponent<UnityEngine.CharacterController>();
         myTransform = transform;
         speed = walkSpeed;
         rayDistance = controller.height * .5f + controller.radius;

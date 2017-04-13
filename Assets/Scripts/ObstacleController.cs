@@ -6,7 +6,7 @@ public delegate void CrushDelegate(Vector3 v);
 public class ObstacleController : MonoBehaviour
 {
     IndestructibleObstacle[] obstacles;
-    RunningCatController character;
+    PlayerController character;
 
     public bool ghostMode = false;
 
@@ -27,7 +27,7 @@ public class ObstacleController : MonoBehaviour
 
         ToggleObstaclesGhost(ghostMode);
 
-        character = FindObjectOfType<RunningCatController>();
+        character = FindObjectOfType<PlayerController>();
     }
 
     private void CrushIntoObstacle(Vector3 v)

@@ -159,9 +159,13 @@ public class GameManager : MonoBehaviour
 #if UNITY_HAS_GOOGLEVR
         if (controllerState != GvrController.State)
         {
-            //Debug.Log("switching " + controllerState + " to " + GvrController.State);
-            controllerState = GvrController.State;
-            UpdateController();
+            if (controllerState == GvrConnectionState.Connected && GvrController.State != GvrConnectionState.Connected ||
+                controllerState != GvrConnectionState.Connected && GvrController.State == GvrConnectionState.Connected)
+            {
+                Debug.Log("switching " + controllerState + " to " + GvrController.State);
+                controllerState = GvrController.State;
+                UpdateController();
+            }
         }
 #endif
     }

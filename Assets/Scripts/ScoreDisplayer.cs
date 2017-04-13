@@ -13,17 +13,14 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
 
     public Image pBar;
     public Image pBarBackground;
-
     public Image pBarTemp;
 
     public TextMeshProUGUI status;
-
     public StarProgressBar optionalBar;
 
     public Color minColor;
     public Color midColor;
     public Color maxColor;
-
     public Color completeColor;
 
     public float congratulationDelay = 5f;
@@ -117,14 +114,16 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
         pBarTemp.enabled = true;
 
         if (maxScore == 0)
+        {
             maxScore = 1; // just to be sure
+        }
 
         float pBarFill = accScore / (float)(maxScore);
 
         ShowScore(tempScore + accScore, maxScore, true);
 
         float pBarTempFill = tempScore * t / time / (float)(maxScore);
-        Debug.Log(t + "/" + pBarFill + "/" + pBarTempFill);
+        //Debug.Log(t + "/" + pBarFill + "/" + pBarTempFill);
 
         DrawProgressBar(pBar, 0, 1, pBarFill);
         DrawProgressBar(pBarTemp, 0, 1, pBarFill + pBarTempFill);

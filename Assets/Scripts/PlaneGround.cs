@@ -16,7 +16,7 @@ public class PlaneGround : MonoBehaviour {
     {
         if (null != other)
         {
-            if (other.GetComponent<RunningCatController>() != null)
+            if (other.GetComponent<PlayerController>() != null)
             {
                 if (null != onTrigger)
                 {

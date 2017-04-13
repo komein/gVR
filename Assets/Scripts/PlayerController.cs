@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class RunningCatController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public bool ControllerMode
     {
@@ -31,24 +31,18 @@ public class RunningCatController : MonoBehaviour
 
     CatState currentState;
 
-
     protected Rigidbody rb;
-
-    public Camera cam;
 
     public float maxSpeed = 1f;
     public float acceleration = 50f;
     public float strafeSpeed = 1f;
-
     public float strafeStep = 0.5f;
-    public float deadZone = 0.4f;
-
     public float dropSpeed = 50f;
 
     public bool hasCompensatingForce = false;
 
-    public GameCanvas gameCanvas;
-    public WinCanvas winCanvas;
+    GameCanvas gameCanvas;
+    WinCanvas winCanvas;
  
     float curSpeed = 0f;
     
@@ -66,12 +60,14 @@ public class RunningCatController : MonoBehaviour
 
     GvrPointerInputModule gim;
 
-    public TextMesh questionMark;
+    TextMesh questionMark;
 
     Vector3 savedMoveVector = Vector3.zero;
 
     GvrLaserPointer pointer;
     CrushParticle cp;
+
+    Camera cam;
 
     private void Awake()
     {
@@ -287,8 +283,6 @@ public class RunningCatController : MonoBehaviour
                 return GetCameraMoveVector();
             }
 
-            //Debug.Log(pointer.IsPointerIntersecting);
-
             GameObject reticle = pointer.reticle;
 
             if (null == reticle)
@@ -298,8 +292,6 @@ public class RunningCatController : MonoBehaviour
 
             if (pointer.IsPointerIntersecting)
             {
-                //Debug.Log(pointer.TargetGO.name);
-
                 if (pointer.TargetGO.GetComponent<CanvasRenderer>() != null)
                 {
                     return Vector3.zero;
@@ -320,11 +312,6 @@ public class RunningCatController : MonoBehaviour
                     }
 
                     float diff = gotoPos.x - gameObject.transform.position.x;
-
-                    //Debug.DrawLine(gameObject.transform.position, gotoPos, Color.red, Time.deltaTime);
-                    //Debug.DrawRay(gotoPos, -Vector3.up, Color.green, Time.deltaTime);
-
-                    //Debug.Log(gotoPos.x + " / " + gameObject.transform.position.x + " / " + diff);
 
                     pos.x = Mathf.Min(Mathf.Abs(diff), 0.4f) * Mathf.Sign(diff);
                     pos.x *= strafeSpeed;
@@ -495,9 +482,13 @@ public class RunningCatController : MonoBehaviour
         {
             GroundContainer cont = other.GetComponent<GroundContainer>();
             if (null == cont)
+            {
                 cont = other.GetComponentInParent<GroundContainer>();
+            }
             if (null != cont)
+            {
                 highGrounds.Add(cont);
+            }
         }
         else if (other.gameObject.GetComponent<PlaneGround>() != null)
         {
@@ -520,10 +511,16 @@ public class RunningCatController : MonoBehaviour
 
             GroundContainer cont = other.GetComponent<GroundContainer>();
             if (null == cont)
+            {
                 cont = other.GetComponentInParent<GroundContainer>();
+            }
             if (null != cont)
+            {
                 if (!planeGrounds.Contains(cont))
+                {
                     planeGrounds.Add(cont);
+                }
+            }
         }
     }
     
@@ -532,7 +529,9 @@ public class RunningCatController : MonoBehaviour
     {
         GroundContainer cont = other.GetComponent<GroundContainer>();
         if (null == cont)
+        {
             cont = other.GetComponentInParent<GroundContainer>();
+        }
 
         if (other.gameObject.GetComponent<HighGround>() != null)
         {
@@ -543,7 +542,6 @@ public class RunningCatController : MonoBehaviour
                 Jump();
             }
         }
-
         else if (other.gameObject.GetComponent<PlaneGround>() != null)
         {
             planeGrounds.RemoveAll(p => p == cont);
@@ -588,7 +586,9 @@ public class RunningCatController : MonoBehaviour
         rb.AddForce(v, ForceMode.Impulse);
 
         if (resetSpeed)
+        {
             curSpeed = 0;
+        }
     }
 
     public void TakeDamage()

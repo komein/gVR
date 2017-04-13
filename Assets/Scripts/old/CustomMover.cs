@@ -7,12 +7,12 @@ public class CustomMover : AbstractMover
     List<Collider> grounds = new List<Collider>();
     List<Collider> planeGrounds = new List<Collider>();
 
-    CharacterController ch;
+    UnityEngine.CharacterController ch;
 
     protected override void Start()
     {
         base.Start();
-        ch = GetComponent<CharacterController>();
+        ch = GetComponent<UnityEngine.CharacterController>();
     }
 
     protected override void Update ()

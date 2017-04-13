@@ -5,12 +5,12 @@ using UnityEngine;
 public class LevelExitButton : LookableButton
 {
 
-    RunningCatController ch;
+    PlayerController ch;
     protected override void Start()
     {
         base.Start();
 
-        ch = FindObjectOfType<RunningCatController>();
+        ch = FindObjectOfType<PlayerController>();
 
     }
     protected override void Function()

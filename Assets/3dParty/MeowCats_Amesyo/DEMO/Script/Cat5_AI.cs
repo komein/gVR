@@ -20,7 +20,7 @@ public class Cat5_AI : MonoBehaviour {
 	[Header("Vit=50 Peppy  Vit=2000 Meek")]
 	public float Vitality = 50;												//この数値が多いと、あまり移動しない　５０＝元気いっぱい　６００＝寝てる感じ
 	public Vector3 Move_Pos = Vector3.zero;
-	private CharacterController controller;
+	private UnityEngine.CharacterController controller;
 	private Animator animator;
 	private Vector3 cat_init_pos;
 
@@ -59,7 +59,7 @@ public class Cat5_AI : MonoBehaviour {
 		endPosition = Move_Pos;
 		MoveTarget.transform.position = endPosition;
 
-		controller = P_Cat.GetComponentInChildren<CharacterController>();			//キャラクターコントローラーのアサイン
+            controller = P_Cat.GetComponentInChildren<UnityEngine.CharacterController>();			//キャラクターコントローラーのアサイン
 		animator = P_Cat.GetComponentInChildren<Animator>();						//アニメーターのアサイン
 	}
 	

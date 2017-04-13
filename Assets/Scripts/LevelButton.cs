@@ -82,7 +82,7 @@ public class LevelButton : SceneButton, IUICanReinitialize
                 {
                     if (GameManager.lastFreeLevelNumber < level.number)
                     {
-                        if (!DataObjects.iapManager.LevelsArePurchased())
+                        if (!DataObjects.iapManager.AreLevelsPurchased())
                         {
                             SetActiveLevelButton(false);
                             starBar.SetStarsInactive();

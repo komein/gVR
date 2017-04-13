@@ -99,7 +99,7 @@ public class GraphicsConfigurator : MonoBehaviour
         Camera c = Camera.main;
         if (null != c)
         {
-            Destroy(c.gameObject.GetComponent<MoveCameraScript>());
+            Destroy(c.gameObject.GetComponent<MoveCamera>());
             Destroy(c.gameObject.GetComponent<PhysicsRaycaster>());
             Destroy(c.gameObject.GetComponent<GvrHead>());
             Destroy(c.gameObject.GetComponent<StereoController>());
@@ -121,9 +121,9 @@ public class GraphicsConfigurator : MonoBehaviour
         Camera c = Camera.main;
         if (null != c)
         {
-            if (null == c.gameObject.GetComponent<MoveCameraScript>())
+            if (null == c.gameObject.GetComponent<MoveCamera>())
             {
-                c.gameObject.AddComponent<MoveCameraScript>();
+                c.gameObject.AddComponent<MoveCamera>();
             }
             if (withRaycaster)
             {
