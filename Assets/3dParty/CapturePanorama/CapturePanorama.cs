@@ -821,7 +821,7 @@ namespace CapturePanorama
                 if (writeIdx >= cameraPixelsBufferNumTextures) writeIdx = 2; // Leave top/bottom in indexes 0/1
 
                 // For stereoscopic GPU transform, interleave capture and rendering to decrease VRAM consumption
-                if (captureStereoscopic && usingGpuTransform &&
+                if (false && captureStereoscopic && usingGpuTransform &&
                     ((i - 2) + 1) % (CamerasPerCirclePoint / 2) == 0 &&
                     (circlePointsRendered - nextCirclePointStart >= circlePointCircularBufferSize || i + 1 == 2 + (ilimit - 2) / 2 || i + 1 == ilimit))
                 {

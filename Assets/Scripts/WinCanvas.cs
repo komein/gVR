@@ -13,16 +13,72 @@ public class WinCanvas : MonoBehaviour
 
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI recordText;
+    public TextMeshProUGUI messageText;
 
     bool animationLock = false;
-	
-    internal void ShowScore()
+
+    public GameObject continueButton;
+    public GameObject retryButton;
+
+    public void MakePauseScreen()
     {
+        if (null != continueButton)
+        {
+            continueButton.gameObject.SetActive(true);
+        }
+        WriteMessage("Game paused");
+    }
+
+    public void MakeWinScreen()
+    {
+        if (null != continueButton)
+        {
+            continueButton.gameObject.SetActive(true);
+        }
+        WriteMessage("New level avaliable!");
+    }
+
+    public void WriteMessage(string s)
+    {
+        if (null != messageText)
+        {
+            messageText.text = s;
+        }
+    }
+
+    public void MakeGameOverScreen()
+    {
+        if (null != continueButton)
+        {
+            continueButton.gameObject.SetActive(false);
+        }
+        WriteMessage("Game Over");
+    }
+
+    internal void ShowScore(PlayerController.PauseType reason)
+    {
+        scoreBar.UpdateLevelInfo();
+        scoreBar.ShowScoreProgressBar();
+        
         if (!animationLock)
         {
             animationLock = true;
             StartCoroutine(ScoreCoroutine());
         }
+
+        switch (reason)
+        {
+            case PlayerController.PauseType.pause:
+                MakePauseScreen();
+                break;
+            case PlayerController.PauseType.win:
+                MakeWinScreen();
+                break;
+            case PlayerController.PauseType.gameOver:
+                MakeGameOverScreen();
+                break;
+        }
+
     }
 
     IEnumerator ScoreCoroutine()
@@ -68,7 +124,7 @@ public class WinCanvas : MonoBehaviour
                         yield return new WaitForSeconds(step);
                     }
 
-                    yield return new WaitForSeconds(1f);
+                    //yield return new WaitForSeconds(1f);
                 }
                 else
                 {

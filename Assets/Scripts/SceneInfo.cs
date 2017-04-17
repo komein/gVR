@@ -18,7 +18,7 @@ public class SceneInfo
         multiplier = 1;
     }
 
-    internal void Reset()
+    internal void ResetLevel()
     {
         multiplier = 1;
         hp = HP_DEFAULT;

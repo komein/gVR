@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     }
 
     enum CatState { paused, cantMove, jump, dying, moving };
+    public enum PauseType { pause, win, gameOver };
+
     CatState CurrentState
     {
         set
@@ -84,17 +86,6 @@ public class PlayerController : MonoBehaviour
 
         rb.useGravity = true;
 
-        gameCanvas = FindObjectOfType<GameCanvas>();
-        if (null != gameCanvas)
-        {
-            gameCanvas.gameObject.SetActive(true);
-        }
-
-        winCanvas = FindObjectOfType<WinCanvas>();
-        if (null != winCanvas)
-        {
-            winCanvas.gameObject.SetActive(false);
-        }
 
         pointer = FindObjectOfType<GvrLaserPointer>();
         cp = FindObjectOfType<CrushParticle>();
@@ -108,7 +99,19 @@ public class PlayerController : MonoBehaviour
         CurrentState = CatState.paused;
 
         gim = FindObjectOfType<GvrPointerInputModule>();
-        
+
+        gameCanvas = FindObjectOfType<GameCanvas>();
+        if (null != gameCanvas)
+        {
+            gameCanvas.gameObject.SetActive(true);
+        }
+
+        winCanvas = FindObjectOfType<WinCanvas>();
+        if (null != winCanvas)
+        {
+            winCanvas.gameObject.SetActive(false);
+        }
+
         StartCoroutine(StartRunning());
     }
 
@@ -184,7 +187,24 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void FinishLevel()
+    internal void ResumeLevel()
+    {
+        DataObjects.gameController.SaveTempScore();
+        DataObjects.gameController.TriggerOptionalScoreAction();
+
+        if (null != gameCanvas && null != winCanvas)
+        {
+            winCanvas.gameObject.SetActive(false);
+            Destroy(winCanvas.GetComponent<GvrPointerGraphicRaycaster>());
+            gameCanvas.gameObject.SetActive(true);
+            gameCanvas.gameObject.AddComponent<GvrPointerGraphicRaycaster>();
+        }
+
+        CurrentState = CatState.moving;
+    }
+
+
+    public void FinishLevel(PauseType reason)
     {
         StopAllCoroutines();
         ToggleFlashing(false);
@@ -197,7 +217,7 @@ public class PlayerController : MonoBehaviour
             Destroy(gameCanvas.GetComponent<GvrPointerGraphicRaycaster>());
             winCanvas.gameObject.SetActive(true);
             winCanvas.gameObject.AddComponent<GvrPointerGraphicRaycaster>();
-            winCanvas.ShowScore();
+            winCanvas.ShowScore(reason);
         }
         else
         {
@@ -298,10 +318,9 @@ public class PlayerController : MonoBehaviour
                 }
 
                 Vector3 gotoPos = reticle.transform.position;
-
-                if (true)
-                    //(GvrController.ClickButton)
-                {
+                /*
+                (GvrController.ClickButton)
+                {*/
                     Vector3 pos = Vector3.zero;
 
                     float zPos = gotoPos.z - gameObject.transform.position.z;
@@ -319,11 +338,12 @@ public class PlayerController : MonoBehaviour
                     pos.z = curSpeed;
 
                     return pos;
+                /*
                 }
                 else
                 {
                     return Vector3.zero;
-                }
+                }*/
             }
 
             return Vector3.zero;
@@ -566,7 +586,7 @@ public class PlayerController : MonoBehaviour
 
             if (!DataObjects.gameController.isAlive)
             {
-                FinishLevel();
+                FinishLevel(PauseType.gameOver);
             }
             else
             {

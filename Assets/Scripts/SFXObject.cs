@@ -25,7 +25,7 @@ public class SFXObject : MonoBehaviour {
         GameMusic gm = DataObjects.MusicStorage;
         if (null != gm)
         {
-            aus.clip = gm.GetRandomMusic(title);
+            gm.SetRandomMusic(title, aus);
         }
     }
 

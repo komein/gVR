@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
             dataManager = new DataManager();
             gameController = new GameController();
 
-            dataManager.sceneInfo.Reset();
+            dataManager.sceneInfo.ResetLevel();
             dataManager.LoadWithoutAction();
         }
         else
@@ -162,7 +162,7 @@ public class GameManager : MonoBehaviour
             if (controllerState == GvrConnectionState.Connected && GvrController.State != GvrConnectionState.Connected ||
                 controllerState != GvrConnectionState.Connected && GvrController.State == GvrConnectionState.Connected)
             {
-                Debug.Log("switching " + controllerState + " to " + GvrController.State);
+                //Debug.Log("switching " + controllerState + " to " + GvrController.State);
                 controllerState = GvrController.State;
                 UpdateController();
             }

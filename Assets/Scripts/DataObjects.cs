@@ -20,14 +20,14 @@ public static class DataObjects
         }
     }
     
-    public static AudioClip Music(string s)
+    public static void SetMusic(string s, AudioSource src)
     {
         if (null == MusicStorage)
         {
-            return null;
+            return;
         }
 
-        return MusicStorage.GetMusic(s);
+        MusicStorage.SetMusic(s, src);
     }
 
     public static DataManager dataManager

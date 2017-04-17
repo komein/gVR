@@ -9,6 +9,7 @@ public class MusicUnit
 {
     public string level;
     public AudioClip music;
+    public float volume = 1f;
 }
 
 public class GameMusic : MonoBehaviour
@@ -31,32 +32,37 @@ public class GameMusic : MonoBehaviour
         }
     }
 
-    internal AudioClip GetMusic(string v)
+    internal void SetMusic(string v, AudioSource src)
     {
-        MusicUnit m = sceneMusics.Find(p => p.level == v);
-
-        if (null != m)
+        if (null != src)
         {
-            return m.music;
-        }
+            MusicUnit m = sceneMusics.Find(p => p.level == v);
 
-        return null;
-    }
-
-    internal AudioClip GetRandomMusic(string title)
-    {
-        List <MusicUnit> m = sceneMusics.FindAll(p => p.level.Contains(title));
-
-        if (null != m)
-        {
-            MusicUnit toGet = m[Random.Range(0, m.Count)];
-            if (null != toGet)
+            if (null != m)
             {
-                return toGet.music;
+                src.clip = m.music;
+                src.volume = m.volume;
             }
         }
+    }
 
-        return null;
+    internal void SetRandomMusic(string title, AudioSource src)
+    {
+        if (null != src)
+        {
+            List<MusicUnit> list = sceneMusics.FindAll(p => p.level.Contains(title));
+
+            if (null != list)
+            {
+                MusicUnit toGet = list[Random.Range(0, list.Count)];
+                if (null != toGet)
+                {
+                    src.clip = toGet.music;
+                    src.volume = toGet.volume;
+                }
+            }
+
+        }
     }
 
     void OnEnable()

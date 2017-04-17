@@ -31,7 +31,7 @@ public class ScoreCollectible : Collectible {
         meshes = GetComponentsInChildren<MeshRenderer>().ToList();
         ShowOneMesh();
 
-        aus.clip = DataObjects.Music("scorePickup");
+        DataObjects.SetMusic("scorePickup", aus);
     }
 
     public void Split()

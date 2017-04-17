@@ -14,14 +14,19 @@ public class MultiplierCollectible : Collectible {
     protected override void Start()
     {
         base.Start();
-        aus.clip = DataObjects.Music("boostPickup");
+        DataObjects.SetMusic("boostPickup", aus);
     }
 
     public override void Collect()
     {
+        //Debug.Log("!");
         base.Collect();
         StopAllCoroutines();
         StartCoroutine(SetMultiplier(multiplier));
+        if (null != caption)
+        {
+            caption.PlaceText("x2!", transform.position);
+        }
     }
 
     public void SetActions(Action stt, Action stp)

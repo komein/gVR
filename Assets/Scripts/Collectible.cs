@@ -11,8 +11,11 @@ public class Collectible : MonoBehaviour {
     protected ParticleSystem collectionFX;
     protected ParticleSystem persistentFX;
 
+    protected CaptionText caption;
+
     protected virtual void Start()
     {
+        caption = FindObjectOfType<CaptionText>();
         aus = GetComponent<AudioSource>();
         if (null == aus)
         {

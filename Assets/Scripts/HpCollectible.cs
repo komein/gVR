@@ -9,7 +9,7 @@ public class HpCollectible : Collectible {
     protected override void Start()
     {
         base.Start();
-        aus.clip = DataObjects.Music("healthPickup");
+        DataObjects.SetMusic("healthPickup", aus);
     }
 
     public override void Collect()
@@ -20,14 +20,11 @@ public class HpCollectible : Collectible {
             {
                 base.Collect();
                 DataObjects.gameController.AddHp(value);
-                /*
-                CaptionText text = FindObjectOfType<CaptionText>();
-                if (null != text)
+                
+                if (null != caption)
                 {
-                    string v = "+" + value + "hp!";
-
-                    text.PlaceText(v, transform.position + Vector3.up * 0.5f);
-                }*/
+                    caption.PlaceText("+" + value + "hp!", transform.position);
+                }
             }
         }
     }

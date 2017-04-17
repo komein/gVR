@@ -158,18 +158,25 @@ public class GameController
     {
         if (null != DataObjects.sceneInfo && null != DataObjects.savedGame && null != DataObjects.dataManager)
         {
+            SaveTempScore();
+
+            DataObjects.sceneInfo.ResetLevel();
+
+            optionalHpAction = null;
+            optionalScoreAction = null;
+        }
+    }
+
+    public void SaveTempScore()
+    {
+        if (null != DataObjects.sceneInfo && null != DataObjects.savedGame && null != DataObjects.dataManager)
+        {
             LevelInfo p = DataObjects.savedGame.GetLevelByName(SceneManager.GetActiveScene().name);
             if (p != null)
             {
                 p.accumulatedScore += DataObjects.sceneInfo.tempScore;
                 DataObjects.sceneInfo.tempScore = 0;
             }
-
-            DataObjects.sceneInfo.Reset();
-
-            optionalHpAction = null;
-            optionalScoreAction = null;
-
             DataObjects.dataManager.Save();
         }
     }
