@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 
 Shader "Ultimate Game Tools/Wireframe" 
 {
@@ -41,7 +43,7 @@ Shader "Ultimate Game Tools/Wireframe"
 			v2g vert(appdata_base v)
 			{
     			v2g OUT;
-    			OUT.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+    			OUT.pos = UnityObjectToClipPos(v.vertex);
     			OUT.uv = v.texcoord; //the uv's arent used in this shader but are included in case you want to use them
     			return OUT;
 			}
