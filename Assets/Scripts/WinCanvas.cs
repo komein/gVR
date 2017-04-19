@@ -58,12 +58,12 @@ public class WinCanvas : MonoBehaviour
     internal void ShowScore(PlayerController.PauseType reason)
     {
         scoreBar.UpdateLevelInfo();
-        scoreBar.ShowScoreProgressBar();
+        scoreBar.ShowScoreProgressBar(reason == PlayerController.PauseType.gameOver);
         
         if (!animationLock)
         {
             animationLock = true;
-            StartCoroutine(ScoreCoroutine());
+            StartCoroutine(ScoreCoroutine(reason));
         }
 
         switch (reason)
@@ -81,12 +81,22 @@ public class WinCanvas : MonoBehaviour
 
     }
 
-    IEnumerator ScoreCoroutine()
+    IEnumerator ScoreCoroutine(PlayerController.PauseType reason)
     {
         GameMusic gm = FindObjectOfType<GameMusic>();
         if (null != gm)
         {
-            gm.Play("victory");
+            switch (reason)
+            {
+                case PlayerController.PauseType.gameOver:
+                    gm.Play("gameOver");
+                    break;
+                case PlayerController.PauseType.win:
+                    gm.Play("victory");
+                    break;
+                default:
+                    break;
+            }
         }
 
         if (null != DataObjects.savedGame && null != DataObjects.sceneInfo)
@@ -95,11 +105,14 @@ public class WinCanvas : MonoBehaviour
 
             if (p != null)
             {
-                scoreText.text = "Score: " + DataObjects.sceneInfo.tempScore;
+                scoreText.text = "Score: " + DataObjects.sceneInfo.TempScore;
 
-                if (p.bestScoreRecord < DataObjects.sceneInfo.tempScore)
+                if (p.bestScoreRecord < DataObjects.sceneInfo.TempScore)
                 {
-                    recordText.text = "New record: " + DataObjects.sceneInfo.tempScore + "!";
+                    recordText.text = "New record: " + DataObjects.sceneInfo.TempScore + "!";
+
+                    if (null != DataObjects.gameController)
+                        DataObjects.gameController.UpdateBestScore();
                 }
                 else
                 {
@@ -107,7 +120,7 @@ public class WinCanvas : MonoBehaviour
                 }
 
                 starBar.SetTextValues(p);
-                scoreBar.ShowScoreProgressBarAnimated(0);
+                scoreBar.ShowScoreProgressBarAnimated(0, reason == PlayerController.PauseType.gameOver);
 
                 yield return new WaitForSeconds(1f);
 
@@ -120,7 +133,7 @@ public class WinCanvas : MonoBehaviour
 
                     for (float t = 0; t < time; t += step)
                     {
-                        scoreBar.ShowScoreProgressBarAnimated(t, time);
+                        scoreBar.ShowScoreProgressBarAnimated(t, reason == PlayerController.PauseType.gameOver, time);
                         yield return new WaitForSeconds(step);
                     }
 
@@ -130,9 +143,6 @@ public class WinCanvas : MonoBehaviour
                 {
                     scoreBar.ShowScoreProgressBar();
                 }
-
-                if (null != DataObjects.gameController)
-                    DataObjects.gameController.UpdateBestScore();
 
                 p = GetLevelInfo();
 

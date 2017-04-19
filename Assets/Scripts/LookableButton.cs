@@ -157,6 +157,8 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
             pressed = true;
         else
             pressed = false;
+
+        SetGazedAt(false);
     }
 
     public void OnGazeEnter()

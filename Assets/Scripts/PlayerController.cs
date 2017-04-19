@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public bool IsJumping;
+
     CatState currentState;
 
     protected Rigidbody rb;
@@ -189,22 +191,25 @@ public class PlayerController : MonoBehaviour
 
     internal void ResumeLevel()
     {
-        DataObjects.gameController.SaveTempScore();
-        DataObjects.gameController.TriggerOptionalScoreAction();
-
-        if (null != gameCanvas && null != winCanvas)
+        if (null != DataObjects.gameController)
         {
-            winCanvas.gameObject.SetActive(false);
-            Destroy(winCanvas.GetComponent<GvrPointerGraphicRaycaster>());
-            gameCanvas.gameObject.SetActive(true);
-            gameCanvas.gameObject.AddComponent<GvrPointerGraphicRaycaster>();
-        }
+            DataObjects.gameController.SaveTempScoreContinue();
+            DataObjects.gameController.TriggerOptionalScoreAction();
 
-        CurrentState = CatState.moving;
+            if (null != gameCanvas && null != winCanvas)
+            {
+                winCanvas.gameObject.SetActive(false);
+                Destroy(winCanvas.GetComponent<GvrPointerGraphicRaycaster>());
+                gameCanvas.gameObject.SetActive(true);
+                gameCanvas.gameObject.AddComponent<GvrPointerGraphicRaycaster>();
+            }
+
+            CurrentState = CatState.moving;
+        }
     }
 
 
-    public void FinishLevel(PauseType reason)
+    public void PauseLevel(PauseType reason)
     {
         StopAllCoroutines();
         ToggleFlashing(false);
@@ -558,8 +563,11 @@ public class PlayerController : MonoBehaviour
             highGrounds.RemoveAll(p => p == cont);
             if (highGrounds.Count == 0)
             {
-                rb.velocity = new Vector3(0, 0, rb.velocity.z);
-                Jump();
+                if (currentState == CatState.moving)
+                {
+                    rb.velocity = new Vector3(0, 0, rb.velocity.z);
+                    Jump();
+                }
             }
         }
         else if (other.gameObject.GetComponent<PlaneGround>() != null)
@@ -586,7 +594,7 @@ public class PlayerController : MonoBehaviour
 
             if (!DataObjects.gameController.isAlive)
             {
-                FinishLevel(PauseType.gameOver);
+                PauseLevel(PauseType.gameOver);
             }
             else
             {

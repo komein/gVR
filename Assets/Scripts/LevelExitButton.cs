@@ -17,6 +17,6 @@ public class LevelExitButton : LookableButton
     {
         base.Function();
 
-        ch.FinishLevel(PlayerController.PauseType.pause);
+        ch.PauseLevel(PlayerController.PauseType.pause);
     }
 }

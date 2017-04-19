@@ -27,27 +27,38 @@ public class IndestructibleObstacle : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
 
+        Debug.Log(collision.collider as BoxCollider);
+        Debug.Log(collision.collider as CapsuleCollider);
+
         PlayerController chc = collision.collider.GetComponent<PlayerController>();
         if (chc != null)
         {
             if (collision.contacts.Length > 0)
             {
-                Vector3 v = chc.transform.position - collision.contacts[0].point;
-                v.y = 0;
-                float angle = Vector3.Angle(Vector3.forward, v);
-                if (angle > crushAngle)
+                if (chc.IsJumping)
                 {
-                    if (null != doCrush)
-                    {
-                        doCrush(v);
-                        if (null != aus)
-                        {
-                            if (aus.clip != null)
-                            {
-                                aus.Play();
-                            }
-                        }
-                    }
+                    Crush(-Vector3.forward);
+                }
+                if (collision.collider as CapsuleCollider)
+                {
+                    Vector3 v = chc.transform.position - collision.contacts[0].point;
+                    v.y = 0;
+                    Crush(v);
+                }
+            }
+        }
+    }
+
+    private void Crush(Vector3 v)
+    {
+        if (null != doCrush)
+        {
+            doCrush(v);
+            if (null != aus)
+            {
+                if (aus.clip != null)
+                {
+                    aus.Play();
                 }
             }
         }

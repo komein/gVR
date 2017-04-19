@@ -31,9 +31,45 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
     public bool mainMenuMode = true;
     public bool AutoUpdate = true;
 
-    public long accScore = -1;
-    long tempScore = -1;
-    long maxScore = -1;
+    public long AccScore
+    {
+        get
+        {
+            if (null != level)
+                return level.accumulatedScore;
+            return -1;
+        }
+    }
+
+    long TempScore
+    {
+        get
+        {
+            if (null != level)
+                return DataObjects.sceneInfo.tempScore;
+            return -1;
+        }
+    }
+
+    long TempScoreSaved
+    {
+        get
+        {
+            if (null != level)
+                return DataObjects.sceneInfo.tempScoreSaved;
+            return -1;
+        }
+    }
+
+    long MaxScore
+    {
+        get
+        {
+            if (null != level)
+                return level.maxScore;
+            return -1;
+        }
+    }
 
     void Start()
     {
@@ -72,8 +108,6 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
                 level = game.GetLevelByName(levelTitle);
             }
         }
-
-        GetScores();
     }
 
     private void LoadScore()
@@ -94,12 +128,12 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
         }
     }
 
-    internal void ShowScoreProgressBarAnimated(float t, float time = 1f)
+    internal void ShowScoreProgressBarAnimated(float t, bool hideMultiplier = false, float time = 1f)
     {
-        ShowScoreProgressBarAnimated(t, accScore, maxScore, tempScore, time);
+        ShowScoreProgressBarAnimated(t, AccScore + TempScoreSaved, MaxScore, TempScore, time, hideMultiplier);
     }
 
-    internal void ShowScoreProgressBarAnimated(float t, long acc, long max, long tmp, float time = 1f)
+    internal void ShowScoreProgressBarAnimated(float t, long acc, long max, long tmp, float time = 1f, bool hideMultiplier = false)
     {
 
         UpdateLevelInfo();
@@ -129,34 +163,27 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
 
         float pBarFill = acc / (float)(max);
 
-        ShowScore(tmp + acc, max, true);
+        ShowScore(tmp + acc, max, hideMultiplier);
 
         float pBarTempFill = tmp * t / time / (float)(max);
 
         DrawProgressBar(pBar, 0, 1, pBarFill);
         DrawProgressBar(pBarTemp, 0, 1, pBarFill + pBarTempFill);
     }
-
-    private void GetScores()
-    {
-        accScore = level.accumulatedScore;
-        tempScore = DataObjects.sceneInfo.tempScore;
-        maxScore = level.maxScore;
-    }
-
+    
     public void UpdateTextWithCheck()
     {
         UpdateLevelInfo();
 
-        if (accScore < maxScore)
+        if (AccScore + TempScoreSaved < MaxScore)
         {
-            if (accScore + tempScore >= maxScore)
+            if (AccScore + TempScoreSaved + TempScore >= MaxScore)
             {
                 // make it win
                 PlayerController cat = FindObjectOfType<PlayerController>();
                 if (null != cat)
                 {
-                    cat.FinishLevel(PlayerController.PauseType.win);
+                    cat.PauseLevel(PlayerController.PauseType.win);
                     return;
                 }
             }
@@ -177,12 +204,12 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
         {
             if (DataObjects.gameController.isAlive)
             {
-                ShowScoreProgressBar(accScore, tempScore, maxScore);
+                ShowScoreProgressBar(AccScore + TempScoreSaved, TempScore, MaxScore);
             }
             
             if (null != optionalBar)
             {
-                optionalBar.FillStarsAnimated(level.GetStarRecord(tempScore));
+                optionalBar.FillStarsAnimated(level.GetStarRecord(TempScore + TempScoreSaved));
             }
         }
     }
@@ -207,12 +234,12 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
         }
     }
 
-    public void ShowScoreProgressBar()
+    public void ShowScoreProgressBar(bool hideMultiplier = false)
     {
-        ShowScoreProgressBar(accScore, tempScore, maxScore);
+        ShowScoreProgressBar(AccScore + TempScoreSaved, TempScore, MaxScore, hideMultiplier);
     }
 
-    public void ShowScoreProgressBar(long acc, long temp, long max)
+    public void ShowScoreProgressBar(long acc, long temp, long max, bool hideMultiplier = false)
     {
         if (null != pBarBackground)
         {
@@ -236,12 +263,12 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
                 pBarTemp.enabled = false;
             }
 
-            ShowScore(acc, max, AutoUpdate);
+            ShowScore(acc, max, AutoUpdate && !hideMultiplier);
             DrawProgressBar(pBar, 0, 1, pBarFill);
         }
         else
         {
-            ShowScore(temp + acc, max, AutoUpdate);
+            ShowScore(temp + acc, max, AutoUpdate && !hideMultiplier);
 
             if (null == pBarTemp)
             {
