@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
 using UnityEngine;
 
@@ -67,31 +68,33 @@ public class DataManager
 
     public void MakeNewSaveFile()
     {
-        string levelsPath = DataObjects.gameManager.LEVELS_PATH;
+        string levelsPath = DataObjects.gameManager.LEVELS_PATH_SAVED;
 
-        if (File.Exists(levelsPath))
+        TextAsset t = (TextAsset)Resources.Load("levels");
+
+        if (null != t)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(SavedGame));
-            FileStream stream = new FileStream(levelsPath, FileMode.Open);
-            try
+            using (var reader = new System.IO.StringReader(t.text))
             {
-                savedGame = serializer.Deserialize(stream) as SavedGame;
+                try
+                {
+                    savedGame = serializer.Deserialize(reader) as SavedGame;
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e.Message);
+                    GenerateDefaultLevels();
+                }
             }
-            catch (Exception e)
-            {
-                Debug.LogError(e.Message);
-                GenerateDefaultLevels();
-            }
-            stream.Close();
         }
         else
         {
             Debug.LogWarning("Levels config is not found.");
             GenerateDefaultLevels();
         }
-
+        
         Save();
-        LoadWithoutAction();
     }
 
     private void GenerateDefaultLevels()
@@ -99,9 +102,9 @@ public class DataManager
         Debug.LogWarning("Using deprecated level generate values. That is wrong, check Resources/level.xml.");
         List<LevelInfo> levels = new List<LevelInfo>();
 
-        levels.Add(new LevelInfo(1, 50, 0.2f, 0.5f, 1f));
-        levels.Add(new LevelInfo(2, 60, 0.3f, 0.8f, 1.5f));
-        levels.Add(new LevelInfo(3, 70, 0.5f, 1f, 2f));
+        levels.Add(new LevelInfo(1, 500, 100, 200, 400));
+        levels.Add(new LevelInfo(2, 900, 250, 450, 750));
+        levels.Add(new LevelInfo(3, 1200, 450, 800, 1200));
 
         savedGame = new SavedGame(levels);
     }

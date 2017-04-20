@@ -4,19 +4,10 @@ using UnityEngine;
 
 public class LevelExitButton : LookableButton
 {
-
-    PlayerController ch;
-    protected override void Start()
-    {
-        base.Start();
-
-        ch = FindObjectOfType<PlayerController>();
-
-    }
     protected override void Function()
     {
         base.Function();
 
-        ch.PauseLevel(PlayerController.PauseType.pause);
+        DataObjects.gameManager.PauseLevel(PauseType.pause);
     }
 }

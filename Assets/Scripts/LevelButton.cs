@@ -29,7 +29,6 @@ public class LevelButton : SceneButton, IUICanReinitialize
         if (null != scoreDisplayer)
         {
             scoreDisplayer.levelTitle = scenePath;
-            scoreDisplayer.UpdateLevelInfo();
 
             isInitialized = true;
             RefreshButtonState();
@@ -54,14 +53,9 @@ public class LevelButton : SceneButton, IUICanReinitialize
     {
         base.Start();
 
-        SavedGame game = DataObjects.savedGame;
+        buyButton = FindObjectOfType<BuyButton>();
 
-        if (null != game)
-        {
-            level = game.GetLevelByName(scenePath);
-            buyButton = FindObjectOfType<BuyButton>();
-            RefreshButtonState();
-        }
+        Reinitialize();
     }
 
     public void RefreshButtonState()
@@ -70,11 +64,11 @@ public class LevelButton : SceneButton, IUICanReinitialize
         {
             if (!DataObjects.dataManager.savedGame.isLevelUnlocked(level.number))
             {
-                //if (null != container)
-                //    container.gameObject.SetActive(false);
-
                 SetActiveLevelButton(false);
-                starBar.SetStarsInactive();
+                if (null != starBar)
+                {
+                    starBar.SetStarsInactive();
+                }
             }
             else
             {
@@ -96,7 +90,8 @@ public class LevelButton : SceneButton, IUICanReinitialize
 
                 if (null != starBar)
                 {
-                    starBar.FillStarsNoAnimation(DataObjects.gameController.GetStarRecord(level.number));
+                    //Debug.Log(level.StoredStarRecord);
+                    starBar.FillStarsNoAnimation(level.StoredStarRecord);
                 }
             }
         }
@@ -148,6 +143,12 @@ public class LevelButton : SceneButton, IUICanReinitialize
 
     public void Reinitialize()
     {
-        RefreshButtonState();
+        SavedGame game = DataObjects.savedGame;
+
+        if (null != game)
+        {
+            level = game.GetLevelByName(scenePath);
+            RefreshButtonState();
+        }
     }
 }

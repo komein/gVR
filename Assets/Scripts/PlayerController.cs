@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public enum PauseType { pause, win, gameOver };
 public class PlayerController : MonoBehaviour
 {
     public bool ControllerMode
@@ -16,7 +17,6 @@ public class PlayerController : MonoBehaviour
     }
 
     enum CatState { paused, cantMove, jump, dying, moving };
-    public enum PauseType { pause, win, gameOver };
 
     CatState CurrentState
     {
@@ -202,9 +202,17 @@ public class PlayerController : MonoBehaviour
                 Destroy(winCanvas.GetComponent<GvrPointerGraphicRaycaster>());
                 gameCanvas.gameObject.SetActive(true);
                 gameCanvas.gameObject.AddComponent<GvrPointerGraphicRaycaster>();
+
+                gameCanvas.BroadcastMessage("Reinitialize");
             }
 
             CurrentState = CatState.moving;
+        }
+
+        GameMusic gm = FindObjectOfType<GameMusic>();
+        if (null != gm)
+        {
+            gm.Play(SceneManager.GetActiveScene().name);
         }
     }
 
@@ -227,6 +235,23 @@ public class PlayerController : MonoBehaviour
         else
         {
             StartCoroutine(Die());
+        }
+
+        GameMusic gm = FindObjectOfType<GameMusic>();
+        if (null != gm)
+        {
+            switch (reason)
+            {
+                case PauseType.gameOver:
+                    gm.Play("gameOver");
+                    break;
+                case PauseType.win:
+                    gm.Play("victory");
+                    break;
+                case PauseType.pause:
+                    gm.Play("pause");
+                    break;
+            }
         }
     }
 
@@ -594,7 +619,7 @@ public class PlayerController : MonoBehaviour
 
             if (!DataObjects.gameController.isAlive)
             {
-                PauseLevel(PauseType.gameOver);
+                DataObjects.gameManager.PauseLevel(PauseType.gameOver);
             }
             else
             {

@@ -34,7 +34,7 @@ public class LevelInfo
         }
     }
 
-    public int starRecord
+    public int StoredStarRecord
     {
         get
         {
@@ -53,7 +53,7 @@ public class LevelInfo
     {
         for (int i = starRecords.Count; i > 0; i--)
         {
-            if (r > starRecords[i - 1])
+            if (r >= starRecords[i - 1])
             {
                 return i;
             }
@@ -77,11 +77,11 @@ public class LevelInfo
         maxScore = max;
     }
 
-    public LevelInfo(int n, long max, float osr, float twsr, float thsr) : this(n, max)
+    public LevelInfo(int n, long max, long osr, long twsr, long thsr) : this(n, max)
     {
-        starRecords.Add((long)(maxScore * osr));
-        starRecords.Add((long)(maxScore * twsr));
-        starRecords.Add((long)(maxScore * thsr));
+        starRecords.Add(osr);
+        starRecords.Add(twsr);
+        starRecords.Add(thsr);
     }
 
 }

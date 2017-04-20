@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -49,6 +51,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    WWW www;
+    string levelsName = "levels.xml";
+
     public string SAVE_PATH
     {
         get;
@@ -56,6 +61,12 @@ public class GameManager : MonoBehaviour
     }
 
     public string LEVELS_PATH
+    {
+        get;
+        private set;
+    }
+
+    public string LEVELS_PATH_SAVED
     {
         get;
         private set;
@@ -80,8 +91,13 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        SAVE_PATH = Application.persistentDataPath + "/10.xml";
-        LEVELS_PATH = Application.dataPath + "/Resources/levels.xml";
+        SAVE_PATH = Application.persistentDataPath + "/save.xml";
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+        LEVELS_PATH = "jar:file://" + Application.dataPath + "!/assets/" + levelsName;
+#elif UNITY_EDITOR // For running in Unity
+        LEVELS_PATH = "file://" + Application.streamingAssetsPath + "/" + levelsName;
+#endif
 
         //Debug.Log("save path = " + SAVE_PATH);
         //Debug.Log("save path = " + LEVELS_PATH);
@@ -184,6 +200,15 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded += OnLevelFinishedLoading;
     }
 
+    internal void PauseLevel(PauseType reason)
+    {
+        PlayerController cat = FindObjectOfType<PlayerController>();
+        if (null != cat)
+        {
+            cat.PauseLevel(reason);
+        }
+    }
+
     void OnDisable()
     {
         //Tell our 'OnLevelFinishedLoading' function to stop listening for a scene change as soon as this script is disabled. Remember to always have an unsubscription for every delegate you subscribe to!
@@ -193,5 +218,15 @@ public class GameManager : MonoBehaviour
     void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
     {
         ReinitGraphics();
+    }
+
+    IEnumerator Downloader()
+    {
+        www = new WWW(LEVELS_PATH);
+        yield return www; //will wait until the download finishes
+        if (www.isDone == true)
+        {
+            File.WriteAllBytes(LEVELS_PATH_SAVED, www.bytes);
+        }
     }
 }

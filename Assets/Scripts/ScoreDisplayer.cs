@@ -31,7 +31,9 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
     public bool mainMenuMode = true;
     public bool AutoUpdate = true;
 
-    public long AccScore
+    int currentStarRecord = 0;
+
+    public long SavedScore
     {
         get
         {
@@ -41,33 +43,46 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
         }
     }
 
-    long TempScore
+    long CurrentPlayScore // starts from 0 after every pause
     {
         get
         {
-            if (null != level)
-                return DataObjects.sceneInfo.tempScore;
-            return -1;
+            return DataObjects.sceneInfo.tempScore;
         }
     }
 
-    long TempScoreSaved
+    long CurrentLevelScore // 
     {
         get
         {
-            if (null != level)
-                return DataObjects.sceneInfo.tempScoreSaved;
-            return -1;
+            return DataObjects.sceneInfo.tempScoreSaved;
         }
     }
 
-    long MaxScore
+    long MaxLevelScore
     {
         get
         {
             if (null != level)
                 return level.maxScore;
             return -1;
+        }
+    }
+
+
+    // assuming CurrentLevelScore += CurrentPlayScore after any kind of pause, so this thing is true only for one check
+    public bool IsLevelCompleted
+    {
+        get
+        {
+            if (SavedScore + CurrentLevelScore < MaxLevelScore)
+            {
+                if (SavedScore + CurrentLevelScore + CurrentPlayScore >= MaxLevelScore)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
@@ -87,7 +102,7 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
         {
             if (null != optionalBar)
             {
-                optionalBar.FillStarsNoAnimation(level.starRecord);
+                optionalBar.FillStarsNoAnimation(level.GetStarRecord(CurrentLevelScore + CurrentPlayScore));
             }
         }
     }
@@ -122,7 +137,6 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
             }
             else
             {
-                UpdateLevelInfo();
                 UpdateText();
             }
         }
@@ -130,15 +144,11 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
 
     internal void ShowScoreProgressBarAnimated(float t, bool hideMultiplier = false, float time = 1f)
     {
-        ShowScoreProgressBarAnimated(t, AccScore + TempScoreSaved, MaxScore, TempScore, time, hideMultiplier);
+        ShowScoreProgressBarAnimated(t, SavedScore + CurrentLevelScore, MaxLevelScore, CurrentPlayScore, time, hideMultiplier);
     }
 
     internal void ShowScoreProgressBarAnimated(float t, long acc, long max, long tmp, float time = 1f, bool hideMultiplier = false)
     {
-
-        UpdateLevelInfo();
-
-
         if (null != pBarBackground)
         {
             pBarBackground.enabled = true;
@@ -170,23 +180,12 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
         DrawProgressBar(pBar, 0, 1, pBarFill);
         DrawProgressBar(pBarTemp, 0, 1, pBarFill + pBarTempFill);
     }
-    
+
     public void UpdateTextWithCheck()
     {
-        UpdateLevelInfo();
-
-        if (AccScore + TempScoreSaved < MaxScore)
+        if (IsLevelCompleted)
         {
-            if (AccScore + TempScoreSaved + TempScore >= MaxScore)
-            {
-                // make it win
-                PlayerController cat = FindObjectOfType<PlayerController>();
-                if (null != cat)
-                {
-                    cat.PauseLevel(PlayerController.PauseType.win);
-                    return;
-                }
-            }
+            DataObjects.gameManager.PauseLevel(PauseType.win);
         }
 
         UpdateText();
@@ -204,12 +203,17 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
         {
             if (DataObjects.gameController.isAlive)
             {
-                ShowScoreProgressBar(AccScore + TempScoreSaved, TempScore, MaxScore);
+                ShowScoreProgressBar(SavedScore + CurrentLevelScore, CurrentPlayScore, MaxLevelScore);
             }
             
             if (null != optionalBar)
             {
-                optionalBar.FillStarsAnimated(level.GetStarRecord(TempScore + TempScoreSaved));
+                int record = level.GetStarRecord(CurrentPlayScore + CurrentLevelScore);
+                if (currentStarRecord < record)
+                {
+                    currentStarRecord = record;
+                    optionalBar.FillStarsAnimated(currentStarRecord);
+                }
             }
         }
     }
@@ -236,7 +240,7 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
 
     public void ShowScoreProgressBar(bool hideMultiplier = false)
     {
-        ShowScoreProgressBar(AccScore + TempScoreSaved, TempScore, MaxScore, hideMultiplier);
+        ShowScoreProgressBar(SavedScore + CurrentLevelScore, CurrentPlayScore, MaxLevelScore, hideMultiplier);
     }
 
     public void ShowScoreProgressBar(long acc, long temp, long max, bool hideMultiplier = false)
@@ -351,10 +355,8 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
     public void Reinitialize()
     {
         UpdateLevelInfo();
-        if (null != optionalBar)
-        {
-            optionalBar.UnfillStars();
-        }
+        FillStarsNoAnimation();
         UpdateText();
     }
+
 }

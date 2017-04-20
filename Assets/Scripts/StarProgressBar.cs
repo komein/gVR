@@ -12,6 +12,8 @@ public class StarProgressBar : MonoBehaviour
 
     AudioSource aus;
 
+    Coroutine c = null;
+
     private void Awake()
     {
         List<ProgressStar> s = GetComponentsInChildren<ProgressStar>().ToList();
@@ -36,8 +38,6 @@ public class StarProgressBar : MonoBehaviour
         aus = gameObject.AddComponent<AudioSource>();
     }
 
-    private bool animationLock = false;
-
     public void UnfillStars()
     {
         if (null != stars)
@@ -46,7 +46,7 @@ public class StarProgressBar : MonoBehaviour
             {
                 if (null != v)
                 {
-                    v.SetState(ProgressStar.StarState.empty);
+                    v.SetState(ProgressStar.StarState.empty, false);
                 }
             }
         }
@@ -71,15 +71,13 @@ public class StarProgressBar : MonoBehaviour
 
     public void FillStarsAnimated(int v)
     {
-        if (animationLock)
-        {
-            return;
-        }
-
         if (gameObject.activeInHierarchy)
         {
-            animationLock = true;
-            StartCoroutine(FillStarsCoroutine(v));
+            if (null != c)
+            {
+                StopCoroutine(c);
+            }
+            c = StartCoroutine(FillStarsCoroutine(v, gameObject.activeInHierarchy));
         }
     }
 
@@ -120,14 +118,12 @@ public class StarProgressBar : MonoBehaviour
     }
 
 	
-	private IEnumerator FillStarsCoroutine(int v)
+	private IEnumerator FillStarsCoroutine(int v, bool playMusic)
     {
         if (v < 0 || v > 3)
         {
-            animationLock = false;
             yield return null;
         }
-
 
         for (int i = 0; i < v; i++)
         {
@@ -140,7 +136,7 @@ public class StarProgressBar : MonoBehaviour
                         if (!stars[i].IsFilled)
                         {
                             stars[i].SetState(ProgressStar.StarState.filled, true);
-                            if (null != aus)
+                            if (null != aus && playMusic)
                             {
                                 aus.Stop();
                                 DataObjects.SetMusic("star" + (i+1), aus);
@@ -155,8 +151,6 @@ public class StarProgressBar : MonoBehaviour
                 }
             }
         }
-
-        animationLock = false;
 
         yield return null;
     }

@@ -12,7 +12,27 @@ public class HpDisplayer : MonoBehaviour
 
     HpContainer[] containers;
 
-    public void SetHpDisplay(int value)
+    public void SetHpDisplay(int value, bool animated)
+    {
+        SetHpNoAnimation(value);
+
+        if (animated)
+        {
+            if (currentHp > value)
+            {
+                containers[value].BreakTheHeart();
+            }
+            else if (currentHp < value)
+            {
+                containers[value - 1].MakeBiggerForSec();
+            }
+
+        }
+
+        currentHp = value;
+    }
+
+    public void SetHpNoAnimation(int value)
     {
         if (value < 0 || value > 3)
         {
@@ -23,18 +43,6 @@ public class HpDisplayer : MonoBehaviour
         {
             containers[i].SetHeart(value > i);
         }
-
-        if (currentHp > value)
-        {
-            containers[value].BreakTheHeart();
-        }
-        else if (currentHp < value)
-        {
-            containers[value-1].MakeBiggerForSec();
-        }
-
-        currentHp = value;
-
     }
 
     void Start()
@@ -45,8 +53,9 @@ public class HpDisplayer : MonoBehaviour
         if (null != DataObjects.gameController)
         {
             DataObjects.gameController.SetOptionalHpAction(UpdateHp);
-            UpdateHp();
         }
+
+        Reinitialize();
     }
 
     public void UpdateHp()
@@ -59,7 +68,16 @@ public class HpDisplayer : MonoBehaviour
         if (null != DataObjects.gameController)
         {
             int hp = DataObjects.gameController.GetHp();
-            SetHpDisplay(hp);
+            SetHpDisplay(hp, true);
+        }
+    }
+
+    public void Reinitialize()
+    {
+        if (null != DataObjects.gameController)
+        {
+            int hp = DataObjects.gameController.GetHp();
+            SetHpDisplay(hp, false);
         }
     }
 }

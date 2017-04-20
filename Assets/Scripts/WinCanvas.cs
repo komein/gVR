@@ -15,10 +15,10 @@ public class WinCanvas : MonoBehaviour
     public TextMeshProUGUI recordText;
     public TextMeshProUGUI messageText;
 
-    bool animationLock = false;
-
     public GameObject continueButton;
     public GameObject retryButton;
+
+    Coroutine c = null;
 
     public void MakePauseScreen()
     {
@@ -55,49 +55,34 @@ public class WinCanvas : MonoBehaviour
         WriteMessage("Game Over");
     }
 
-    internal void ShowScore(PlayerController.PauseType reason)
+    internal void ShowScore(PauseType reason)
     {
-        scoreBar.UpdateLevelInfo();
-        scoreBar.ShowScoreProgressBar(reason == PlayerController.PauseType.gameOver);
-        
-        if (!animationLock)
+        if (null != c)
         {
-            animationLock = true;
-            StartCoroutine(ScoreCoroutine(reason));
+            StopCoroutine(c);
         }
+        starBar.UnfillStars();
+        
+        scoreBar.ShowScoreProgressBar(reason == PauseType.gameOver);
 
         switch (reason)
         {
-            case PlayerController.PauseType.pause:
+            case PauseType.pause:
                 MakePauseScreen();
                 break;
-            case PlayerController.PauseType.win:
+            case PauseType.win:
                 MakeWinScreen();
                 break;
-            case PlayerController.PauseType.gameOver:
+            case PauseType.gameOver:
                 MakeGameOverScreen();
                 break;
         }
 
+        c = StartCoroutine(ScoreCoroutine(reason));
     }
 
-    IEnumerator ScoreCoroutine(PlayerController.PauseType reason)
+    IEnumerator ScoreCoroutine(PauseType reason)
     {
-        GameMusic gm = FindObjectOfType<GameMusic>();
-        if (null != gm)
-        {
-            switch (reason)
-            {
-                case PlayerController.PauseType.gameOver:
-                    gm.Play("gameOver");
-                    break;
-                case PlayerController.PauseType.win:
-                    gm.Play("victory");
-                    break;
-                default:
-                    break;
-            }
-        }
 
         if (null != DataObjects.savedGame && null != DataObjects.sceneInfo)
         {
@@ -120,7 +105,7 @@ public class WinCanvas : MonoBehaviour
                 }
 
                 starBar.SetTextValues(p);
-                scoreBar.ShowScoreProgressBarAnimated(0, reason == PlayerController.PauseType.gameOver);
+                scoreBar.ShowScoreProgressBarAnimated(0, reason == PauseType.gameOver);
 
                 yield return new WaitForSeconds(1f);
 
@@ -133,7 +118,7 @@ public class WinCanvas : MonoBehaviour
 
                     for (float t = 0; t < time; t += step)
                     {
-                        scoreBar.ShowScoreProgressBarAnimated(t, reason == PlayerController.PauseType.gameOver, time);
+                        scoreBar.ShowScoreProgressBarAnimated(t, reason == PauseType.gameOver, time);
                         yield return new WaitForSeconds(step);
                     }
 
@@ -146,11 +131,9 @@ public class WinCanvas : MonoBehaviour
 
                 p = GetLevelInfo();
 
-                starBar.FillStarsAnimated(p.starRecord);
+                starBar.FillStarsAnimated(p.GetStarRecord(DataObjects.sceneInfo.tempScore + DataObjects.sceneInfo.tempScoreSaved));
             }
         }
-
-        animationLock = false;
 
         yield return null;
     }

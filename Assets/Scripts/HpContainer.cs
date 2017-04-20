@@ -40,14 +40,20 @@ public class HpContainer : MonoBehaviour
 
     public void BreakTheHeart()
     {
-        StopAllCoroutines();
-        StartCoroutine(ToggleFlash());
+        if (gameObject.activeInHierarchy)
+        {
+            StopAllCoroutines();
+            StartCoroutine(ToggleFlash());
+        }
     }
 
     public void MakeBiggerForSec()
     {
-        StopAllCoroutines();
-        StartCoroutine(MakeBigger());
+        if (gameObject.activeInHierarchy)
+        {
+            StopAllCoroutines();
+            StartCoroutine(MakeBigger());
+        }
     }
 
     private IEnumerator MakeBigger()
@@ -93,4 +99,5 @@ public class HpContainer : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
         }
     }
+
 }

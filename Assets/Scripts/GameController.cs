@@ -93,14 +93,6 @@ public class GameController
         return DataObjects.savedGame.GetMaxScore(level);
     }
 
-    public int GetStarRecord(int level)
-    {
-        if (null == DataObjects.savedGame)
-            return 0;
-
-        return DataObjects.savedGame.GetStarRecord(level);
-    }
-
     public bool ResetScore()
     {
         if (null == DataObjects.savedGame)
@@ -193,4 +185,5 @@ public class GameController
             DataObjects.dataManager.Save();
         }
     }
+
 }

@@ -121,14 +121,4 @@ public class SavedGame
         return true;
     }
 
-    internal int GetStarRecord(int level)
-    {
-        LevelInfo l = GetLevel(level);
-
-        if (null == l)
-            return 0;
-
-        return l.starRecord;
-    }
-
 }
