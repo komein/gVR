@@ -29,9 +29,9 @@ public class AsyncSceneLoader : MonoBehaviour
     {
         loadMessage = GetComponentInChildren<TextMeshProUGUI>();
 
-        if (null != DataObjects.sceneInfo)
+        if (null != DataObjects.SceneInfo)
         {
-            LoadLevel(DataObjects.sceneInfo.title);
+            LoadLevel(DataObjects.SceneInfo.title);
         }
     }
 

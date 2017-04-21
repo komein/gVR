@@ -35,7 +35,31 @@ public class WinCanvas : MonoBehaviour
         {
             continueButton.gameObject.SetActive(true);
         }
-        WriteMessage("New level avaliable!");
+
+        if (LastLevel())
+        {
+            WriteMessage("Thanks for playing!");
+        }
+        else
+        {
+            WriteMessage("New level avaliable!");
+        }
+    }
+
+    private bool LastLevel()
+    {
+        if (null != DataObjects.SavedGame)
+        {
+            if (null != DataObjects.SavedGame.levels)
+            {
+                LevelInfo lastOne = DataObjects.SavedGame.levels.FindLast(p => p != null);
+                if (null != lastOne)
+                {
+                    return SceneManager.GetActiveScene().name == lastOne.title;
+                }
+            }
+        }
+        return false;
     }
 
     public void WriteMessage(string s)
@@ -55,7 +79,7 @@ public class WinCanvas : MonoBehaviour
         WriteMessage("Game Over");
     }
 
-    internal void ShowScore(PauseType reason)
+    internal void ShowScore(PauseType reason, LevelInfo p)
     {
         if (null != c)
         {
@@ -63,53 +87,55 @@ public class WinCanvas : MonoBehaviour
         }
         starBar.UnfillStars();
         
-        scoreBar.ShowScoreProgressBar(reason == PauseType.gameOver);
-
-        switch (reason)
+        if (null != p)
         {
-            case PauseType.pause:
-                MakePauseScreen();
-                break;
-            case PauseType.win:
-                MakeWinScreen();
-                break;
-            case PauseType.gameOver:
-                MakeGameOverScreen();
-                break;
+            scoreBar.ShowScoreProgressBar(p.accumulatedScore + DataObjects.SceneInfo.tempScoreSaved, DataObjects.SceneInfo.tempScore, p.maxScore, reason == PauseType.gameOver);
+
+            switch (reason)
+            {
+                case PauseType.pause:
+                    MakePauseScreen();
+                    break;
+                case PauseType.win:
+                    MakeWinScreen();
+                    break;
+                case PauseType.gameOver:
+                    MakeGameOverScreen();
+                    break;
+            }
+
+            c = StartCoroutine(ScoreCoroutine(reason, p.accumulatedScore + DataObjects.SceneInfo.tempScoreSaved, DataObjects.SceneInfo.tempScore, p.maxScore, p.bestScoreRecord, p.starRecords, p.GetStarRecord(DataObjects.SceneInfo.TempScore)));
         }
 
-        c = StartCoroutine(ScoreCoroutine(reason));
     }
 
-    IEnumerator ScoreCoroutine(PauseType reason)
+    IEnumerator ScoreCoroutine(PauseType reason, long acc, long temp, long max, long bestRecord, List<long> starRecords, int currentStarRecord)
     {
 
-        if (null != DataObjects.savedGame && null != DataObjects.sceneInfo)
+        if (null != DataObjects.SavedGame && null != DataObjects.SceneInfo)
         {
-            LevelInfo p = GetLevelInfo();
-
-            if (p != null)
+            //if (p != null)
             {
-                scoreText.text = "Score: " + DataObjects.sceneInfo.TempScore;
+                scoreText.text = "Score: " + DataObjects.SceneInfo.TempScore;
 
-                if (p.bestScoreRecord < DataObjects.sceneInfo.TempScore)
+                if (bestRecord < DataObjects.SceneInfo.TempScore)
                 {
-                    recordText.text = "New record: " + DataObjects.sceneInfo.TempScore + "!";
+                    recordText.text = "New record: " + DataObjects.SceneInfo.TempScore + "!";
 
-                    if (null != DataObjects.gameController)
-                        DataObjects.gameController.UpdateBestScore();
+                    if (null != DataObjects.GameController)
+                        DataObjects.GameController.UpdateBestScore();
                 }
                 else
                 {
-                    recordText.text = "Record: " + p.bestScoreRecord;
+                    recordText.text = "Record: " + bestRecord;
                 }
 
-                starBar.SetTextValues(p);
-                scoreBar.ShowScoreProgressBarAnimated(0, reason == PauseType.gameOver);
+                starBar.SetTextValues(starRecords);
+                scoreBar.ShowScoreProgressBarAnimated(0, acc, max, temp, 1f, reason == PauseType.gameOver);
 
                 yield return new WaitForSeconds(1f);
 
-                if (p.accumulatedScore < p.maxScore)
+                if (acc < max)
                 {
                     float time = 1f;
                     float timeSteps = 60f;
@@ -118,7 +144,7 @@ public class WinCanvas : MonoBehaviour
 
                     for (float t = 0; t < time; t += step)
                     {
-                        scoreBar.ShowScoreProgressBarAnimated(t, reason == PauseType.gameOver, time);
+                        scoreBar.ShowScoreProgressBarAnimated(t, acc, max, temp, time, reason == PauseType.gameOver);
                         yield return new WaitForSeconds(step);
                     }
 
@@ -129,23 +155,10 @@ public class WinCanvas : MonoBehaviour
                     scoreBar.ShowScoreProgressBar();
                 }
 
-                p = GetLevelInfo();
-
-                starBar.FillStarsAnimated(p.GetStarRecord(DataObjects.sceneInfo.tempScore + DataObjects.sceneInfo.tempScoreSaved));
+                starBar.FillStarsAnimated(currentStarRecord);
             }
         }
 
         yield return null;
-    }
-
-    private static LevelInfo GetLevelInfo()
-    {
-        LevelInfo p = DataObjects.savedGame.GetLevelByName(SceneManager.GetActiveScene().name);
-        if (null == p)
-        {
-            p = DataObjects.savedGame.GetLevelByName(SceneManager.GetActiveScene().name);
-        }
-
-        return p;
     }
 }

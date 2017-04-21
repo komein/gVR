@@ -109,4 +109,13 @@ public class ProgressStar : MonoBehaviour
 
         yield return null;
     }
+
+    internal void MakeNormalSize()
+    {
+        if (null == fillImage)
+        {
+            return;
+        }
+        fillImage.transform.localScale = Vector3.one;
+    }
 }

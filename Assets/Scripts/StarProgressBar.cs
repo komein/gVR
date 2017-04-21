@@ -52,20 +52,28 @@ public class StarProgressBar : MonoBehaviour
         }
     }
 
-    public void SetTextValues(LevelInfo level)
+    public void SetTextValues(List<long> starRecords)
     {
         List<StarContainer> conts = GetComponentsInChildren<StarContainer>().ToList();
 
         if (conts.Count > 0)
         {
-            for (int i = 0; i < conts.Count; i++ )
+            for (int i = 0; i < conts.Count; i++)
             {
                 TextMeshProUGUI t = conts[i].GetComponentInChildren<TextMeshProUGUI>();
                 if (null != t)
                 {
-                    t.text = level.starRecords[i].ToString();
+                    t.text = starRecords[i].ToString();
                 }
             }
+        }
+    }
+
+    public void SetTextValues(LevelInfo level)
+    {
+        if (null != level)
+        {
+            SetTextValues(level.starRecords);
         }
     }
 
@@ -76,8 +84,23 @@ public class StarProgressBar : MonoBehaviour
             if (null != c)
             {
                 StopCoroutine(c);
+                MakeStarsNormalSize();
             }
             c = StartCoroutine(FillStarsCoroutine(v, gameObject.activeInHierarchy));
+        }
+    }
+
+    private void MakeStarsNormalSize()
+    {
+        if (null != stars)
+        {
+            foreach (var v in stars)
+            {
+                if (null != v)
+                {
+                    v.MakeNormalSize();
+                }
+            }
         }
     }
 

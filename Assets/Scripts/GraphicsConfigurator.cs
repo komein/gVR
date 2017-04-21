@@ -31,13 +31,13 @@ public class GraphicsConfigurator : MonoBehaviour
 
         ResetEverything();
 
-        if (null == DataObjects.gameManager)
+        if (null == DataObjects.GameManager)
         {
             MakeMouseGazeConfiguration(true);
         }
         else
         {
-            switch (DataObjects.gameManager.mode)
+            switch (DataObjects.GameManager.mode)
             {
                 case GameManager.VRMode.Cardboard:
                     {
@@ -256,7 +256,7 @@ public class GraphicsConfigurator : MonoBehaviour
 
         DeleteGoogleVRController();
         // controller is found
-        if (DataObjects.gameManager.controllerState == GvrConnectionState.Connected)
+        if (DataObjects.GameManager.controllerState == GvrConnectionState.Connected)
         {
             ToggleGoogleVRGazePointer(false);
             InitializeGoogleVRController(p);

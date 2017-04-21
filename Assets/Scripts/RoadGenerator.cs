@@ -125,14 +125,14 @@ public class RoadGenerator : MonoBehaviour
 
     private void FillCollectibles()
     {
-        if (null != pool && null != nextPart && null != DataObjects.gameController)
+        if (null != pool && null != nextPart && null != DataObjects.GameController)
         {
             List<CollectiblePlace> places = nextPart.GetComponentsInChildren<CollectiblePlace>().ToList();
 
             if (null != places)
             {
                 if (places.Count > 0)
-                    if (DataObjects.gameController.GetHp() < SceneInfo.HP_MAX)
+                    if (DataObjects.GameController.GetHp() < SceneInfo.HP_MAX)
                     {
                         CollectiblePlace hpPlace = places[Random.Range(0, places.Count)];
                         if (null != hpPlace)

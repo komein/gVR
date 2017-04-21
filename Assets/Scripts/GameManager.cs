@@ -183,6 +183,20 @@ public class GameManager : MonoBehaviour
                 UpdateController();
             }
         }
+
+        if (GvrController.AppButton)
+        {
+            PlayerController p = FindObjectOfType<PlayerController>();
+            if (null != p)
+            {
+                // assuming we are in some level
+                p.PauseLevel(PauseType.pause, DataObjects.LevelInfo(SceneManager.GetActiveScene().name));
+            }
+            else
+            {
+                // assuming we are in main menu
+            }
+        }
 #endif
     }
 
@@ -190,6 +204,7 @@ public class GameManager : MonoBehaviour
     {
         if (null != dataManager)
         {
+            DataObjects.GameController.OnSceneChange();
             dataManager.Save();
         }
     }
@@ -205,7 +220,7 @@ public class GameManager : MonoBehaviour
         PlayerController cat = FindObjectOfType<PlayerController>();
         if (null != cat)
         {
-            cat.PauseLevel(reason);
+            cat.PauseLevel(reason, DataObjects.LevelInfo(SceneManager.GetActiveScene().name));
         }
     }
 

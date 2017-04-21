@@ -8,6 +8,8 @@ public class MultiplierCollectible : Collectible {
     public int multiplier = 1;
     public float period = 15;
 
+    public bool isPaused = false;
+
     Action startAction;
     Action stopAction;
 
@@ -37,18 +39,28 @@ public class MultiplierCollectible : Collectible {
 
     private IEnumerator SetMultiplier(int v)
     {
-        if (null != DataObjects.gameController)
+        if (null != DataObjects.GameController)
         {
-            DataObjects.gameController.SetMultiplier(v);
+            DataObjects.GameController.SetMultiplier(v);
 
             if (null != startAction)
             {
                 startAction();
             }
 
-            yield return new WaitForSeconds(period);
+            for (float t = 0; t < 15; t += Time.deltaTime)
+            {
+                while (isPaused)
+                {
+                    yield return null;
+                }
 
-            DataObjects.gameController.SetMultiplier(1);
+                yield return new WaitForEndOfFrame();
+            }
+
+            //yield return new WaitForSeconds(period);
+
+            DataObjects.GameController.SetMultiplier(1);
 
             if (null != stopAction)
             {

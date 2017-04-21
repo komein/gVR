@@ -19,7 +19,7 @@ public class DataManager
 
     public void Save()
     {
-        string savePath = DataObjects.gameManager.SAVE_PATH;
+        string savePath = DataObjects.GameManager.SAVE_PATH;
 
         if (null == savedGame)
             return;
@@ -41,7 +41,7 @@ public class DataManager
 
     public bool LoadWithoutAction()
     {
-        string savePath = DataObjects.gameManager.SAVE_PATH;
+        string savePath = DataObjects.GameManager.SAVE_PATH;
 
         if (File.Exists(savePath))
         {
@@ -68,7 +68,7 @@ public class DataManager
 
     public void MakeNewSaveFile()
     {
-        string levelsPath = DataObjects.gameManager.LEVELS_PATH_SAVED;
+        string levelsPath = DataObjects.GameManager.LEVELS_PATH_SAVED;
 
         TextAsset t = (TextAsset)Resources.Load("levels");
 
@@ -113,9 +113,9 @@ public class DataManager
     {
         if (LoadWithoutAction())
         {
-            if (null != DataObjects.gameController)
+            if (null != DataObjects.GameController)
             {
-                DataObjects.gameController.TriggerOptionalScoreAction();
+                DataObjects.GameController.TriggerOptionalScoreAction();
             }
         }
     }

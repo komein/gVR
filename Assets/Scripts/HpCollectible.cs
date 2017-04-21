@@ -14,12 +14,12 @@ public class HpCollectible : Collectible {
 
     public override void Collect()
     {
-        if (null != DataObjects.gameController)
+        if (null != DataObjects.GameController)
         {
-            if (DataObjects.gameController.GetHp() < SceneInfo.HP_MAX)
+            if (DataObjects.GameController.GetHp() < SceneInfo.HP_MAX)
             {
                 base.Collect();
-                DataObjects.gameController.AddHp(value);
+                DataObjects.GameController.AddHp(value);
                 
                 if (null != caption)
                 {

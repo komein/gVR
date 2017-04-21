@@ -50,9 +50,9 @@ public class HpDisplayer : MonoBehaviour
         containers = GetComponentsInChildren<HpContainer>();
         deadFlag = false;
 
-        if (null != DataObjects.gameController)
+        if (null != DataObjects.GameController)
         {
-            DataObjects.gameController.SetOptionalHpAction(UpdateHp);
+            DataObjects.GameController.SetOptionalHpAction(UpdateHp);
         }
 
         Reinitialize();
@@ -65,18 +65,18 @@ public class HpDisplayer : MonoBehaviour
             return;
         }
 
-        if (null != DataObjects.gameController)
+        if (null != DataObjects.GameController)
         {
-            int hp = DataObjects.gameController.GetHp();
+            int hp = DataObjects.GameController.GetHp();
             SetHpDisplay(hp, true);
         }
     }
 
     public void Reinitialize()
     {
-        if (null != DataObjects.gameController)
+        if (null != DataObjects.GameController)
         {
-            int hp = DataObjects.gameController.GetHp();
+            int hp = DataObjects.GameController.GetHp();
             SetHpDisplay(hp, false);
         }
     }

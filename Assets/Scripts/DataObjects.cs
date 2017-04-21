@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class DataObjects
 {
-    public static GameManager gameManager
+    public static GameManager GameManager
     {
         get
         {
@@ -30,79 +31,83 @@ public static class DataObjects
         MusicStorage.SetMusic(s, src);
     }
 
-    public static DataManager dataManager
+    public static DataManager DataManager
     {
         get
         {
-            if (gameManager == null)
+            if (GameManager == null)
             {
                 return null;
             }
 
-            return gameManager.dataManager;
+            return GameManager.dataManager;
         }
     }
 
-    public static GameController gameController
+    public static GameController GameController
     {
         get
         {
-            if (gameManager == null)
+            if (GameManager == null)
             {
                 return null;
             }
 
-            return gameManager.gameController;
+            return GameManager.gameController;
         }
     }
     
-    public static InAppManager iapManager
+    public static InAppManager IAPManager
     {
         get
         {
-            if (gameManager == null)
+            if (GameManager == null)
             {
                 return null;
             }
 
-            return gameManager.iapManager;
+            return GameManager.iapManager;
         }
     }
 
-    public static SavedGame savedGame
+    public static SavedGame SavedGame
     {
         get
         {
-            if (gameManager == null)
+            if (null == DataManager)
             {
                 return null;
             }
 
-            if (null == dataManager)
-            {
-                return null;
-            }
-
-            return dataManager.savedGame;
+            return DataManager.savedGame;
         }
     }
 
-    public static SceneInfo sceneInfo
+    public static SceneInfo SceneInfo
     {
         get
         {
-            if (gameManager == null)
+            if (GameManager == null)
             {
                 return null;
             }
 
-            if (null == dataManager)
+            if (null == DataManager)
             {
                 return null;
             }
 
-            return dataManager.sceneInfo;
+            return DataManager.sceneInfo;
         }
+    }
+
+    public static LevelInfo LevelInfo(string s)
+    {
+        if (null != SavedGame)
+        {
+            return SavedGame.GetLevelByName(s);
+        }
+        return null;
     }
 
 }

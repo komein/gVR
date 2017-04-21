@@ -17,19 +17,26 @@ public class ResetProgressButton : LookableButton
 
     protected override void Function()
     {
-        if (null == DataObjects.dataManager)
+        if (!ResetProgress())
             return;
 
-        DataObjects.dataManager.MakeNewSaveFile();
-
-        foreach (var c in FindObjectsOfType<Canvas>())
-        {
-            c.BroadcastMessage("Reinitialize");
-        }
-        
         StartCoroutine(PressedMessage());
 
         base.Function();
     }
 
+    public bool ResetProgress()
+    {
+        if (null == DataObjects.DataManager)
+            return false;
+
+        DataObjects.DataManager.MakeNewSaveFile();
+
+        foreach (var c in FindObjectsOfType<Canvas>())
+        {
+            c.BroadcastMessage("Reinitialize");
+        }
+
+        return true;
+    }
 }

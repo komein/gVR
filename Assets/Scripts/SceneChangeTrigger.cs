@@ -6,9 +6,9 @@ public class SceneChangeTrigger : MonoBehaviour
 {
     private void OnDestroy()
     {
-        if (null != DataObjects.gameController)
+        if (null != DataObjects.GameController)
         {
-            DataObjects.gameController.OnSceneChange();
+            DataObjects.GameController.OnSceneChange();
         }
     }
 

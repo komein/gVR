@@ -47,7 +47,7 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
     {
         get
         {
-            return DataObjects.sceneInfo.tempScore;
+            return DataObjects.SceneInfo.tempScore;
         }
     }
 
@@ -55,7 +55,7 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
     {
         get
         {
-            return DataObjects.sceneInfo.tempScoreSaved;
+            return DataObjects.SceneInfo.tempScoreSaved;
         }
     }
 
@@ -88,7 +88,7 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
 
     void Start()
     {
-        storage = DataObjects.gameManager;
+        storage = DataObjects.GameManager;
 
         UpdateLevelInfo();
         FillStarsNoAnimation();
@@ -112,39 +112,29 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
     // value of levelTitle, which must be set in inspector therefore
     public void UpdateLevelInfo()
     {
-        SavedGame game = DataObjects.savedGame;
+        level = DataObjects.LevelInfo(SceneManager.GetActiveScene().name);
 
-        if (null != game)
+        if (null == level)
         {
-            level = game.GetLevelByName(SceneManager.GetActiveScene().name);
-
-            if (null == level)
-            {
-                level = game.GetLevelByName(levelTitle);
-            }
+            level = DataObjects.LevelInfo(levelTitle);
         }
     }
 
     private void LoadScore()
     {
-        if (null != DataObjects.gameController && null != DataObjects.dataManager)
+        if (null != DataObjects.GameController && null != DataObjects.DataManager)
         {
-            DataObjects.dataManager.LoadWithoutAction();
+            DataObjects.DataManager.LoadWithoutAction();
             if (AutoUpdate)
             {
-                DataObjects.gameController.AddOptionalScoreAction(UpdateTextWithCheck);
-                DataObjects.gameController.TriggerOptionalScoreAction();
+                DataObjects.GameController.AddOptionalScoreAction(UpdateTextWithCheck);
+                DataObjects.GameController.TriggerOptionalScoreAction();
             }
             else
             {
                 UpdateText();
             }
         }
-    }
-
-    internal void ShowScoreProgressBarAnimated(float t, bool hideMultiplier = false, float time = 1f)
-    {
-        ShowScoreProgressBarAnimated(t, SavedScore + CurrentLevelScore, MaxLevelScore, CurrentPlayScore, time, hideMultiplier);
     }
 
     internal void ShowScoreProgressBarAnimated(float t, long acc, long max, long tmp, float time = 1f, bool hideMultiplier = false)
@@ -185,7 +175,7 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
     {
         if (IsLevelCompleted)
         {
-            DataObjects.gameManager.PauseLevel(PauseType.win);
+            DataObjects.GameManager.PauseLevel(PauseType.win);
         }
 
         UpdateText();
@@ -199,9 +189,9 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
             return;
         }
 
-        if (null != DataObjects.gameController)
+        if (null != DataObjects.GameController)
         {
-            if (DataObjects.gameController.isAlive)
+            if (DataObjects.GameController.isAlive)
             {
                 ShowScoreProgressBar(SavedScore + CurrentLevelScore, CurrentPlayScore, MaxLevelScore);
             }
@@ -231,9 +221,9 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
                 status.text = score.ToString();
             }
 
-            if (DataObjects.sceneInfo.multiplier > 1 && showMultiplier)
+            if (DataObjects.SceneInfo.multiplier > 1 && showMultiplier)
             {
-                status.text = status.text + " (x" + DataObjects.sceneInfo.multiplier + "!)";
+                status.text = status.text + " (x" + DataObjects.SceneInfo.multiplier + "!)";
             }
         }
     }

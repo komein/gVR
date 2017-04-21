@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     {
         get
         {
-            return DataObjects.gameManager.mode == GameManager.VRMode.Daydream;
+            return DataObjects.GameManager.mode == GameManager.VRMode.Daydream;
         }
     }
 
@@ -191,10 +191,9 @@ public class PlayerController : MonoBehaviour
 
     internal void ResumeLevel()
     {
-        if (null != DataObjects.gameController)
+        if (null != DataObjects.GameController)
         {
-            DataObjects.gameController.SaveTempScoreContinue();
-            DataObjects.gameController.TriggerOptionalScoreAction();
+            DataObjects.GameController.TriggerOptionalScoreAction();
 
             if (null != gameCanvas && null != winCanvas)
             {
@@ -209,6 +208,12 @@ public class PlayerController : MonoBehaviour
             CurrentState = CatState.moving;
         }
 
+        MultiplierCollectible col = FindObjectOfType<MultiplierCollectible>();
+        if (null != col)
+        {
+            col.isPaused = false;
+        }
+
         GameMusic gm = FindObjectOfType<GameMusic>();
         if (null != gm)
         {
@@ -217,8 +222,11 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    public void PauseLevel(PauseType reason)
+    public void PauseLevel(PauseType reason, LevelInfo p)
     {
+        if (CurrentState == CatState.paused)
+            return;
+
         StopAllCoroutines();
         ToggleFlashing(false);
 
@@ -230,12 +238,20 @@ public class PlayerController : MonoBehaviour
             Destroy(gameCanvas.GetComponent<GvrPointerGraphicRaycaster>());
             winCanvas.gameObject.SetActive(true);
             winCanvas.gameObject.AddComponent<GvrPointerGraphicRaycaster>();
-            winCanvas.ShowScore(reason);
+            winCanvas.ShowScore(reason, p);
         }
         else
         {
             StartCoroutine(Die());
         }
+
+        MultiplierCollectible col = FindObjectOfType<MultiplierCollectible>();
+        if (null != col)
+        {
+            col.isPaused = true;
+        }
+
+        DataObjects.GameController.OnPauseLevel();
 
         GameMusic gm = FindObjectOfType<GameMusic>();
         if (null != gm)
@@ -413,9 +429,9 @@ public class PlayerController : MonoBehaviour
 
     private void MoveAndRotate(Vector3 pos)
     {
-        if (null != DataObjects.gameController)
+        if (null != DataObjects.GameController)
         {
-            if (DataObjects.gameController.isAlive)
+            if (DataObjects.GameController.isAlive)
             {
                 if (CurrentState == CatState.moving)
                 {
@@ -613,13 +629,13 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (DataObjects.gameController != null)
+        if (DataObjects.GameController != null)
         {
             TakeDamage();
 
-            if (!DataObjects.gameController.isAlive)
+            if (!DataObjects.GameController.isAlive)
             {
-                DataObjects.gameManager.PauseLevel(PauseType.gameOver);
+                DataObjects.GameManager.PauseLevel(PauseType.gameOver);
             }
             else
             {
@@ -646,9 +662,9 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage()
     {
-        if (null != DataObjects.gameController)
+        if (null != DataObjects.GameController)
         {
-            DataObjects.gameController.LoseHp(1);
+            DataObjects.GameController.LoseHp(1);
         }
     }
 

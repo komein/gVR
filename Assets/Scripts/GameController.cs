@@ -24,7 +24,7 @@ public class GameController
     internal void SetMultiplier(int v)
     {
         if (v >= 1)
-            DataObjects.sceneInfo.multiplier = v;
+            DataObjects.SceneInfo.multiplier = v;
         TriggerOptionalScoreAction();
     }
 
@@ -55,22 +55,22 @@ public class GameController
 
     public bool SetScore(int level, long s)
     {
-        if (null == DataObjects.savedGame)
+        if (null == DataObjects.SavedGame)
             return false;
 
         TriggerOptionalScoreAction();
 
-        return DataObjects.savedGame.SetScore(level, s);
+        return DataObjects.SavedGame.SetScore(level, s);
     }
 
     public bool AddScore(long s)
     {
-        if (null == DataObjects.savedGame)
+        if (null == DataObjects.SavedGame)
         {
             return false;
         }
 
-        DataObjects.sceneInfo.tempScore += (long)(s * DataObjects.sceneInfo.multiplier + 0.5f);
+        DataObjects.SceneInfo.tempScore += (long)(s * DataObjects.SceneInfo.multiplier + 0.5f);
 
         TriggerOptionalScoreAction();
 
@@ -79,78 +79,78 @@ public class GameController
 
     public long GetScore(int level)
     {
-        if (null == DataObjects.savedGame)
+        if (null == DataObjects.SavedGame)
             return -1;
 
-        return DataObjects.savedGame.GetScore(level);
+        return DataObjects.SavedGame.GetScore(level);
     }
 
     public long GetMaxScore(int level)
     {
-        if (null == DataObjects.savedGame)
+        if (null == DataObjects.SavedGame)
             return -1;
 
-        return DataObjects.savedGame.GetMaxScore(level);
+        return DataObjects.SavedGame.GetMaxScore(level);
     }
 
     public bool ResetScore()
     {
-        if (null == DataObjects.savedGame)
+        if (null == DataObjects.SavedGame)
             return false;
 
-        return DataObjects.savedGame.ResetScore();
+        return DataObjects.SavedGame.ResetScore();
     }
 
     public void SetHp(int h)
     {
-        DataObjects.sceneInfo.hp = h;
+        DataObjects.SceneInfo.hp = h;
         TriggerOptionalHpAction();
     }
 
     public void AddHp(int v)
     {
-        DataObjects.sceneInfo.hp += v;
-        DataObjects.sceneInfo.hp = Mathf.Min(SceneInfo.HP_MAX, DataObjects.sceneInfo.hp);
+        DataObjects.SceneInfo.hp += v;
+        DataObjects.SceneInfo.hp = Mathf.Min(SceneInfo.HP_MAX, DataObjects.SceneInfo.hp);
         TriggerOptionalHpAction();
     }
 
     public void LoseHp(int v)
     {
-        DataObjects.sceneInfo.hp -= v;
-        DataObjects.sceneInfo.hp = Mathf.Max(0, DataObjects.sceneInfo.hp);
+        DataObjects.SceneInfo.hp -= v;
+        DataObjects.SceneInfo.hp = Mathf.Max(0, DataObjects.SceneInfo.hp);
         TriggerOptionalHpAction();
     }
 
     public int GetHp()
     {
-        return DataObjects.sceneInfo.hp;
+        return DataObjects.SceneInfo.hp;
     }
 
     internal void RestoreHp()
     {
-        DataObjects.sceneInfo.hp = SceneInfo.HP_DEFAULT;
+        DataObjects.SceneInfo.hp = SceneInfo.HP_DEFAULT;
     }
 
     public void UpdateBestScore()
     {
-        if (null != DataObjects.sceneInfo)
+        if (null != DataObjects.SceneInfo)
         {
-            LevelInfo p = DataObjects.savedGame.GetLevelByName(SceneManager.GetActiveScene().name);
+            LevelInfo p = DataObjects.LevelInfo(SceneManager.GetActiveScene().name);
             if (p != null)
             {
-                p.bestScoreRecord = Mathf.Max((int)p.bestScoreRecord, (int)DataObjects.sceneInfo.TempScore);
+                p.bestScoreRecord = Mathf.Max((int)p.bestScoreRecord, (int)DataObjects.SceneInfo.TempScore);
             }
         }
     }
 
     public void OnSceneChange()
     {
-        if (null != DataObjects.sceneInfo && null != DataObjects.savedGame && null != DataObjects.dataManager && null != DataObjects.gameController)
+        if (null != DataObjects.SceneInfo && null != DataObjects.SavedGame && null != DataObjects.DataManager && null != DataObjects.GameController)
         {
-            DataObjects.gameController.UpdateBestScore();
+            DataObjects.GameController.UpdateBestScore();
             SaveTempScore();
 
-            DataObjects.sceneInfo.ResetLevel();
+            DataObjects.SceneInfo.ResetLevel();
 
             optionalHpAction = null;
             optionalScoreAction = null;
@@ -159,30 +159,30 @@ public class GameController
 
     public void SaveTempScore()
     {
-        if (null != DataObjects.sceneInfo && null != DataObjects.savedGame && null != DataObjects.dataManager)
+        if (null != DataObjects.SceneInfo && null != DataObjects.SavedGame && null != DataObjects.DataManager)
         {
-            LevelInfo p = DataObjects.savedGame.GetLevelByName(SceneManager.GetActiveScene().name);
+            LevelInfo p = DataObjects.LevelInfo(SceneManager.GetActiveScene().name);
             if (p != null)
             {
-                p.accumulatedScore += DataObjects.sceneInfo.TempScore;
-                DataObjects.sceneInfo.tempScore = 0;
-                DataObjects.sceneInfo.tempScoreSaved = 0;
+                p.accumulatedScore += DataObjects.SceneInfo.TempScore;
+                DataObjects.SceneInfo.tempScore = 0;
+                DataObjects.SceneInfo.tempScoreSaved = 0;
             }
-            DataObjects.dataManager.Save();
+            DataObjects.DataManager.Save();
         }
     }
 
-    public void SaveTempScoreContinue()
+    public void OnPauseLevel()
     {
-        if (null != DataObjects.sceneInfo && null != DataObjects.savedGame && null != DataObjects.dataManager)
+        if (null != DataObjects.SceneInfo && null != DataObjects.SavedGame && null != DataObjects.DataManager)
         {
-            LevelInfo p = DataObjects.savedGame.GetLevelByName(SceneManager.GetActiveScene().name);
+            LevelInfo p = DataObjects.LevelInfo(SceneManager.GetActiveScene().name);
             if (p != null)
             {
-                DataObjects.sceneInfo.tempScoreSaved += DataObjects.sceneInfo.tempScore;
-                DataObjects.sceneInfo.tempScore = 0;
+                DataObjects.SceneInfo.tempScoreSaved += DataObjects.SceneInfo.tempScore;
+                DataObjects.SceneInfo.tempScore = 0;
             }
-            DataObjects.dataManager.Save();
+            DataObjects.DataManager.Save();
         }
     }
 

@@ -17,9 +17,9 @@ public class BuyResult : MonoBehaviour
     {
         returnButton.gameObject.SetActive(false);
         
-        if (null != DataObjects.iapManager)
+        if (null != DataObjects.IAPManager)
         {
-            SetMessage(DataObjects.iapManager.PurchaseLevel());
+            SetMessage(DataObjects.IAPManager.PurchaseLevel());
         }
 	}
 

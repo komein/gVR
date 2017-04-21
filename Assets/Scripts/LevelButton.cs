@@ -60,9 +60,9 @@ public class LevelButton : SceneButton, IUICanReinitialize
 
     public void RefreshButtonState()
     {
-        if (isInitialized && null != DataObjects.gameManager && null != DataObjects.dataManager && null != level && null != DataObjects.iapManager)
+        if (isInitialized && null != DataObjects.GameManager && null != DataObjects.DataManager && null != level && null != DataObjects.IAPManager)
         {
-            if (!DataObjects.dataManager.savedGame.isLevelUnlocked(level.number))
+            if (!DataObjects.DataManager.savedGame.isLevelUnlocked(level.number))
             {
                 SetActiveLevelButton(false);
                 if (null != starBar)
@@ -72,11 +72,11 @@ public class LevelButton : SceneButton, IUICanReinitialize
             }
             else
             {
-                if (DataObjects.gameManager.purchaseMode == true)
+                if (DataObjects.GameManager.purchaseMode == true)
                 {
                     if (GameManager.lastFreeLevelNumber < level.number)
                     {
-                        if (!DataObjects.iapManager.AreLevelsPurchased())
+                        if (!DataObjects.IAPManager.AreLevelsPurchased())
                         {
                             SetActiveLevelButton(false);
                             starBar.SetStarsInactive();
@@ -91,6 +91,7 @@ public class LevelButton : SceneButton, IUICanReinitialize
                 if (null != starBar)
                 {
                     //Debug.Log(level.StoredStarRecord);
+                    //Debug.Log(level.bestScoreRecord);
                     starBar.FillStarsNoAnimation(level.StoredStarRecord);
                 }
             }
@@ -143,12 +144,7 @@ public class LevelButton : SceneButton, IUICanReinitialize
 
     public void Reinitialize()
     {
-        SavedGame game = DataObjects.savedGame;
-
-        if (null != game)
-        {
-            level = game.GetLevelByName(scenePath);
-            RefreshButtonState();
-        }
+        level = DataObjects.LevelInfo(scenePath);
+        RefreshButtonState();
     }
 }
