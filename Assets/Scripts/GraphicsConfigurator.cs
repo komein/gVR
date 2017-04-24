@@ -186,6 +186,10 @@ public class GraphicsConfigurator : MonoBehaviour
             ToggleGoogleVRGazePointer(true);
 #endif
         }
+		else
+		{
+			ToggleGoogleVRGazePointer(true);
+		}
     }
 
     private void MakeGoogleVRCameraConfiguration()

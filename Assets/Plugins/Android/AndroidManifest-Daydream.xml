@@ -50,6 +50,12 @@
             </intent-filter>
 
             <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
+			<meta-data android:name="com.google.android.vr.icon"
+             android:resource="@drawable/VR_ico_front" />
+			<meta-data android:name="com.google.android.vr.icon_background"
+             android:resource="@drawable/VR_ico_back" />
+
+			 
         </activity>
 		
 		<uses-feature android:glEsVersion="0x00020000" android:required="true" />

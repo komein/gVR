@@ -44,6 +44,8 @@ public class PlayerController : MonoBehaviour
     public float dropSpeed = 50f;
 
     public bool hasCompensatingForce = false;
+	
+	bool searchForController = true;
 
     GameCanvas gameCanvas;
     WinCanvas winCanvas;
@@ -342,8 +344,16 @@ public class PlayerController : MonoBehaviour
 
             if (null == pointer)
             {
-                pointer = FindObjectOfType<GvrLaserPointer>();
+				if (searchForController)
+				{
+					pointer = FindObjectOfType<GvrLaserPointer>();
+					if (null == pointer)
+					{
+						searchForController = false;
+					}
+				}
             }
+			
             if (null == pointer)
             {
                 return GetCameraMoveVector();

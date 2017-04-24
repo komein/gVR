@@ -88,6 +88,7 @@ public class GameMusic : MonoBehaviour
                 }
 
                 aus.clip = music.music;
+				aus.loop = true;
                 aus.Play();
             }
         }
