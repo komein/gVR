@@ -156,7 +156,7 @@ public class GameManager : MonoBehaviour
         else
         {
 #if UNITY_HAS_GOOGLEVR
-            gConf.ReinitGoogleVRController();
+            gConf.ShowGvrLaserPointer();
 #endif
         }
     }
@@ -173,17 +173,6 @@ public class GameManager : MonoBehaviour
         }
 
 #if UNITY_HAS_GOOGLEVR
-        /*Debug.Log(controllerState);
-        if (controllerState != GvrController.State)
-        {
-            if (controllerState == GvrConnectionState.Connected && GvrController.State != GvrConnectionState.Connected ||
-                controllerState != GvrConnectionState.Connected && GvrController.State == GvrConnectionState.Connected)
-            {
-                //Debug.Log("switching " + controllerState + " to " + GvrController.State);
-                controllerState = GvrController.State;
-                UpdateController();
-            }
-        }*/
 
         if (GvrController.AppButton)
         {
