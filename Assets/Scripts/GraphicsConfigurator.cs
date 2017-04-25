@@ -22,6 +22,11 @@ public class GraphicsConfigurator : MonoBehaviour
     public EventSystem eventSystemPrefab;
     EventSystem es;
 
+    public GvrLaserPointer laser;
+
+    bool controllerIsEnabled = false;
+    int counter = 0;
+
     internal void Initialize()
     {
         if (null != FindObjectOfType<GraphicsOverrider>())
@@ -73,7 +78,6 @@ public class GraphicsConfigurator : MonoBehaviour
         {
             instanceRef = this;
 
-            //gvrManager = new GoogleVRManager();
             DontDestroyOnLoad(gameObject);
             Initialize();
         }
@@ -87,11 +91,6 @@ public class GraphicsConfigurator : MonoBehaviour
     private void ResetEverything()
     {
         ResetCamera();
-        ResetEventSystem();
-        ToggleGoogleVRGazePointer(false);
-#if UNITY_HAS_GOOGLEVR
-        DeleteGoogleVRController();
-#endif
     }
 
     private static void ResetCamera()
@@ -173,10 +172,69 @@ public class GraphicsConfigurator : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+#if UNITY_HAS_GOOGLEVR
+        if (DataObjects.GameManager.mode == GameManager.VRMode.Cardboard || DataObjects.GameManager.mode == GameManager.VRMode.Daydream)
+        {
+            if (controllerIsEnabled)
+            {
+                if (GvrController.State != GvrConnectionState.Connected)
+                {
+                    if (counter++ >= 10)
+                    {
+                        MakeGvrInput(false);
+                    }
+                }
+                else
+                {
+                    counter = 0;
+                }
+            }
+            else
+            {
+                if (GvrController.State == GvrConnectionState.Connected)
+                {
+                    if (counter++ >= 10)
+                    {
+                        MakeGvrInput(true);
+                    }
+                }
+                else
+                {
+                    counter = 0;
+                }
+            }
+        }
+#endif
+    }
+
+
     private void MakeGoogleVRConfiguration(bool withController)
     {
         MakeGoogleVRCameraConfiguration();
         MakeGoogleVREventSystem();
+
+        if (null == gc)
+        {
+            gc = FindObjectOfType<GvrController>();
+            if (null == gc)
+            {
+                gc = Instantiate(gvrController);
+                DontDestroyOnLoad(gc);
+            }
+        }
+
+        MakeGvrInput(false);
+    }
+
+    public void MakeGvrInput(bool withController)
+    {
+        controllerIsEnabled = withController;
+        
+        //DeleteGvrInputs();
+
+        Debug.Log("making input: " + withController);
 
         if (withController)
         {
@@ -186,10 +244,18 @@ public class GraphicsConfigurator : MonoBehaviour
             ToggleGoogleVRGazePointer(true);
 #endif
         }
-		else
-		{
-			ToggleGoogleVRGazePointer(true);
-		}
+        else
+        {
+            if (null == ret)
+            {
+                ret = GetGoogleVRGazePointer();
+            }
+            if (null != ret)
+            {
+                ret.gameObject.SetActive(true);
+                ret.SetAsMainPointer();
+            }
+        }
     }
 
     private void MakeGoogleVRCameraConfiguration()
@@ -204,20 +270,6 @@ public class GraphicsConfigurator : MonoBehaviour
         }
     }
 
-    private void ToggleGoogleVRGazePointer(bool isVisible)
-    {
-        ret = GetGoogleVRGazePointer();
-
-        if (null != ret)
-        {
-            ret.gameObject.SetActive(isVisible);
-            if (isVisible)
-            {
-                ret.SetAsMainPointer();
-            }
-        }
-    }
-
     private GvrReticlePointer GetGoogleVRGazePointer()
     {
         if (null != ret)
@@ -228,7 +280,7 @@ public class GraphicsConfigurator : MonoBehaviour
         GvrReticlePointer toReturn = FindObjectOfType<GvrReticlePointer>();
         if (null == toReturn)
         {
-            Debug.LogWarning("No reticle is attached to the main camera. Instantiating from prefab..");
+            //Debug.LogWarning("No reticle is attached to the main camera. Instantiating from prefab..");
             toReturn = Instantiate(reticlePrefab);
             toReturn.transform.SetParent(Camera.main.transform);
             toReturn.transform.localPosition = Vector3.zero;
@@ -242,56 +294,57 @@ public class GraphicsConfigurator : MonoBehaviour
     public void ReinitGoogleVRController()
     {
         // no parent object to put controller into, scene is not configured properly
+        // proper configuration is Player obj with child Camera.Main at Vector3(0, 1.6, 0)
         Player p = FindObjectOfType<Player>();
         if (null == p)
         {
             return;
         }
 
-        if (null == gc)
-        {
-            gc = FindObjectOfType<GvrController>();
-            if (null == gc)
-            {
-                gc = Instantiate(gvrController);
-                DontDestroyOnLoad(gc);
-            }
-        }
-
-        DeleteGoogleVRController();
-        // controller is found
-        if (DataObjects.GameManager.controllerState == GvrConnectionState.Connected)
-        {
-            ToggleGoogleVRGazePointer(false);
-            InitializeGoogleVRController(p);
-        }
-        // controller is not found
-        else
-        {
-            ToggleGoogleVRGazePointer(true);
-        }
+        InitializeGoogleVRController(p);
     }
 
     private void InitializeGoogleVRController(Player p)
     {
-        // make actual controller
-        arm = Instantiate(gvrArm);
-        arm.transform.SetParent(p.transform);
-        arm.transform.localPosition = Vector3.zero;
+        if (null == p)
+            return;
 
-        GvrLaserPointer pointer = FindObjectOfType<GvrLaserPointer>();
-        if (null != pointer)
+        // make actual controller
+        if (null == arm)
         {
-            pointer.SetAsMainPointer();
+            arm = Instantiate(gvrArm);
+            arm.transform.SetParent(p.transform);
+            arm.transform.localPosition = Vector3.zero;
+        }
+
+        laser = arm.GetComponentInChildren<GvrLaserPointer>();
+        if (null != laser)
+        {
+            if (null != ret)
+            {
+                ret.gameObject.SetActive(false);
+            }
+
+            laser.SetAsMainPointer();
+            es.GetComponent<GvrPointerInputModule>().Process();
         }
     }
 
-    private void DeleteGoogleVRController()
+    private void DeleteGvrInputs()
     {
+        Debug.Log("deleting inputs");
         if (null != arm)
         {
             Destroy(arm.gameObject);
+            arm = null;
         }
+
+        if (null != ret)
+        {
+            Destroy(ret.gameObject);
+            ret = null;
+        }
+
     }
 #endif
 

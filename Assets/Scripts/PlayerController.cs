@@ -44,8 +44,6 @@ public class PlayerController : MonoBehaviour
     public float dropSpeed = 50f;
 
     public bool hasCompensatingForce = false;
-	
-	bool searchForController = true;
 
     GameCanvas gameCanvas;
     WinCanvas winCanvas;
@@ -72,6 +70,8 @@ public class PlayerController : MonoBehaviour
 
     GvrLaserPointer pointer;
     CrushParticle cp;
+
+    GraphicsConfigurator gc;
 
     Camera cam;
 
@@ -103,6 +103,7 @@ public class PlayerController : MonoBehaviour
         CurrentState = CatState.paused;
 
         gim = FindObjectOfType<GvrPointerInputModule>();
+        gc = FindObjectOfType<GraphicsConfigurator>();
 
         gameCanvas = FindObjectOfType<GameCanvas>();
         if (null != gameCanvas)
@@ -200,9 +201,7 @@ public class PlayerController : MonoBehaviour
             if (null != gameCanvas && null != winCanvas)
             {
                 winCanvas.gameObject.SetActive(false);
-                Destroy(winCanvas.GetComponent<GvrPointerGraphicRaycaster>());
                 gameCanvas.gameObject.SetActive(true);
-                gameCanvas.gameObject.AddComponent<GvrPointerGraphicRaycaster>();
 
                 gameCanvas.BroadcastMessage("Reinitialize");
             }
@@ -237,9 +236,7 @@ public class PlayerController : MonoBehaviour
         if (null != gameCanvas && null != winCanvas)
         {
             gameCanvas.gameObject.SetActive(false);
-            Destroy(gameCanvas.GetComponent<GvrPointerGraphicRaycaster>());
             winCanvas.gameObject.SetActive(true);
-            winCanvas.gameObject.AddComponent<GvrPointerGraphicRaycaster>();
             winCanvas.ShowScore(reason, p);
         }
         else
@@ -344,19 +341,14 @@ public class PlayerController : MonoBehaviour
 
             if (null == pointer)
             {
-				if (searchForController)
-				{
-					pointer = FindObjectOfType<GvrLaserPointer>();
-					if (null == pointer)
-					{
-						searchForController = false;
-					}
-				}
-            }
-			
-            if (null == pointer)
-            {
-                return GetCameraMoveVector();
+                if (null != gc)
+                {
+                    pointer = gc.laser;
+                }
+                if (null == pointer)
+                {
+                    return GetCameraMoveVector();
+                }
             }
 
             GameObject reticle = pointer.reticle;

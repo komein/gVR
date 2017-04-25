@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CollectiblePool : MonoBehaviour {
+public class CollectiblePool : MonoBehaviour
+{
 
     private ScoreCollectible[] cakePrefabs;
     private HpCollectible hpPrefab;
@@ -15,7 +16,8 @@ public class CollectiblePool : MonoBehaviour {
 
     public int poolDepth = 10;
 
-	void Awake () {
+	void Awake ()
+    {
 
         hpPrefab = GetComponentInChildren<HpCollectible>();
         multPrefab = GetComponentInChildren<MultiplierCollectible>();
@@ -35,6 +37,7 @@ public class CollectiblePool : MonoBehaviour {
                 pool.Add(instance);
                 persistentPool.Add(instance);
                 instance.transform.SetParent(this.transform);
+                instance.transform.position = c.transform.position;
             }
         }
 	}

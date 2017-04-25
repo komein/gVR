@@ -173,6 +173,7 @@ public class GameManager : MonoBehaviour
         }
 
 #if UNITY_HAS_GOOGLEVR
+        /*Debug.Log(controllerState);
         if (controllerState != GvrController.State)
         {
             if (controllerState == GvrConnectionState.Connected && GvrController.State != GvrConnectionState.Connected ||
@@ -182,22 +183,33 @@ public class GameManager : MonoBehaviour
                 controllerState = GvrController.State;
                 UpdateController();
             }
-        }
+        }*/
 
         if (GvrController.AppButton)
         {
-            PlayerController p = FindObjectOfType<PlayerController>();
-            if (null != p)
-            {
-                // assuming we are in some level
-                p.PauseLevel(PauseType.pause, DataObjects.LevelInfo(SceneManager.GetActiveScene().name));
-            }
-            else
-            {
-                // assuming we are in main menu
-            }
+            PauseTheLevel();
+        }
+
+
+        if (GvrController.HomeButtonDown)
+        {
+            PauseTheLevel();
         }
 #endif
+    }
+
+    private static void PauseTheLevel()
+    {
+        PlayerController p = FindObjectOfType<PlayerController>();
+        if (null != p)
+        {
+            // assuming we are in some level
+            p.PauseLevel(PauseType.pause, DataObjects.LevelInfo(SceneManager.GetActiveScene().name));
+        }
+        else
+        {
+            // assuming we are in main menu
+        }
     }
 
     private void OnApplicationQuit()
@@ -206,6 +218,14 @@ public class GameManager : MonoBehaviour
         {
             DataObjects.GameController.OnSceneChange();
             dataManager.Save();
+        }
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+        {
+            PauseTheLevel();
         }
     }
 

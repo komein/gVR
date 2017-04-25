@@ -66,7 +66,7 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
     public void UpdateGazeMode()
     {
 #if UNITY_HAS_GOOGLEVR
-        gazeMode = DataObjects.GameManager.controllerState != GvrConnectionState.Connected;
+        gazeMode = GvrController.State != GvrConnectionState.Connected;
 #else
         gazeMode = true;
 #endif
