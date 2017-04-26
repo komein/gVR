@@ -364,7 +364,7 @@ public class PlayerController : MonoBehaviour
 
             if (laser.IsPointerIntersecting)
             {
-                Debug.Log(laser.TargetGO.name);
+                //Debug.Log(laser.TargetGO.name);
                 if (laser.TargetGO.GetComponent<CanvasRenderer>() != null)
                 {
                     return Vector3.zero;
