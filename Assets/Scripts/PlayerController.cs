@@ -47,9 +47,9 @@ public class PlayerController : MonoBehaviour
 
     GameCanvas gameCanvas;
     WinCanvas winCanvas;
- 
+
     float curSpeed = 0f;
-    
+
     Animator anim;
 
     List<GroundContainer> highGrounds = new List<GroundContainer>();
@@ -62,13 +62,10 @@ public class PlayerController : MonoBehaviour
     Coroutine flashCoroutine;
     Vector3 gravity;
 
-    GvrPointerInputModule gim;
-
     TextMesh questionMark;
 
     Vector3 savedMoveVector = Vector3.zero;
 
-    GvrLaserPointer pointer;
     CrushParticle cp;
 
     GraphicsConfigurator gc;
@@ -90,8 +87,6 @@ public class PlayerController : MonoBehaviour
 
         rb.useGravity = true;
 
-
-        pointer = FindObjectOfType<GvrLaserPointer>();
         cp = FindObjectOfType<CrushParticle>();
 
         questionMark = GetComponentInChildren<TextMesh>();
@@ -102,7 +97,6 @@ public class PlayerController : MonoBehaviour
     {
         CurrentState = CatState.paused;
 
-        gim = FindObjectOfType<GvrPointerInputModule>();
         gc = FindObjectOfType<GraphicsConfigurator>();
 
         gameCanvas = FindObjectOfType<GameCanvas>();
@@ -331,77 +325,72 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 GetMoveVector()
     {
-#if UNITY_HAS_GOOGLEVR
-        if (ControllerMode)
+        if (null == gc)
         {
-            if (null == gim)
-            {
-                return GetCameraMoveVector();
-            }
+            return Vector3.zero;
+        }
 
-            if (null == pointer)
+#if UNITY_HAS_GOOGLEVR
+        GvrLaserPointer laser = gc.Laser;
+        GvrReticlePointer reticle = gc.Reticle;
+
+        if (null != laser)
+        {
+            if (!laser.gameObject.activeInHierarchy)
             {
-                if (null != gc)
+                if (null != reticle)
                 {
-                    pointer = gc.laser;
-                }
-                if (null == pointer)
-                {
-                    return GetCameraMoveVector();
-                }
-            }
-
-            GameObject reticle = pointer.reticle;
-
-            if (null == reticle)
-            {
-                return GetCameraMoveVector();
-            }
-
-            if (pointer.IsPointerIntersecting)
-            {
-                if (pointer.TargetGO.GetComponent<CanvasRenderer>() != null)
-                {
-                    return Vector3.zero;
-                }
-
-                Vector3 gotoPos = reticle.transform.position;
-                /*
-                (GvrController.ClickButton)
-                {*/
-                    Vector3 pos = Vector3.zero;
-
-                    float zPos = gotoPos.z - gameObject.transform.position.z;
-
-                    if (zPos < -1)
+                    if (reticle.gameObject.activeInHierarchy)
+                    {
+                        return GetCameraMoveVector();
+                    }
+                    else
                     {
                         return Vector3.zero;
                     }
-
-                    float diff = gotoPos.x - gameObject.transform.position.x;
-
-                    pos.x = Mathf.Min(Mathf.Abs(diff), 0.4f) * Mathf.Sign(diff);
-                    pos.x *= strafeSpeed;
-                    pos.y = 0;
-                    pos.z = curSpeed;
-
-                    return pos;
-                /*
                 }
                 else
                 {
                     return Vector3.zero;
-                }*/
+                }
             }
 
-            return Vector3.zero;
+            GameObject ret = laser.reticle;
 
+            if (null == ret)
+            {
+                return Vector3.zero;
+            }
+
+            if (laser.IsPointerIntersecting)
+            {
+                Debug.Log(laser.TargetGO.name);
+                if (laser.TargetGO.GetComponent<CanvasRenderer>() != null)
+                {
+                    return Vector3.zero;
+                }
+
+                Vector3 gotoPos = ret.transform.position;
+                Vector3 pos = Vector3.zero;
+
+                float zPos = gotoPos.z - gameObject.transform.position.z;
+
+                if (zPos < -1)
+                {
+                    return Vector3.zero;
+                }
+
+                float diff = gotoPos.x - gameObject.transform.position.x;
+
+                pos.x = Mathf.Min(Mathf.Abs(diff), 0.4f) * Mathf.Sign(diff);
+                pos.x *= strafeSpeed;
+                pos.y = 0;
+                pos.z = curSpeed;
+
+                return pos;
+            }
         }
-        else
-        {
-            return GetCameraMoveVector();
-        }
-#else
+
         return GetCameraMoveVector();
 #endif
     }
@@ -424,7 +413,7 @@ public class PlayerController : MonoBehaviour
             pos.x = strafeStep * Mathf.Sign(pos.x);
         }
 
-        pos.z = curSpeed;
+        pos.z = curSpeed + 0.1f;
 
         return pos;
     }
@@ -475,7 +464,7 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            
+
         }
     }
 
@@ -536,6 +525,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        //Debug.Log(collision.collider.name);
+    }
+
     protected void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<Obstacle>() != null)
@@ -544,7 +538,15 @@ public class PlayerController : MonoBehaviour
         }
         else if (other.GetComponent<Collectible>() != null)
         {
-            other.GetComponent<Collectible>().Collect();
+            Collectible col = other.GetComponent<Collectible>();
+            if (other as CapsuleCollider != null)
+            {
+                col.ToggleModelCollider(false);
+            }
+            else
+            {
+                other.GetComponent<Collectible>().Collect();
+            }
         }
         else if (other.gameObject.GetComponent<HighGround>() != null)
         {
@@ -563,7 +565,7 @@ public class PlayerController : MonoBehaviour
             if (null != immobilizeCoroutine)
             {
                 StopCoroutine(immobilizeCoroutine);
-                
+
                 if (CurrentState == CatState.paused)
                 {
                     // do nothing
@@ -591,7 +593,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    
+
 
     private void OnTriggerExit(Collider other)
     {
@@ -626,7 +628,7 @@ public class PlayerController : MonoBehaviour
             ParticleSystem cm = cp.GetComponent<ParticleSystem>();
             if (null != cm)
             {
-                cm.transform.position = transform.position + new Vector3(0,0.3f,0);
+                cm.transform.position = transform.position + new Vector3(0, 0.3f, 0);
                 cm.Play();
             }
         }
@@ -710,11 +712,11 @@ public class PlayerController : MonoBehaviour
     private IEnumerator Die()
     {
         CurrentState = CatState.dying;
-        
+
         yield return new WaitForSeconds(4f);
 
         SceneManager.LoadScene("mainMenu", LoadSceneMode.Single);
-        
+
         yield return null;
     }
 

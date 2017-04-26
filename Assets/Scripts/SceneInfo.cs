@@ -21,7 +21,7 @@ public class SceneInfo
 
     public SceneInfo()
     {
-        title = "notitle";
+        title = "mainMenu";
         tempScore = 0;
         tempScoreSaved = 0;
         hp = HP_DEFAULT;

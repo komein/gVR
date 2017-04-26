@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 94f6570f911945940bb72dd84be56651
+guid: 54eee7cad1fef604ba4fa35d70a997b3
 timeCreated: 1492164761
 licenseType: Free
 TextureImporter:
@@ -31,7 +31,7 @@ TextureImporter:
     aniso: 16
     mipBias: -1
     wrapMode: 1
-  nPOTScale: 0
+  nPOTScale: 1
   lightmap: 0
   compressionQuality: 50
   spriteMode: 1
@@ -42,9 +42,9 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
   alphaUsage: 0
-  alphaIsTransparency: 1
+  alphaIsTransparency: 0
   spriteTessellationDetail: -1
-  textureType: 8
+  textureType: 6
   textureShape: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0

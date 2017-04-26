@@ -13,6 +13,7 @@ public class AsyncSceneLoader : MonoBehaviour
     private AsyncOperation async = null;
     private IEnumerator LoadALevel(string levelName)
     {
+        Application.backgroundLoadingPriority = ThreadPriority.Low;
         async = SceneManager.LoadSceneAsync(levelName, LoadSceneMode.Single);
         async.allowSceneActivation = false;
 
@@ -40,7 +41,7 @@ public class AsyncSceneLoader : MonoBehaviour
         async.allowSceneActivation = true;
     }
     
-    private void FixedUpdate()
+    private void Update()
     {
         if (null != async)
         {

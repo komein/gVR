@@ -11,7 +11,11 @@ public class GraphicsConfigurator : MonoBehaviour
     public GoogleVRManager gvrManager;
 
     public GvrReticlePointer reticlePrefab;
-    GvrReticlePointer ret;
+    public GvrReticlePointer Reticle
+    {
+        get;
+        private set;
+    }
 
     public GvrController gvrController;
     GvrController gc;
@@ -22,7 +26,11 @@ public class GraphicsConfigurator : MonoBehaviour
     public EventSystem eventSystemPrefab;
     EventSystem es;
 
-    public GvrLaserPointer laser;
+    public GvrLaserPointer Laser
+    {
+        get;
+        private set;
+    }
 
     GvrPointerInputModule gim;
 
@@ -225,16 +233,16 @@ public class GraphicsConfigurator : MonoBehaviour
 
     private void ShowGvrReticlePointer()
     {
-        if (null == ret)
+        if (null == Reticle)
         {
-            ret = GetGvrReticlePointer();
+            Reticle = GetGvrReticlePointer();
         }
 
-        if (null != ret && null != gim)
+        if (null != Reticle && null != gim)
         {
-            ret.gameObject.SetActive(true);
+            Reticle.gameObject.SetActive(true);
             gim.DeactivateModule();
-            ret.SetAsMainPointer();
+            Reticle.SetAsMainPointer();
             gim.ShouldActivateModule();
         }
     }
@@ -253,9 +261,9 @@ public class GraphicsConfigurator : MonoBehaviour
 
     private GvrReticlePointer GetGvrReticlePointer()
     {
-        if (null != ret)
+        if (null != Reticle)
         {
-            return ret;
+            return Reticle;
         }
 
         GvrReticlePointer toReturn = FindObjectOfType<GvrReticlePointer>();
@@ -275,9 +283,9 @@ public class GraphicsConfigurator : MonoBehaviour
 
     private GvrLaserPointer GetGvrLaserPointer()
     {
-        if (null != laser)
+        if (null != Laser)
         {
-            return laser;
+            return Laser;
         }
 
         GvrLaserPointer toReturn = null;
@@ -308,20 +316,20 @@ public class GraphicsConfigurator : MonoBehaviour
 
     public void ShowGvrLaserPointer()
     {
-        if (null == laser)
+        if (null == Laser)
         {
-            laser = GetGvrLaserPointer();
+            Laser = GetGvrLaserPointer();
         }
 
-        if (null != laser && null != gim)
+        if (null != Laser && null != gim)
         {
-            if (null != ret)
+            if (null != Reticle)
             {
-                ret.gameObject.SetActive(false);
+                Reticle.gameObject.SetActive(false);
             }
 
             gim.DeactivateModule();
-            laser.SetAsMainPointer();
+            Laser.SetAsMainPointer();
             gim.ShouldActivateModule();
         }
     }

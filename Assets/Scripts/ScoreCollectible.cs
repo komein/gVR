@@ -129,5 +129,7 @@ public class ScoreCollectible : Collectible {
     {
         IsVisible = v;
         ToggleAllMeshes(v);
+
+        ToggleModelCollider(v);
     }
 }

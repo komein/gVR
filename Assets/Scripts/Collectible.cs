@@ -13,6 +13,9 @@ public class Collectible : MonoBehaviour {
 
     protected CaptionText caption;
 
+    CapsuleCollider bigCollider;
+    BoxCollider triggerCollider;
+
     protected virtual void Start()
     {
         caption = FindObjectOfType<CaptionText>();
@@ -24,6 +27,9 @@ public class Collectible : MonoBehaviour {
 
         collectionFX = GetComponentsInChildren<ParticleSystem>().ToList().Find(p => p.name == "Particle");
         persistentFX = GetComponentsInChildren<ParticleSystem>().ToList().Find(p => p.name == "PersistentParticle");
+
+        bigCollider = GetComponent<CapsuleCollider>();
+        triggerCollider = GetComponent<BoxCollider>();
     }
 
     public virtual void Collect()
@@ -42,11 +48,11 @@ public class Collectible : MonoBehaviour {
         }
     }
 
-    public virtual void SetVisible(bool v)
+    public virtual void SetVisible(bool value)
     {
         if (null != persistentFX)
         {
-            if (!v)
+            if (!value)
             {
                 persistentFX.Stop();
             }
@@ -56,10 +62,21 @@ public class Collectible : MonoBehaviour {
             }
         }
 
-        GetComponentInChildren<MeshRenderer>().enabled = v;
-        GetComponent<Collider>().enabled = v;
+        GetComponentInChildren<MeshRenderer>().enabled = value;
+        GetComponent<Collider>().enabled = value;
+
+        ToggleModelCollider(value);
     }
 
+    public void ToggleModelCollider(bool value)
+    {
+        MeshCollider[] c = GetComponentsInChildren<MeshCollider>();
+
+        foreach (var v in c)
+        {
+            v.enabled = value;
+        }
+    }
 
     public RoadPart GetRoadPart()
     {

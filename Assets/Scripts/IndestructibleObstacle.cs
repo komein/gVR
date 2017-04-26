@@ -26,10 +26,6 @@ public class IndestructibleObstacle : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-
-        //Debug.Log(collision.collider as BoxCollider);
-        //Debug.Log(collision.collider as CapsuleCollider);
-
         PlayerController chc = collision.collider.GetComponent<PlayerController>();
         if (chc != null)
         {
