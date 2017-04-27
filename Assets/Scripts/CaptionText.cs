@@ -12,6 +12,8 @@ public class CaptionText : MonoBehaviour
     public float floatStep;
     public Vector3 floatDirection = Vector3.up;
 
+    Coroutine c = null;
+
     void Start () {
         text = GetComponent<TextMesh>();
         mesh = GetComponent<MeshRenderer>();
@@ -26,8 +28,12 @@ public class CaptionText : MonoBehaviour
         Toggle(true);
         transform.position = pos;
 
-        StopAllCoroutines();
-        StartCoroutine(FloatUp(upTime, floatStep, floatDirection));
+        if (null != c)
+        {
+            StopCoroutine(c);
+        }
+
+        c = StartCoroutine(FloatUp(upTime, floatStep, floatDirection));
     }
 
     public IEnumerator FloatUp(float time, float step, Vector3 direction)

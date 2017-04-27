@@ -13,6 +13,8 @@ public class MultiplierCollectible : Collectible {
     Action startAction;
     Action stopAction;
 
+    Coroutine c = null;
+
     protected override void Start()
     {
         base.Start();
@@ -21,10 +23,14 @@ public class MultiplierCollectible : Collectible {
 
     public override void Collect()
     {
-        //Debug.Log("!");
         base.Collect();
-        StopAllCoroutines();
-        StartCoroutine(SetMultiplier(multiplier));
+
+        if (null != c)
+        {
+            StopCoroutine(c);
+        }
+        c = StartCoroutine(SetMultiplier(multiplier));
+
         if (null != caption)
         {
             caption.PlaceText("x2!", transform.position);
@@ -57,8 +63,6 @@ public class MultiplierCollectible : Collectible {
 
                 yield return new WaitForEndOfFrame();
             }
-
-            //yield return new WaitForSeconds(period);
 
             DataObjects.GameController.SetMultiplier(1);
 

@@ -32,6 +32,17 @@ public class Collectible : MonoBehaviour {
         triggerCollider = GetComponent<BoxCollider>();
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<PlayerController>() != null)
+        {
+            if (other as CapsuleCollider != null)
+            {
+                Collect();
+            }
+        }
+    }
+
     public virtual void Collect()
     {
         SetVisible(false);

@@ -9,7 +9,11 @@ public class HpContainer : MonoBehaviour
     Image heart;
     Image broken;
 
-	void Awake ()
+    Coroutine breakC;
+    Coroutine biggerC;
+    Coroutine flashC;
+
+    void Awake ()
     {
         heart = GetComponentsInChildren<Image>().ToList().Find(p => p.name == "Heart");
         broken = GetComponentsInChildren<Image>().ToList().Find(p => p.name == "Broken");
@@ -42,8 +46,11 @@ public class HpContainer : MonoBehaviour
     {
         if (gameObject.activeInHierarchy)
         {
-            StopAllCoroutines();
-            StartCoroutine(ToggleFlash());
+            if (null != breakC)
+            {
+                StopCoroutine(breakC);
+            }
+            breakC = StartCoroutine(ToggleFlash());
         }
     }
 
@@ -51,8 +58,11 @@ public class HpContainer : MonoBehaviour
     {
         if (gameObject.activeInHierarchy)
         {
-            StopAllCoroutines();
-            StartCoroutine(MakeBigger());
+            if (null != biggerC)
+            {
+                StopCoroutine(biggerC);
+            }
+            biggerC = StartCoroutine(MakeBigger());
         }
     }
 
@@ -82,9 +92,14 @@ public class HpContainer : MonoBehaviour
 
     private IEnumerator ToggleFlash()
     {
-        StartCoroutine(Flash());
+        flashC = StartCoroutine(Flash());
         yield return new WaitForSeconds(0.5f);
-        StopAllCoroutines();
+
+        if (null != flashC)
+        {
+            StopCoroutine(flashC);
+        }
+
         SetBroken(false);
         yield return null;
     }

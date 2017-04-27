@@ -7,6 +7,9 @@ public class BrokenHeartContainer : MonoBehaviour {
 
     Image img;
 
+    Coroutine toggleC;
+    Coroutine flashC;
+
     void Start()
     {
         img = GetComponentInChildren<Image>();
@@ -15,16 +18,27 @@ public class BrokenHeartContainer : MonoBehaviour {
 
     public void BreakTheHeart()
     {
-        StopAllCoroutines();
-        StartCoroutine(ToggleFlash());
+        if (null != toggleC)
+        {
+            StopCoroutine(toggleC);
+        }
+
+        toggleC = StartCoroutine(ToggleFlash());
     }
 
     private IEnumerator ToggleFlash()
     {
-        StartCoroutine(Flash());
+        flashC = StartCoroutine(Flash());
+
         yield return new WaitForSeconds(0.5f);
-        StopAllCoroutines();
+
+        if (null != flashC)
+        {
+            StopCoroutine(flashC);
+        }
+
         SetMeshes(false);
+
         yield return null;
     }
 

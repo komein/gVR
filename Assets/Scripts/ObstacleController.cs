@@ -10,6 +10,8 @@ public class ObstacleController : MonoBehaviour
 
     public bool ghostMode = false;
 
+    Coroutine c = null;
+
 	void Start () {
 
         obstacles = FindObjectsOfType<IndestructibleObstacle>();
@@ -32,8 +34,11 @@ public class ObstacleController : MonoBehaviour
 
     private void CrushIntoObstacle(Vector3 v)
     {
-        StopAllCoroutines();
-        StartCoroutine(CrushCoroutine(v));
+        if (null != c)
+        {
+            StopCoroutine(c);
+        }
+        c = StartCoroutine(CrushCoroutine(v));
     }
 
     private IEnumerator CrushCoroutine(Vector3 v)

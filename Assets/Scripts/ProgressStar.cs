@@ -19,6 +19,8 @@ public class ProgressStar : MonoBehaviour
     public enum StarState { invalid, inactive, empty, filled };
     public StarState state;
 
+    Coroutine c = null;
+
     public bool IsFilled
     {
         get
@@ -63,8 +65,11 @@ public class ProgressStar : MonoBehaviour
                 {
                     if (animated)
                     {
-                        StopAllCoroutines();
-                        StartCoroutine(PlayTransition());
+                        if (null != c)
+                        {
+                            StopCoroutine(c);
+                        }
+                        c = StartCoroutine(PlayTransition());
                     }
                     state = s;
                 }

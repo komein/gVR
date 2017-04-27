@@ -96,6 +96,7 @@ public class GvrLaserPointerImpl : GvrBasePointer {
     PointerIntersectionRay = intersectionRay;
     IsPointerIntersecting = true;
         targetGO = targetObject;
+        //Debug.Log(targetObject.name);
 #endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
     }
 
@@ -105,6 +106,7 @@ public class GvrLaserPointerImpl : GvrBasePointer {
     PointerIntersection = intersectionPosition;
     PointerIntersectionRay = intersectionRay;
         targetGO = targetObject;
+        //Debug.Log(targetObject.name);
 #endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
     }
 

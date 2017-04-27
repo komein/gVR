@@ -56,10 +56,9 @@ public class PlayerController : MonoBehaviour
     List<GroundContainer> planeGrounds = new List<GroundContainer>();
 
     Coroutine immobilizeCoroutine = null;
+    Coroutine flashCoroutine = null;
 
     SkinnedMeshRenderer mesh;
-
-    Coroutine flashCoroutine;
     Vector3 gravity;
 
     TextMesh questionMark;
@@ -223,6 +222,7 @@ public class PlayerController : MonoBehaviour
             return;
 
         StopAllCoroutines();
+
         ToggleFlashing(false);
 
         CurrentState = CatState.paused;
@@ -542,10 +542,6 @@ public class PlayerController : MonoBehaviour
             if (other as CapsuleCollider != null)
             {
                 col.ToggleModelCollider(false);
-            }
-            else
-            {
-                other.GetComponent<Collectible>().Collect();
             }
         }
         else if (other.gameObject.GetComponent<HighGround>() != null)
