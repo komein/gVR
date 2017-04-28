@@ -35,6 +35,9 @@ public class IndestructibleObstacle : MonoBehaviour
                 {
                     Crush(-Vector3.forward);
                 }
+
+                Debug.Log(collision.collider.name);
+
                 if (collision.collider as CapsuleCollider)
                 {
                     Vector3 v = chc.transform.position - collision.contacts[0].point;

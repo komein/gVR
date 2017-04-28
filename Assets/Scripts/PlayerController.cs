@@ -536,13 +536,9 @@ public class PlayerController : MonoBehaviour
         {
             other.gameObject.SetActive(false);
         }
-        else if (other.GetComponent<Collectible>() != null)
+        else if (other.GetComponent<DummyCollider>() != null)
         {
-            Collectible col = other.GetComponent<Collectible>();
-            if (other as CapsuleCollider != null)
-            {
-                col.ToggleModelCollider(false);
-            }
+            other.GetComponent<DummyCollider>().Trigger();
         }
         else if (other.gameObject.GetComponent<HighGround>() != null)
         {

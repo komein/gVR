@@ -13,12 +13,13 @@ public class Collectible : MonoBehaviour {
 
     protected CaptionText caption;
 
-    CapsuleCollider bigCollider;
+    DummyCollider bigCollider;
     BoxCollider triggerCollider;
 
     protected virtual void Start()
     {
         caption = FindObjectOfType<CaptionText>();
+
         aus = GetComponent<AudioSource>();
         if (null == aus)
         {
@@ -28,7 +29,12 @@ public class Collectible : MonoBehaviour {
         collectionFX = GetComponentsInChildren<ParticleSystem>().ToList().Find(p => p.name == "Particle");
         persistentFX = GetComponentsInChildren<ParticleSystem>().ToList().Find(p => p.name == "PersistentParticle");
 
-        bigCollider = GetComponent<CapsuleCollider>();
+        bigCollider = GetComponentInChildren<DummyCollider>();
+        if (null != bigCollider)
+        {
+            bigCollider.SetAction(HideModelCollider);
+        }
+
         triggerCollider = GetComponent<BoxCollider>();
     }
 
@@ -87,6 +93,11 @@ public class Collectible : MonoBehaviour {
         {
             v.enabled = value;
         }
+    }
+
+    public void HideModelCollider()
+    {
+        ToggleModelCollider(false);
     }
 
     public RoadPart GetRoadPart()
