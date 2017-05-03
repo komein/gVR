@@ -37,6 +37,11 @@ public class GraphicsConfigurator : MonoBehaviour
     bool controllerIsEnabled = false;
     int counter = 0;
 
+    private void OnApplicationQuit()
+    {
+        Destroy(gameObject);
+    }
+
     internal void Initialize()
     {
         if (null != FindObjectOfType<GraphicsOverrider>())
@@ -333,7 +338,7 @@ public class GraphicsConfigurator : MonoBehaviour
             gim.ShouldActivateModule();
         }
     }
-    
+
 #endif
 
 }

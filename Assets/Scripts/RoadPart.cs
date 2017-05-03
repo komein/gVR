@@ -5,7 +5,6 @@ using UnityEngine;
 public class RoadPart : MonoBehaviour
 {
     PlaneGround [] grounds;
-    Trampoline [] tramps;
 
     OnRoadTrigger onRoad;
 

@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour
         {
             instanceRef = this;
             DontDestroyOnLoad(gameObject);
-
+            
             iapManager = new InAppManager();
             dataManager = new DataManager();
             gameController = new GameController();
@@ -166,10 +166,13 @@ public class GameManager : MonoBehaviour
         if (null != GvrViewer.Instance)
         {
             GvrViewer.Instance.UpdateState();
-            if (GvrViewer.Instance.BackButtonPressed)
-            {
-                Application.Quit();
-            }
+        }
+
+        // Exit when (X) is tapped.
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UnityEngine.VR.VRSettings.enabled = false;
+            Application.Quit();
         }
 
 #if UNITY_HAS_GOOGLEVR
@@ -205,9 +208,19 @@ public class GameManager : MonoBehaviour
     {
         if (null != dataManager)
         {
-            DataObjects.GameController.OnSceneChange();
             dataManager.Save();
+            dataManager = null;
         }
+        if (null != iapManager)
+        {
+            iapManager = null;
+        }
+        if (null != gameController)
+        {
+            gameController = null;
+        }
+
+        Destroy(gameObject);
     }
 
     private void OnApplicationPause(bool pause)
