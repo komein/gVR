@@ -33,6 +33,7 @@ public class LevelPanel : MonoBehaviour
                     c.pressedCaption = c.caption;
                     c.scenePath = "level" + n.ToString();
                     c.Initialize();
+                    c.transform.SetAsLastSibling();
                 }
             }
         }

@@ -129,6 +129,7 @@ public class GvrLaserPointerImpl : GvrBasePointer {
     PointerIntersectionRay = intersectionRay;
     IsPointerIntersecting = true;
         TargetGO = targetObject;
+        Debug.Log(TargetGO.name);
 #endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
     }
 
@@ -200,7 +201,7 @@ public class GvrLaserPointerImpl : GvrBasePointer {
       float reticleDistanceFromCamera =
         (Reticle.transform.position - MainCamera.transform.position).magnitude;
       float scale = RETICLE_SIZE_METERS * reticleMeshSizeRatio * reticleDistanceFromCamera;
-      Reticle.transform.localScale = Vector3.one * (0.006f + scale * 0.01f);
+      Reticle.transform.localScale = Vector3.one * (0.006f + scale * 0.05f);
     }
 
     if (LaserLineRenderer == null) {
