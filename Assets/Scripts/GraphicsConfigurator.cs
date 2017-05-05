@@ -11,10 +11,18 @@ public class GraphicsConfigurator : MonoBehaviour
     public GoogleVRManager gvrManager;
 
     public GvrReticlePointer reticlePrefab;
+
+    private GvrReticlePointer reticle;
     public GvrReticlePointer Reticle
     {
-        get;
-        private set;
+        get
+        {
+            if (null == reticle)
+            {
+                reticle = FindObjectOfType<GvrReticlePointer>();
+            }
+            return reticle;
+        }
     }
 
     public GvrController gvrController;
@@ -26,10 +34,17 @@ public class GraphicsConfigurator : MonoBehaviour
     public EventSystem eventSystemPrefab;
     EventSystem es;
 
+    private GvrLaserPointer laser;
     public GvrLaserPointer Laser
     {
-        get;
-        private set;
+        get
+        {
+            if (null == laser)
+            {
+                laser = FindObjectOfType<GvrLaserPointer>();
+            }
+            return laser;
+        }
     }
 
     GvrPointerInputModule gim;
@@ -61,13 +76,13 @@ public class GraphicsConfigurator : MonoBehaviour
             {
                 case GameManager.VRMode.Cardboard:
                     {
-                        MakeGoogleVRConfiguration(false);
+                        MakeGoogleVRConfiguration();
                         break;
                     }
 
                 case GameManager.VRMode.Daydream:
                     {
-                        MakeGoogleVRConfiguration(true);
+                        MakeGoogleVRConfiguration();
                         break;
                     }
 
@@ -148,35 +163,9 @@ public class GraphicsConfigurator : MonoBehaviour
         }
         return es;
     }
-
-    private EventSystem MakeGoogleVREventSystem()
-    {
-        es = GetEventSystem();
-        if (null != es)
-        {
-            if (null == (gim = es.GetComponent<GvrPointerInputModule>()))
-            {
-                gim = es.gameObject.AddComponent<GvrPointerInputModule>();
-            }
-            if (null == es.GetComponent<GvrPointerManager>())
-            {
-                es.gameObject.AddComponent<GvrPointerManager>();
-            }
-        }
-
-        return es;
-    }
-
-    private void MakeGoogleVRStereoConfiguration()
-    {
-        Camera c = Camera.main;
-        if (null != c)
-        {
-            c.gameObject.AddComponent<GvrHead>();
-            c.gameObject.AddComponent<StereoController>();
-        }
-    }
-
+    
+    
+    /*
 #if UNITY_HAS_GOOGLEVR
     private void Update()
     {
@@ -199,146 +188,35 @@ public class GraphicsConfigurator : MonoBehaviour
         }
     }
 #endif
+*/
 
-    private void MakeGoogleVRConfiguration(bool withController)
+    private void MakeGoogleVRConfiguration()
     {
-        MakeGoogleVRCameraConfiguration();
-        MakeGoogleVREventSystem();
+        Instantiate(Resources.Load("GvrViewerMain") as GameObject);
+        Instantiate(Resources.Load("GvrEventSystem") as GameObject);
 
-        if (null == gc)
+        if (null == FindObjectOfType<GvrController>())
         {
-            gc = FindObjectOfType<GvrController>();
-            if (null == gc)
+            GameObject v = Instantiate(Resources.Load("GvrControllerMain") as GameObject);
+            DontDestroyOnLoad(v);
+        }
+
+        GameObject manager = Instantiate(Resources.Load("DemoInputManager") as GameObject);
+
+        if (null != manager)
+        {
+            Vector3 pos = manager.transform.position;
+
+            Player p = FindObjectOfType<Player>();
+
+            if (null != p)
             {
-                gc = Instantiate(gvrController);
-                DontDestroyOnLoad(gc);
+                //manager.transform.position = new Vector3(p.transform.position.x, manager.transform.position.y, p.transform.position.z) + pos;
+                manager.transform.SetParent(p.transform, true);
             }
         }
 
-        SetGvrInput(false);
+
     }
-
-    public void SetGvrInput(bool withController)
-    {
-        controllerIsEnabled = withController;
-
-        if (withController)
-        {
-#if UNITY_HAS_GOOGLEVR
-            ShowGvrLaserPointer();
-#else
-            ShowGazePointer();
-#endif
-        }
-        else
-        {
-            ShowGvrReticlePointer();
-        }
-    }
-
-    private void ShowGvrReticlePointer()
-    {
-        if (null == Reticle)
-        {
-            Reticle = GetGvrReticlePointer();
-        }
-
-        if (null != Reticle && null != gim)
-        {
-            Reticle.gameObject.SetActive(true);
-            gim.DeactivateModule();
-            Reticle.SetAsMainPointer();
-            gim.ShouldActivateModule();
-        }
-    }
-
-    private void MakeGoogleVRCameraConfiguration()
-    {
-        if (!GameManager.StereoMode)
-        {
-            MakeMouseGazeConfiguration(false);
-        }
-        else
-        {
-            MakeGoogleVRStereoConfiguration();
-        }
-    }
-
-    private GvrReticlePointer GetGvrReticlePointer()
-    {
-        if (null != Reticle)
-        {
-            return Reticle;
-        }
-
-        GvrReticlePointer toReturn = FindObjectOfType<GvrReticlePointer>();
-        if (null == toReturn)
-        {
-            //Debug.LogWarning("No reticle is attached to the main camera. Instantiating from prefab..");
-            toReturn = Instantiate(reticlePrefab);
-            toReturn.transform.SetParent(Camera.main.transform);
-            toReturn.transform.localPosition = Vector3.zero;
-            toReturn.transform.localRotation = Quaternion.identity;
-        }
-
-        return toReturn;
-    }
-
-#if UNITY_HAS_GOOGLEVR
-
-    private GvrLaserPointer GetGvrLaserPointer()
-    {
-        if (null != Laser)
-        {
-            return Laser;
-        }
-
-        GvrLaserPointer toReturn = null;
-        if (null == arm)
-        {
-            arm = FindObjectOfType<GvrControllerVisualManager>();
-            if (null == arm)
-            {
-                Player p = FindObjectOfType<Player>();
-                if (null == p)
-                {
-                    return toReturn;
-                }
-
-                arm = Instantiate(gvrArm);
-                arm.transform.SetParent(p.transform);
-                arm.transform.localPosition = Vector3.zero;
-            }
-        }
-
-        if (null != arm)
-        {
-            toReturn = arm.GetComponentInChildren<GvrLaserPointer>();
-        }
-
-        return toReturn;
-    }
-
-    public void ShowGvrLaserPointer()
-    {
-        if (null == Laser)
-        {
-            Laser = GetGvrLaserPointer();
-        }
-
-        if (null != Laser && null != gim)
-        {
-            if (null != Reticle)
-            {
-                Reticle.gameObject.SetActive(false);
-            }
-
-            gim.DeactivateModule();
-            Laser.SetAsMainPointer();
-            gim.ShouldActivateModule();
-        }
-    }
-
-#endif
 
 }

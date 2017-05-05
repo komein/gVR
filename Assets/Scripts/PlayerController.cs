@@ -153,7 +153,6 @@ public class PlayerController : MonoBehaviour
             case CatState.moving:
 
                 pos = GetMoveVector();
-
                 if (pos == Vector3.zero)
                 {
                     curSpeed = Mathf.Max(0, curSpeed - Time.fixedDeltaTime * acceleration * 8);
@@ -389,8 +388,10 @@ public class PlayerController : MonoBehaviour
 
                 return pos;
             }
-        }
 
+            return Vector3.zero;
+        }
+        
         return GetCameraMoveVector();
 #endif
     }

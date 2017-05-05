@@ -57,23 +57,22 @@ public class GvrPointerInputModule : BaseInputModule {
   [Tooltip("Whether pointer input is active in VR Mode only (true), or all the time (false).")]
   public bool vrModeOnly = false;
 
+  [SerializeField]
+  private GvrPointerScrollInput scrollInput = new GvrPointerScrollInput();
+
   private PointerEventData pointerData;
   private Vector2 lastPose;
-  private Vector2 lastScroll;
-  private bool eligibleForScroll = false;
   private bool isPointerHovering = false;
 
   // Active state
   private bool isActive = false;
 
-  /// Time in seconds between the pointer down and up events sent by a trigger.
-  /// Allows time for the UI elements to make their state transitions.
-  private const float CLICK_TIME = 0.1f;
-  // Based on default time for a button to animate to Pressed.
-
-  /// Multiplier for calculating the scroll delta to that the scroll delta is
-  /// within the order of magnitude that the UI system expects.
-  private const float SCROLL_DELTA_MULTIPLIER = 100.0f;
+  /// The GvrPointerScrollInput used to route Scroll Events through _EventSystem_
+  public GvrPointerScrollInput ScrollInput {
+    get {
+      return scrollInput;
+    }
+  }
 
   /// The GvrBasePointer which will be responding to pointer events.
   private GvrBasePointer pointer {
@@ -88,10 +87,7 @@ public class GvrPointerInputModule : BaseInputModule {
 #if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
     isVrModeEnabled |= VRSettings.enabled;
 #else
-        if (GvrViewer.Instance != null)
-            isVrModeEnabled |= GvrViewer.Instance.VRModeEnabled;
-        else
-            isVrModeEnabled = false;
+    isVrModeEnabled |= GvrViewer.Instance.VRModeEnabled;
 #endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
 
     bool activeState = base.ShouldActivateModule() && isVrModeEnabled;
@@ -121,7 +117,6 @@ public class GvrPointerInputModule : BaseInputModule {
       pointerData = null;
     }
     eventSystem.SetSelectedGameObject(null, GetBaseEventData());
-        isActive = false;
   }
   /// @endcond
 
@@ -164,8 +159,6 @@ public class GvrPointerInputModule : BaseInputModule {
     // Handle input
     if (!triggerDown && triggering) {
       HandleDrag();
-    } else if (pointerData != null && Time.unscaledTime - pointerData.clickTime < CLICK_TIME) {
-      // Delay new events until clickTime has passed.
     } else if (triggerDown && !pointerData.eligibleForClick) {
       // New trigger action.
       HandleTriggerDown();
@@ -174,7 +167,7 @@ public class GvrPointerInputModule : BaseInputModule {
       HandlePendingClick();
     }
 
-    HandleScroll();
+    scrollInput.HandleScroll(GetCurrentGameObject(), pointerData, IsPointerActiveAndAvailable());
   }
   /// @endcond
 
@@ -256,9 +249,7 @@ public class GvrPointerInputModule : BaseInputModule {
     // Check to make sure the Raycaster being used is a GvrRaycaster.
     if (raycastResult.module != null
       && !(raycastResult.module is GvrPointerGraphicRaycaster)
-      && !(raycastResult.module is GvrPointerPhysicsRaycaster)
-      && !(raycastResult.module is CurvedUI.CurvedUIRaycaster)
-      && !(raycastResult.module is PhysicsRaycaster)) {
+      && !(raycastResult.module is GvrPointerPhysicsRaycaster)) {
       Debug.LogWarning("Using Raycaster (Raycaster: " + raycastResult.module.GetType() +
         ", Object: " + raycastResult.module.name + "). It is recommended to use " +
         "GvrPointerPhysicsRaycaster or GvrPointerGrahpicRaycaster with GvrPointerInputModule.");
@@ -411,39 +402,6 @@ public class GvrPointerInputModule : BaseInputModule {
 
     if (pointer != null) {
       pointer.OnPointerClickDown();
-    }
-  }
-
-  private void HandleScroll() {
-    bool touchDown = false;
-    bool touching = false;
-    Vector2 currentScroll = Vector2.zero;
-#if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
-    touchDown |= GvrController.TouchDown;
-    touching |= GvrController.IsTouching;
-    currentScroll = GvrController.TouchPos;
-#endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
-
-    if (!IsPointerActiveAndAvailable()) {
-      touchDown = false;
-      touching = false;
-    }
-
-    if (touchDown && !eligibleForScroll) {
-      lastScroll = currentScroll;
-      eligibleForScroll = true;
-    } else if (touching && eligibleForScroll) {
-      pointerData.scrollDelta = (currentScroll - lastScroll) * SCROLL_DELTA_MULTIPLIER;
-      lastScroll = currentScroll;
-
-      GameObject currentGameObject = GetCurrentGameObject();
-      if (currentGameObject != null && !Mathf.Approximately(pointerData.scrollDelta.sqrMagnitude, 0.0f)) {
-        GameObject scrollHandler = ExecuteEvents.GetEventHandler<IScrollHandler>(currentGameObject);
-        ExecuteEvents.ExecuteHierarchy(scrollHandler, pointerData, ExecuteEvents.scrollHandler);
-      }
-    } else if (eligibleForScroll) {
-      eligibleForScroll = false;
-      pointerData.scrollDelta = Vector2.zero;
     }
   }
 

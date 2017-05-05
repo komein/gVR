@@ -9,7 +9,7 @@ public class ScoreCollectible : Collectible {
 
     List<MeshRenderer> meshes;
 
-    public Vector3 shift = new Vector3(0.15f, 0f, 0f);
+    public Vector3 shift = new Vector3(0.1f, 0f, 0f);
 
     Coroutine currentCoroutine = null;
 

@@ -41,7 +41,7 @@ public class GvrHead : MonoBehaviour {
   /// Determines whether to apply ther user's head offset to this gameobject's
   /// position.  True means to update the gameobject's position with the user's head offset,
   /// and false means don't modify the gameobject's position.
-  public bool trackPosition = false;
+  public bool trackPosition = true;
 
   /// The user's head motion will be applied in this object's reference frame
   /// instead of the head object's parent.  A good use case is for head-based

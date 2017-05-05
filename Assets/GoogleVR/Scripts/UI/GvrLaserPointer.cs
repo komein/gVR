@@ -1,4 +1,4 @@
-// Copyright 2016 Google Inc. All rights reserved.
+// Copyright 2017 Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 // GVR native integration.
 
 using UnityEngine;
-using System.Collections;
 
 /// This laser pointer visual should be attached to the controller object.
 /// The laser visual is important to help users locate their cursor
@@ -24,17 +23,38 @@ using System.Collections;
 [RequireComponent(typeof(LineRenderer))]
 public class GvrLaserPointer : MonoBehaviour {
 #if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
-  private GvrLaserPointerImpl laserPointerImpl;
+    private GvrLaserPointerImpl laserPointerImpl;
 
-  /// Color of the laser pointer including alpha transparency
-  public Color laserColor = new Color(1.0f, 1.0f, 1.0f, 0.25f);
+    /// Color of the laser pointer including alpha transparency
+    public Color laserColor = new Color(1.0f, 1.0f, 1.0f, 0.25f);
 
-  /// Maximum distance of the pointer (meters).
-  [Range(0.0f, 10.0f)]
+
+    public bool IsPointerIntersecting
+        {
+        get
+        {
+            if (null == laserPointerImpl)
+                return false;
+            return laserPointerImpl.IsPointerIntersecting;
+        }
+        }
+
+    public GameObject TargetGO
+    {
+        get
+        {
+            if (null == laserPointerImpl)
+                return null;
+            return laserPointerImpl.TargetGO;
+        }
+    }
+
+    /// Maximum distance of the pointer (meters).
+    [Range(0.0f, 50.0f)]
   public float maxLaserDistance = 0.75f;
 
   /// Maximum distance of the reticle (meters).
-  [Range(0.4f, 50.0f)]
+  [Range(0.4f, 10.0f)]
   public float maxReticleDistance = 2.5f;
 
   public GameObject reticle;
@@ -44,34 +64,6 @@ public class GvrLaserPointer : MonoBehaviour {
   [Range(-32767, 32767)]
   public int reticleSortingOrder = 32767;
 
-    public bool IsPointerIntersecting
-    {
-        get
-        {
-            if (null == laserPointerImpl)
-                return false;
-
-            return laserPointerImpl.IsPointerIntersecting;
-        }
-    }
-
-    public GameObject TargetGO
-    {
-        get
-        {
-            if (null == laserPointerImpl)
-            {
-                return null;
-            }
-
-            if (IsPointerIntersecting)
-            {
-                return laserPointerImpl.targetGO;
-            }
-
-            return null;
-        }
-    }
   void Awake() {
     laserPointerImpl = new GvrLaserPointerImpl();
     laserPointerImpl.LaserLineRenderer = gameObject.GetComponent<LineRenderer>();
@@ -95,6 +87,19 @@ public class GvrLaserPointer : MonoBehaviour {
 
   public void SetAsMainPointer() {
     GvrPointerManager.Pointer = laserPointerImpl;
+  }
+
+  public Vector3 LineStartPoint {
+    get {
+      return laserPointerImpl != null ? laserPointerImpl.PointerTransform.position : Vector3.zero;
+    }
+  }
+
+  public Vector3 LineEndPoint {
+    get { return laserPointerImpl != null ? laserPointerImpl.LineEndPoint : Vector3.zero; } }
+
+  public LineRenderer LineRenderer {
+    get { return laserPointerImpl != null ? laserPointerImpl.LaserLineRenderer : null; }
   }
 
   private void UpdateLaserPointerProperties() {

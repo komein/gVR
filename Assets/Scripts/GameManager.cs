@@ -79,15 +79,10 @@ public class GameManager : MonoBehaviour
     public GameController gameController;
 
     public GraphicsConfigurator rcPrefab;
+    private GraphicsConfigurator gConf;
 
     public const int lastFreeLevelNumber = 1;
     public bool purchaseMode = true;
-
-    private GraphicsConfigurator gConf;
-
-#if UNITY_HAS_GOOGLEVR
-    public GvrConnectionState controllerState = GvrConnectionState.Error;
-#endif
 
     void Awake()
     {
@@ -98,9 +93,6 @@ public class GameManager : MonoBehaviour
 #elif UNITY_EDITOR // For running in Unity
         LEVELS_PATH = "file://" + Application.streamingAssetsPath + "/" + levelsName;
 #endif
-
-        //Debug.Log("save path = " + SAVE_PATH);
-        //Debug.Log("save path = " + LEVELS_PATH);
 
         if (instanceRef == null)
         {
@@ -119,15 +111,6 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        //UnityEditor.PlayerSettings.statusBarHidden = true;
-    }
-
-    private void Start()
-    {
-#if UNITY_HAS_GOOGLEVR
-        controllerState = GvrController.State;
-#endif
     }
 
     private void ReinitGraphics()
@@ -141,26 +124,7 @@ public class GameManager : MonoBehaviour
             gConf.Initialize();
         }
     }
-
-    private void UpdateController()
-    {
-        if (null != FindObjectOfType<GraphicsOverrider>())
-        {
-            return;
-        }
-
-        if (null == gConf)
-        {
-            gConf = Instantiate(rcPrefab);
-        }
-        else
-        {
-#if UNITY_HAS_GOOGLEVR
-            gConf.ShowGvrLaserPointer();
-#endif
-        }
-    }
-
+    
     void LateUpdate()
     {
         if (null != GvrViewer.Instance)
