@@ -200,7 +200,7 @@ public class GvrLaserPointerImpl : GvrBasePointer {
       float reticleDistanceFromCamera =
         (Reticle.transform.position - MainCamera.transform.position).magnitude;
       float scale = RETICLE_SIZE_METERS * reticleMeshSizeRatio * reticleDistanceFromCamera;
-      Reticle.transform.localScale = new Vector3(0.01f + scale * 0.1f, 0.01f + scale * 0.1f, 0.01f + scale * 0.1f);
+      Reticle.transform.localScale = Vector3.one * (0.006f + scale * 0.01f);
     }
 
     if (LaserLineRenderer == null) {

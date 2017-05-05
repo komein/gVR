@@ -18,7 +18,6 @@ namespace MeowCats_amesyo
         public float B_zlimit = 2f;
         [Header("Vit=50 Peppy  Vit=2000 Meek")]
         public float Vitality = 50;
-        private UnityEngine.CharacterController controller;
         private Rigidbody rb;
         private Animator animator;
         private Vector3 cat_init_pos;
@@ -48,7 +47,6 @@ namespace MeowCats_amesyo
 
             endPosition = RandPosition();
 
-            controller = P_Cat.GetComponentInChildren<CharacterController>();
             rb = P_Cat.GetComponentInChildren<Rigidbody>();
             animator = P_Cat.GetComponentInChildren<Animator>();
         }

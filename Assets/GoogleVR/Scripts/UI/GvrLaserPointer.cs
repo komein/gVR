@@ -54,7 +54,7 @@ public class GvrLaserPointer : MonoBehaviour {
   public float maxLaserDistance = 0.75f;
 
   /// Maximum distance of the reticle (meters).
-  [Range(0.4f, 10.0f)]
+  [Range(0.4f, 50.0f)]
   public float maxReticleDistance = 2.5f;
 
   public GameObject reticle;

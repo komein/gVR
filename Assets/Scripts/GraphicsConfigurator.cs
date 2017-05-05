@@ -8,10 +8,6 @@ public class GraphicsConfigurator : MonoBehaviour
 {
     public static GraphicsConfigurator instanceRef; // singleton pattern
 
-    public GoogleVRManager gvrManager;
-
-    public GvrReticlePointer reticlePrefab;
-
     private GvrReticlePointer reticle;
     public GvrReticlePointer Reticle
     {
@@ -25,13 +21,6 @@ public class GraphicsConfigurator : MonoBehaviour
         }
     }
 
-    public GvrController gvrController;
-    GvrController gc;
-
-    public GvrControllerVisualManager gvrArm;
-    GvrControllerVisualManager arm;
-
-    public EventSystem eventSystemPrefab;
     EventSystem es;
 
     private GvrLaserPointer laser;
@@ -47,16 +36,6 @@ public class GraphicsConfigurator : MonoBehaviour
         }
     }
 
-    GvrPointerInputModule gim;
-
-    bool controllerIsEnabled = false;
-    int counter = 0;
-
-    private void OnApplicationQuit()
-    {
-        Destroy(gameObject);
-    }
-
     internal void Initialize()
     {
         if (null != FindObjectOfType<GraphicsOverrider>())
@@ -64,11 +43,9 @@ public class GraphicsConfigurator : MonoBehaviour
             return;
         }
 
-        ResetEverything();
-
         if (null == DataObjects.GameManager)
         {
-            MakeMouseGazeConfiguration(true);
+            MakeMouseGazeConfiguration();
         }
         else
         {
@@ -89,13 +66,12 @@ public class GraphicsConfigurator : MonoBehaviour
                 case GameManager.VRMode.Oculus:
                     {
                         // TODO
-                        MakeMouseGazeConfiguration(true);
                         break;
                     }
 
                 case GameManager.VRMode.noVR:
                     {
-                        MakeMouseGazeConfiguration(true);
+                        MakeMouseGazeConfiguration();
                         break;
                     }
             }
@@ -117,25 +93,8 @@ public class GraphicsConfigurator : MonoBehaviour
             return;
         }
     }
-
-    private void ResetEverything()
-    {
-        ResetCamera();
-    }
-
-    private static void ResetCamera()
-    {
-        Camera c = Camera.main;
-        if (null != c)
-        {
-            Destroy(c.gameObject.GetComponent<MoveCamera>());
-            Destroy(c.gameObject.GetComponent<PhysicsRaycaster>());
-            Destroy(c.gameObject.GetComponent<GvrHead>());
-            Destroy(c.gameObject.GetComponent<StereoController>());
-        }
-    }
-
-    private void MakeMouseGazeConfiguration(bool withRaycaster) // no physics raycaster is needed in daydream controller case
+    
+    private void MakeMouseGazeConfiguration() // no physics raycaster is needed in daydream controller case
     {
         Camera c = Camera.main;
         if (null != c)
@@ -144,7 +103,7 @@ public class GraphicsConfigurator : MonoBehaviour
             {
                 c.gameObject.AddComponent<MoveCamera>();
             }
-            if (withRaycaster)
+            if (null == c.gameObject.GetComponent<PhysicsRaycaster>())
             {
                 c.gameObject.AddComponent<PhysicsRaycaster>();
             }
@@ -158,47 +117,30 @@ public class GraphicsConfigurator : MonoBehaviour
             es = FindObjectOfType<EventSystem>();
             if (null == es)
             {
-                es = Instantiate(eventSystemPrefab);
+                es = Instantiate(Resources.Load("EventSystem_noCurved") as GameObject).GetComponent<EventSystem>();
             }
         }
         return es;
     }
     
-    
-    /*
-#if UNITY_HAS_GOOGLEVR
-    private void Update()
-    {
-        if (!controllerIsEnabled) // switching to daydream controller ONCE, no going back then.
-        {
-            if (DataObjects.GameManager.mode == GameManager.VRMode.Daydream)
-            {
-                if (GvrController.State == GvrConnectionState.Connected)
-                {
-                    if (counter++ >= 10)
-                    {
-                        SetGvrInput(true);
-                    }
-                }
-                else
-                {
-                    counter = 0;
-                }
-            }
-        }
-    }
-#endif
-*/
-
     private void MakeGoogleVRConfiguration()
     {
-        Instantiate(Resources.Load("GvrViewerMain") as GameObject);
+        GameObject v = Instantiate(Resources.Load("GvrViewerMain") as GameObject);
+        if (null != v)
+        {
+            GvrViewer viewer = v.GetComponent<GvrViewer>();
+            if (null != viewer)
+            {
+                viewer.VRModeEnabled = GameManager.StereoMode;
+            }
+        }
+
         Instantiate(Resources.Load("GvrEventSystem") as GameObject);
 
         if (null == FindObjectOfType<GvrController>())
         {
-            GameObject v = Instantiate(Resources.Load("GvrControllerMain") as GameObject);
-            DontDestroyOnLoad(v);
+            GameObject go = Instantiate(Resources.Load("GvrControllerMain") as GameObject);
+            DontDestroyOnLoad(go);
         }
 
         GameObject manager = Instantiate(Resources.Load("DemoInputManager") as GameObject);
@@ -211,12 +153,8 @@ public class GraphicsConfigurator : MonoBehaviour
 
             if (null != p)
             {
-                //manager.transform.position = new Vector3(p.transform.position.x, manager.transform.position.y, p.transform.position.z) + pos;
                 manager.transform.SetParent(p.transform, true);
             }
         }
-
-
     }
-
 }
