@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public enum VRMode { noVR, Daydream, Cardboard, Oculus };
+    public enum VRMode { none, GoogleVR_Daydream, GoogleVR_Cardboard, Oculus };
 
     public VRMode mode;
     public static bool StereoMode
@@ -127,17 +127,6 @@ public class GameManager : MonoBehaviour
     
     void LateUpdate()
     {
-        if (null != GvrViewer.Instance)
-        {
-            GvrViewer.Instance.UpdateState();
-        }
-
-        // Exit when (X) is tapped.
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            UnityEngine.VR.VRSettings.enabled = false;
-            Application.Quit();
-        }
 
 #if UNITY_HAS_GOOGLEVR
 

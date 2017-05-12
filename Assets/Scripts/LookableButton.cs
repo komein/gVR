@@ -70,6 +70,11 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
 #else
         gazeMode = true;
 #endif
+
+        if (gazeMode)
+        {
+            gazeMode = true;
+        }
     }
 
     public virtual void SetGazedAt(bool gazedAt)

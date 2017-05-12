@@ -8,14 +8,6 @@ using UnityEngine.SceneManagement;
 public enum PauseType { pause, win, gameOver };
 public class PlayerController : MonoBehaviour
 {
-    public bool ControllerMode
-    {
-        get
-        {
-            return DataObjects.GameManager.mode == GameManager.VRMode.Daydream;
-        }
-    }
-
     enum CatState { paused, cantMove, jump, dying, moving };
 
     CatState CurrentState

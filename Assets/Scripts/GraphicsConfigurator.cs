@@ -45,37 +45,67 @@ public class GraphicsConfigurator : MonoBehaviour
 
         if (null == DataObjects.GameManager)
         {
-            MakeMouseGazeConfiguration();
+            MakeMouseGazeConfiguration(Camera.main.gameObject);
         }
         else
         {
             switch (DataObjects.GameManager.mode)
             {
-                case GameManager.VRMode.Cardboard:
+                case GameManager.VRMode.GoogleVR_Daydream:
                     {
-                        MakeGoogleVRConfiguration();
+                        MakeGoogleVRConfiguration(true);
                         break;
                     }
 
-                case GameManager.VRMode.Daydream:
+                case GameManager.VRMode.GoogleVR_Cardboard:
                     {
-                        MakeGoogleVRConfiguration();
+                        MakeGoogleVRConfiguration(false);
                         break;
                     }
 
                 case GameManager.VRMode.Oculus:
                     {
                         // TODO
+                        MakeOculusConfiguration();
                         break;
                     }
 
-                case GameManager.VRMode.noVR:
+                case GameManager.VRMode.none:
                     {
-                        MakeMouseGazeConfiguration();
+                        MakeMouseGazeConfiguration(Camera.main.gameObject);
                         break;
                     }
             }
         }
+    }
+
+    private void MakeOculusConfiguration()
+    {
+        Vector3 cameraPos = Camera.main.transform.position;
+        Transform cameraParent = Camera.main.transform.parent;
+        Camera.main.gameObject.SetActive(false);
+
+        GvrControllerVisualManager gvrManager = FindObjectOfType<GvrControllerVisualManager>();
+
+        if (null != gvrManager)
+        {
+            gvrManager.gameObject.SetActive(false);
+        }
+
+        GameObject v = Instantiate(Resources.Load("OVRCameraRig") as GameObject);
+
+        if (null != v)
+        {
+            v.transform.position = cameraPos;
+            v.transform.SetParent(cameraParent, true);
+
+            Instantiate(Resources.Load("OVRInspectorLoader") as GameObject);
+
+#if UNITY_EDITOR
+            MakeMouseGazeConfiguration(v);
+#endif
+        }
+
     }
 
     private void Awake()
@@ -94,9 +124,8 @@ public class GraphicsConfigurator : MonoBehaviour
         }
     }
     
-    private void MakeMouseGazeConfiguration() // no physics raycaster is needed in daydream controller case
+    private void MakeMouseGazeConfiguration(GameObject c) // no physics raycaster is needed in daydream controller case
     {
-        Camera c = Camera.main;
         if (null != c)
         {
             if (null == c.gameObject.GetComponent<MoveCamera>())
@@ -123,7 +152,7 @@ public class GraphicsConfigurator : MonoBehaviour
         return es;
     }
     
-    private void MakeGoogleVRConfiguration()
+    private void MakeGoogleVRConfiguration(bool isDaydream)
     {
         GameObject v = Instantiate(Resources.Load("GvrViewerMain") as GameObject);
         if (null != v)
@@ -143,7 +172,11 @@ public class GraphicsConfigurator : MonoBehaviour
             DontDestroyOnLoad(go);
         }
 
-        GameObject manager = Instantiate(Resources.Load("DemoInputManager") as GameObject);
+        string s = isDaydream ? "_daydream" : "_cardboard";
+
+        Debug.Log(s);
+
+        GameObject manager = Instantiate(Resources.Load("DemoInputManager" + s) as GameObject);
 
         if (null != manager)
         {
