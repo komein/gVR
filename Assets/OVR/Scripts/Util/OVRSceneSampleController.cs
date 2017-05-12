@@ -153,10 +153,7 @@ public class OVRSceneSampleController : MonoBehaviour
 #if !UNITY_ANDROID || UNITY_EDITOR
         // Escape Application
         if (Input.GetKeyDown(quitKey))
-        {
-            Debug.Log("EXITING ovr!");
             Application.Quit();
-        }
 #endif
     }
     #endregion

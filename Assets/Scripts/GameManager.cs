@@ -78,8 +78,7 @@ public class GameManager : MonoBehaviour
     public DataManager dataManager;
     public GameController gameController;
 
-    public GraphicsConfigurator rcPrefab;
-    private GraphicsConfigurator gConf;
+    private GraphicsConfigurator gConf = null;
 
     public const int lastFreeLevelNumber = 1;
     public bool purchaseMode = true;
@@ -117,7 +116,12 @@ public class GameManager : MonoBehaviour
     {
         if (null == gConf)
         {
-            gConf = Instantiate(rcPrefab);
+            gConf = FindObjectOfType<GraphicsConfigurator>();
+            if (null == gConf)
+            {
+                gConf = new GameObject().AddComponent<GraphicsConfigurator>();
+                gConf.name = "VRConfigurator";
+            }
         }
         else
         {

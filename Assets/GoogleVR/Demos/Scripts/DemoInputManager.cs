@@ -136,6 +136,7 @@ public class DemoInputManager : MonoBehaviour {
     }
     isDaydream = (vrDeviceName == DAYDREAM_DEVICE_NAME);
 #endif  // UNITY_EDITOR
+        isDaydream = false;
     SetVRInputMechanism();
   }
 
@@ -158,11 +159,12 @@ public class DemoInputManager : MonoBehaviour {
     }
     isDaydream = (GvrSettings.ViewerPlatform == GvrSettings.ViewerPlatformType.Daydream);
     viewerPlatform = GvrSettings.ViewerPlatform;
+        isDaydream = false;
     SetVRInputMechanism();
 #endif  // UNITY_EDITOR
-  }
+    }
 
-  void LateUpdate() {
+    void LateUpdate() {
     GvrViewer.Instance.UpdateState();
     // Exit when (X) is tapped.
     if (Input.GetKeyDown(KeyCode.Escape)) {

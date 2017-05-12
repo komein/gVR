@@ -99,7 +99,7 @@ public class GraphicsConfigurator : MonoBehaviour
             v.transform.position = cameraPos;
             v.transform.SetParent(cameraParent, true);
 
-            Instantiate(Resources.Load("OVRInspectorLoader") as GameObject);
+            //Instantiate(Resources.Load("OVRInspectorLoader") as GameObject);
 
 #if UNITY_EDITOR
             MakeMouseGazeConfiguration(v);
