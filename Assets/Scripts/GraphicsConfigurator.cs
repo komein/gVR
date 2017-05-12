@@ -36,6 +36,9 @@ public class GraphicsConfigurator : MonoBehaviour
         }
     }
 
+    OVRInputModule inputModule;
+    OVRCameraRig cameraRig;
+
     internal void Initialize()
     {
         if (null != FindObjectOfType<GraphicsOverrider>())
@@ -92,20 +95,53 @@ public class GraphicsConfigurator : MonoBehaviour
             gvrManager.gameObject.SetActive(false);
         }
 
-        GameObject v = Instantiate(Resources.Load("OVRCameraRig") as GameObject);
+        cameraRig = Instantiate((OVRCameraRig)Resources.Load("OVRCameraRig", typeof(OVRCameraRig)));
 
-        if (null != v)
+        if (null != cameraRig)
         {
-            v.transform.position = cameraPos;
-            v.transform.SetParent(cameraParent, true);
+            cameraRig.transform.position = cameraPos;
+            cameraRig.transform.SetParent(cameraParent, true);
 
             //Instantiate(Resources.Load("OVRInspectorLoader") as GameObject);
 
+            EventSystem eventSystem = GameObject.FindObjectOfType<EventSystem>();
+            if (eventSystem == null)
+            {
+                Debug.Log("Creating EventSystem");
+                EventSystem eventSystemPrefab = (EventSystem)Resources.Load("Prefabs/EventSystem", typeof(EventSystem));
+                eventSystem = Instantiate(eventSystemPrefab);
+
+            }
+            else
+            {
+                if (eventSystem.GetComponent<OVRInputModule>() == null)
+                {
+                    eventSystem.gameObject.AddComponent<OVRInputModule>();
+                }
+            }
+            inputModule = eventSystem.GetComponent<OVRInputModule>();
+
+            cameraRig.EnsureGameObjectIntegrity();
+            Canvas[] canvases = FindObjectsOfType<Canvas>();
+            foreach(var v in canvases)
+            {
+                v.worldCamera = cameraRig.leftEyeCamera;
+            }
+
 #if UNITY_EDITOR
-            MakeMouseGazeConfiguration(v);
+            MakeMouseGazeConfiguration(cameraRig.gameObject);
 #endif
         }
 
+    }
+
+    private void Update()
+    {
+        inputModule.rayTransform = OVRGazePointer.instance.rayTransform =
+            (OVRInput.GetActiveController() == OVRInput.Controller.Touch) ? cameraRig.rightHandAnchor :
+            (OVRInput.GetActiveController() == OVRInput.Controller.RTouch) ? cameraRig.rightHandAnchor :
+            (OVRInput.GetActiveController() == OVRInput.Controller.LTouch) ? cameraRig.leftHandAnchor :
+            cameraRig.centerEyeAnchor;
     }
 
     private void Awake()

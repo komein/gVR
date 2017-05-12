@@ -113,12 +113,6 @@ public class OVRGearVrControllerTest : MonoBehaviour
 			new BoolMonitor("Down",                     () => OVRInput.Get(OVRInput.Button.Down)),
 			new BoolMonitor("Left",                     () => OVRInput.Get(OVRInput.Button.Left)),
 			new BoolMonitor("Right",                    () => OVRInput.Get(OVRInput.Button.Right)),
-			new BoolMonitor("Touchpad (Touch)",         () => OVRInput.Get(OVRInput.Touch.PrimaryTouchpad)),
-			new BoolMonitor("TouchpadDown (Touch)",     () => OVRInput.GetDown(OVRInput.Touch.PrimaryTouchpad)),
-			new BoolMonitor("TouchpadUp (Touch)",       () => OVRInput.GetUp(OVRInput.Touch.PrimaryTouchpad)),
-			new BoolMonitor("Touchpad (Click)",         () => OVRInput.Get(OVRInput.Button.PrimaryTouchpad)),
-			new BoolMonitor("TouchpadDown (Click)",     () => OVRInput.GetDown(OVRInput.Button.PrimaryTouchpad)),
-			new BoolMonitor("TouchpadUp (Click)",       () => OVRInput.GetUp(OVRInput.Button.PrimaryTouchpad)),
 			// raw
 			new BoolMonitor("Start",                    () => OVRInput.Get(OVRInput.RawButton.Start)),
 			new BoolMonitor("StartDown",                () => OVRInput.GetDown(OVRInput.RawButton.Start)),
@@ -138,9 +132,6 @@ public class OVRGearVrControllerTest : MonoBehaviour
 
 		data.Length = 0;
 
-		float framerate = OVRPlugin.GetAppFramerate();
-		data.AppendFormat("Framerate: {0:F2}\n", framerate);
-
 		string activeControllerName = activeController.ToString();
 		data.AppendFormat("Active: {0}\n", activeControllerName);
 
@@ -150,12 +141,6 @@ public class OVRGearVrControllerTest : MonoBehaviour
 		Quaternion rot = OVRInput.GetLocalControllerRotation(activeController);
 		data.AppendFormat("Orientation: ({0:F2}, {1:F2}, {2:F2}, {3:F2})\n", rot.x, rot.y, rot.z, rot.w);
 
-		Vector3 angVel = OVRInput.GetLocalControllerAngularVelocity(activeController);
-		data.AppendFormat("AngVel: ({0:F2}, {1:F2}, {2:F2})\n", angVel.x, angVel.y, angVel.z);
-
-		Vector3 angAcc = OVRInput.GetLocalControllerAngularAcceleration(activeController);
-		data.AppendFormat("AngAcc: ({0:F2}, {1:F2}, {2:F2})\n", angAcc.x, angAcc.y, angAcc.z);
-
 		Vector3 pos = OVRInput.GetLocalControllerPosition(activeController);
 		data.AppendFormat("Position: ({0:F2}, {1:F2}, {2:F2})\n", pos.x, pos.y, pos.z);
 
@@ -164,12 +149,6 @@ public class OVRGearVrControllerTest : MonoBehaviour
 
 		Vector3 acc = OVRInput.GetLocalControllerAcceleration(activeController);
 		data.AppendFormat("Acc: ({0:F2}, {1:F2}, {2:F2})\n", acc.x, acc.y, acc.z);
-
-		Vector2 primaryTouchpad = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad);
-		data.AppendFormat("PrimaryTouchpad: ({0:F2}, {1:F2})\n", primaryTouchpad.x, primaryTouchpad.y);
-
-		Vector2 secondaryTouchpad = OVRInput.Get(OVRInput.Axis2D.SecondaryTouchpad);
-		data.AppendFormat("SecondaryTouchpad: ({0:F2}, {1:F2})\n", secondaryTouchpad.x, secondaryTouchpad.y);
 
 		for (int i = 0; i < monitors.Count; i++)
 		{
