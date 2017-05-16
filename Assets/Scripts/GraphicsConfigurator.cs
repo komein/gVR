@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.VR;
 
 public class GraphicsConfigurator : MonoBehaviour
 {
@@ -132,6 +133,10 @@ public class GraphicsConfigurator : MonoBehaviour
 
         shouldHandleExitButton = true;
 
+        OVRPlugin.cpuLevel = 0;
+        OVRPlugin.gpuLevel = 0;
+
+        //VRSettings.renderScale = 0.4f;
     }
 
     private void Update()
