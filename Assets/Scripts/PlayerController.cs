@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
         yield return null;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (null == cam)
         {
@@ -145,9 +145,10 @@ public class PlayerController : MonoBehaviour
             case CatState.moving:
 
                 pos = GetMoveVector();
+                //Debug.Log(pos);
                 if (pos == Vector3.zero)
                 {
-                    curSpeed = Mathf.Max(0, curSpeed - Time.fixedDeltaTime * acceleration * 8);
+                    curSpeed = Mathf.Max(0, curSpeed - Time.deltaTime * acceleration * 8);
                     if (curSpeed > 0)
                     {
                         pos = savedMoveVector;
@@ -158,7 +159,7 @@ public class PlayerController : MonoBehaviour
                     savedMoveVector = pos;
                     if (curSpeed < maxSpeed)
                     {
-                        curSpeed += Time.fixedDeltaTime * acceleration;
+                        curSpeed += Time.deltaTime * acceleration;
                     }
                 }
 
@@ -390,6 +391,11 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 GetCameraMoveVector()
     {
+        if (!cam.gameObject.activeSelf)
+        {
+            cam = Camera.main;
+        }
+
         Vector3 ang = cam.transform.rotation.eulerAngles;
 
         Vector3 polarCoords = PolarToCartesian(new Vector2(ang.x, ang.y));

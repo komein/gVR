@@ -19,10 +19,9 @@ public class LevelPanel : MonoBehaviour
 	// Use this for initialization
 	void Awake ()
     {
-        buttons = GetComponentsInChildren<LevelButton>().ToList();
-
         if (null != levels)
         {
+            buttons = GetComponentsInChildren<LevelButton>().ToList();
             for (int i = 0; i < levels.Count; i++)
             {
                 int n = i + 1;
@@ -38,4 +37,15 @@ public class LevelPanel : MonoBehaviour
             }
         }
 	}
+
+    void Start()
+    {
+        if (null != buttons)
+        {
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                buttons[i].transform.SetAsLastSibling();
+            }
+        }
+    }
 }

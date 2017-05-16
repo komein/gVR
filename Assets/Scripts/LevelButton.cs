@@ -23,14 +23,25 @@ public class LevelButton : SceneButton, IUICanReinitialize
 
     public void Initialize()
     {
-        container = GetComponentInParent<LevelButtonContainer>();
-        scoreDisplayer = GetComponentInChildren<ScoreDisplayer>();
-
-        if (null != scoreDisplayer)
+        if (!isInitialized)
         {
-            scoreDisplayer.levelTitle = scenePath;
+            container = GetComponentInParent<LevelButtonContainer>();
+            scoreDisplayer = GetComponentInChildren<ScoreDisplayer>();
 
-            isInitialized = true;
+            level = DataObjects.LevelInfo(scenePath);
+
+            if (null != level)
+            {
+                if (null != scoreDisplayer)
+                {
+                    scoreDisplayer.levelTitle = scenePath;
+                    isInitialized = true;
+                }
+            }
+        }
+
+        if (isInitialized)
+        {
             RefreshButtonState();
         }
     }
@@ -55,11 +66,17 @@ public class LevelButton : SceneButton, IUICanReinitialize
 
         buyButton = FindObjectOfType<BuyButton>();
 
-        Reinitialize();
+        Initialize();
     }
 
     public void RefreshButtonState()
     {
+        if (null != scoreDisplayer)
+        {
+            scoreDisplayer.UpdateLevelInfo();
+            scoreDisplayer.UpdateText();
+        }
+
         if (isInitialized && null != DataObjects.GameManager && null != DataObjects.DataManager && null != level && null != DataObjects.IAPManager)
         {
             if (!DataObjects.DataManager.savedGame.isLevelUnlocked(level.number))
@@ -144,7 +161,6 @@ public class LevelButton : SceneButton, IUICanReinitialize
 
     public void Reinitialize()
     {
-        level = DataObjects.LevelInfo(scenePath);
-        RefreshButtonState();
+        Initialize();
     }
 }

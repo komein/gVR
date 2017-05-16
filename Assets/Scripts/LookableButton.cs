@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -71,9 +72,9 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
         gazeMode = true;
 #endif
 
-        if (gazeMode)
+        if (gazeMode) // still may be oculus case
         {
-            gazeMode = true;
+            gazeMode = FindObjectOfType<OVRInputModule>() == null;
         }
     }
 

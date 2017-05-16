@@ -13,10 +13,6 @@ public class GraphicsConfigurator : MonoBehaviour
     {
         get
         {
-            if (null == reticle)
-            {
-                reticle = FindObjectOfType<GvrReticlePointer>();
-            }
             return reticle;
         }
     }
@@ -28,16 +24,14 @@ public class GraphicsConfigurator : MonoBehaviour
     {
         get
         {
-            if (null == laser)
-            {
-                laser = FindObjectOfType<GvrLaserPointer>();
-            }
             return laser;
         }
     }
 
     OVRInputModule inputModule;
     OVRCameraRig cameraRig;
+
+    bool shouldHandleExitButton = false;
 
     internal void Initialize()
     {
@@ -84,6 +78,11 @@ public class GraphicsConfigurator : MonoBehaviour
 
     private void MakeOculusConfiguration()
     {
+        if (FindObjectOfType<OVRCameraRig>() != null)
+        {
+            return;
+        }
+
         Vector3 cameraPos = Camera.main.transform.position;
         Transform cameraParent = Camera.main.transform.parent;
         Camera.main.gameObject.SetActive(false);
@@ -101,8 +100,6 @@ public class GraphicsConfigurator : MonoBehaviour
         {
             cameraRig.transform.position = cameraPos;
             cameraRig.transform.SetParent(cameraParent, true);
-
-            //Instantiate(Resources.Load("OVRInspectorLoader") as GameObject);
 
             EventSystem eventSystem = GameObject.FindObjectOfType<EventSystem>();
             if (eventSystem == null)
@@ -132,6 +129,8 @@ public class GraphicsConfigurator : MonoBehaviour
             MakeMouseGazeConfiguration(cameraRig.gameObject);
 #endif
         }
+
+        shouldHandleExitButton = true;
 
     }
 
@@ -190,6 +189,11 @@ public class GraphicsConfigurator : MonoBehaviour
     
     private void MakeGoogleVRConfiguration(bool isDaydream)
     {
+        if (FindObjectOfType<GvrViewer>() != null)
+        {
+            return;
+        }
+
         GameObject v = Instantiate(Resources.Load("GvrViewerMain") as GameObject);
         if (null != v)
         {
@@ -206,6 +210,13 @@ public class GraphicsConfigurator : MonoBehaviour
         {
             GameObject go = Instantiate(Resources.Load("GvrControllerMain") as GameObject);
             DontDestroyOnLoad(go);
+        }
+
+        reticle = FindObjectOfType<GvrReticlePointer>();
+
+        if (isDaydream)
+        {
+            laser = FindObjectOfType<GvrLaserPointer>();
         }
 
         string s = isDaydream ? "_daydream" : "_cardboard";
@@ -226,4 +237,16 @@ public class GraphicsConfigurator : MonoBehaviour
             }
         }
     }
+
+    void LateUpdate()
+    {
+        if (shouldHandleExitButton)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Application.Quit();
+            }
+        }
+    }
+
 }

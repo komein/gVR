@@ -183,7 +183,6 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
 
     public void UpdateText()
     {
-
         if (null == level)
         {
             return;
