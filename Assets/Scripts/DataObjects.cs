@@ -103,10 +103,16 @@ public static class DataObjects
 
     public static LevelInfo LevelInfo(string s)
     {
+        if (null == s)
+        {
+            return null;
+        }
+
         if (null != SavedGame)
         {
             return SavedGame.GetLevelByName(s);
         }
+
         return null;
     }
 

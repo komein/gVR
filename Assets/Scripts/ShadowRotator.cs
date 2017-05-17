@@ -7,20 +7,16 @@ public class ShadowRotator : MonoBehaviour
     Quaternion rotation;
     Sun sun;
 
-    Vector3 pos;
-
     void Awake()
     {
         sun = FindObjectOfType<Sun>();
         if (null != sun)
         {
             rotation = sun.transform.rotation;
-            pos = rotation * -Vector3.forward;
         }
         else
         {
             rotation = transform.rotation;
-            pos = Vector3.up;
         }
     }
 

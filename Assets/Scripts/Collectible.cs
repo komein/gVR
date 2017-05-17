@@ -14,7 +14,6 @@ public class Collectible : MonoBehaviour {
     protected CaptionText caption;
 
     DummyCollider bigCollider;
-    BoxCollider triggerCollider;
 
     protected virtual void Start()
     {
@@ -34,8 +33,6 @@ public class Collectible : MonoBehaviour {
         {
             bigCollider.SetAction(HideModelCollider);
         }
-
-        triggerCollider = GetComponent<BoxCollider>();
     }
 
     private void OnTriggerEnter(Collider other)

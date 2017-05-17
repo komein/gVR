@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -77,76 +78,6 @@ public class GraphicsConfigurator : MonoBehaviour
         }
     }
 
-    private void MakeOculusConfiguration()
-    {
-        if (FindObjectOfType<OVRCameraRig>() != null)
-        {
-            return;
-        }
-
-        Vector3 cameraPos = Camera.main.transform.position;
-        Transform cameraParent = Camera.main.transform.parent;
-        Camera.main.gameObject.SetActive(false);
-
-        GvrControllerVisualManager gvrManager = FindObjectOfType<GvrControllerVisualManager>();
-
-        if (null != gvrManager)
-        {
-            gvrManager.gameObject.SetActive(false);
-        }
-
-        cameraRig = Instantiate((OVRCameraRig)Resources.Load("OVRCameraRig", typeof(OVRCameraRig)));
-
-        if (null != cameraRig)
-        {
-            cameraRig.transform.position = cameraPos;
-            cameraRig.transform.SetParent(cameraParent, true);
-
-            EventSystem eventSystem = GameObject.FindObjectOfType<EventSystem>();
-            if (eventSystem == null)
-            {
-                Debug.Log("Creating EventSystem");
-                EventSystem eventSystemPrefab = (EventSystem)Resources.Load("Prefabs/EventSystem", typeof(EventSystem));
-                eventSystem = Instantiate(eventSystemPrefab);
-
-            }
-            else
-            {
-                if (eventSystem.GetComponent<OVRInputModule>() == null)
-                {
-                    eventSystem.gameObject.AddComponent<OVRInputModule>();
-                }
-            }
-            inputModule = eventSystem.GetComponent<OVRInputModule>();
-
-            cameraRig.EnsureGameObjectIntegrity();
-            Canvas[] canvases = FindObjectsOfType<Canvas>();
-            foreach(var v in canvases)
-            {
-                v.worldCamera = cameraRig.leftEyeCamera;
-            }
-
-#if UNITY_EDITOR
-            MakeMouseGazeConfiguration(cameraRig.gameObject);
-#endif
-        }
-
-        shouldHandleExitButton = true;
-
-        OVRPlugin.cpuLevel = 0;
-        OVRPlugin.gpuLevel = 0;
-
-        //VRSettings.renderScale = 0.4f;
-    }
-
-    private void Update()
-    {
-        inputModule.rayTransform = OVRGazePointer.instance.rayTransform =
-            (OVRInput.GetActiveController() == OVRInput.Controller.Touch) ? cameraRig.rightHandAnchor :
-            (OVRInput.GetActiveController() == OVRInput.Controller.RTouch) ? cameraRig.rightHandAnchor :
-            (OVRInput.GetActiveController() == OVRInput.Controller.LTouch) ? cameraRig.leftHandAnchor :
-            cameraRig.centerEyeAnchor;
-    }
 
     private void Awake()
     {
@@ -163,8 +94,31 @@ public class GraphicsConfigurator : MonoBehaviour
             return;
         }
     }
+
+    private void Update()
+    {
+        if (null != inputModule && null != cameraRig)
+        {
+            inputModule.rayTransform = OVRGazePointer.instance.rayTransform =
+                (OVRInput.GetActiveController() == OVRInput.Controller.Touch) ? cameraRig.rightHandAnchor :
+                (OVRInput.GetActiveController() == OVRInput.Controller.RTouch) ? cameraRig.rightHandAnchor :
+                (OVRInput.GetActiveController() == OVRInput.Controller.LTouch) ? cameraRig.leftHandAnchor :
+                cameraRig.centerEyeAnchor;
+        }
+    }
+
+    void LateUpdate()
+    {
+        if (shouldHandleExitButton)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Application.Quit();
+            }
+        }
+    }
     
-    private void MakeMouseGazeConfiguration(GameObject c) // no physics raycaster is needed in daydream controller case
+    private void MakeMouseGazeConfiguration(GameObject c)
     {
         if (null != c)
         {
@@ -179,17 +133,86 @@ public class GraphicsConfigurator : MonoBehaviour
         }
     }
 
-    private EventSystem GetEventSystem()
+    void EntitlementCheck(Oculus.Platform.Message msg)
     {
-        if (null == es)
+        if (!msg.IsError)
         {
-            es = FindObjectOfType<EventSystem>();
-            if (null == es)
+            // we are ok to play
+        }
+        else
+        {
+            // sudden gracious exit without any explanations
+            Application.Quit();
+        }
+    }
+
+    private void MakeOculusConfiguration()
+    {
+        if (FindObjectOfType<OVRCameraRig>() != null)
+        {
+            return;
+        }
+
+        Oculus.Platform.Core.AsyncInitialize("1523835387640661");
+        Oculus.Platform.Entitlements.IsUserEntitledToApplication().OnComplete(EntitlementCheck);
+
+        OVRPlugin.cpuLevel = 1;
+        OVRPlugin.gpuLevel = 3;
+
+        // Doesn't seem to affect the FPS, the bottleneck is elsewhere
+        //VRSettings.renderScale = 0.4f;
+
+        // Disabling current active camera whatever it is
+        // If there is no camera in scene, we don't know where to create the Oculus one
+        if (Camera.main != null)
+        {
+            Vector3 cameraPos = Camera.main.transform.position;
+            Transform cameraParent = Camera.main.transform.parent;
+            Camera.main.gameObject.SetActive(false);
+            GvrControllerVisualManager gvrManager = FindObjectOfType<GvrControllerVisualManager>();
+
+            if (null != gvrManager)
             {
-                es = Instantiate(Resources.Load("EventSystem_noCurved") as GameObject).GetComponent<EventSystem>();
+                gvrManager.gameObject.SetActive(false);
+            }
+
+            cameraRig = Instantiate((OVRCameraRig)Resources.Load("OVRCameraRig", typeof(OVRCameraRig)));
+            if (null != cameraRig)
+            {
+                cameraRig.transform.position = cameraPos;
+                cameraRig.transform.SetParent(cameraParent, true);
+                cameraRig.EnsureGameObjectIntegrity();
+
+                EventSystem eventSystem = FindObjectOfType<EventSystem>();
+                if (eventSystem == null)
+                {
+                    Debug.Log("Creating EventSystem");
+                    EventSystem eventSystemPrefab = (EventSystem)Resources.Load("Prefabs/EventSystem", typeof(EventSystem));
+                    eventSystem = Instantiate(eventSystemPrefab);
+                }
+                else
+                {
+                    if (eventSystem.GetComponent<OVRInputModule>() == null)
+                    {
+                        eventSystem.gameObject.AddComponent<OVRInputModule>();
+                    }
+                }
+
+                inputModule = eventSystem.GetComponent<OVRInputModule>();
+
+                Canvas[] canvases = FindObjectsOfType<Canvas>();
+                foreach (var v in canvases)
+                {
+                    v.worldCamera = cameraRig.leftEyeCamera;
+                }
+
+#if UNITY_EDITOR
+                MakeMouseGazeConfiguration(cameraRig.gameObject);
+#endif
             }
         }
-        return es;
+
+        shouldHandleExitButton = true;
     }
     
     private void MakeGoogleVRConfiguration(bool isDaydream)
@@ -239,17 +262,6 @@ public class GraphicsConfigurator : MonoBehaviour
             if (null != p)
             {
                 manager.transform.SetParent(p.transform, true);
-            }
-        }
-    }
-
-    void LateUpdate()
-    {
-        if (shouldHandleExitButton)
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                Application.Quit();
             }
         }
     }

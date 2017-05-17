@@ -26,33 +26,9 @@ public class GameManager : MonoBehaviour
 #endif
         }
     }
-
-    public static bool HaveGoogleVR
-    {
-        get
-        {
-#if UNITY_HAS_GOOGLEVR
-            return true;
-#else
-            return false;
-#endif
-        }
-    }
-
-    public static bool IsEditorMode
-    {
-        get
-        {
-#if UNITY_EDITOR
-            return true;
-#else
-            return false;
-#endif
-        }
-    }
-
+    
     WWW www;
-    string levelsName = "levels.xml";
+    string levelsConfigFileName = "levels.xml";
 
     public string SAVE_PATH
     {
@@ -89,8 +65,8 @@ public class GameManager : MonoBehaviour
 
 #if UNITY_ANDROID && !UNITY_EDITOR
         LEVELS_PATH = "jar:file://" + Application.dataPath + "!/assets/" + levelsName;
-#elif UNITY_EDITOR // For running in Unity
-        LEVELS_PATH = "file://" + Application.streamingAssetsPath + "/" + levelsName;
+#elif UNITY_EDITOR
+        LEVELS_PATH = "file://" + Application.streamingAssetsPath + "/" + levelsConfigFileName;
 #endif
 
         if (instanceRef == null)
@@ -129,38 +105,6 @@ public class GameManager : MonoBehaviour
         }
     }
     
-    void LateUpdate()
-    {
-
-#if UNITY_HAS_GOOGLEVR
-
-        if (GvrController.AppButton)
-        {
-            PauseTheLevel();
-        }
-
-
-        if (GvrController.HomeButtonDown)
-        {
-            PauseTheLevel();
-        }
-#endif
-    }
-
-    private static void PauseTheLevel()
-    {
-        PlayerController p = FindObjectOfType<PlayerController>();
-        if (null != p)
-        {
-            // assuming we are in some level
-            p.PauseLevel(PauseType.pause, DataObjects.LevelInfo(SceneManager.GetActiveScene().name));
-        }
-        else
-        {
-            // assuming we are in main menu
-        }
-    }
-
     private void OnApplicationQuit()
     {
         if (null != dataManager)
@@ -172,20 +116,12 @@ public class GameManager : MonoBehaviour
         {
             iapManager = null;
         }
-        if (null != gameController)
+        if (null != gameController) 
         {
             gameController = null;
         }
 
         Destroy(gameObject);
-    }
-
-    private void OnApplicationPause(bool pause)
-    {
-        if (pause)
-        {
-            PauseTheLevel();
-        }
     }
 
     void OnEnable()

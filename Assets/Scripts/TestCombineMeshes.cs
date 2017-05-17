@@ -183,7 +183,6 @@ public class TestCombineMeshes : MonoBehaviour
     {
         foreach (MeshFilter meshFilter in meshFilters)
         {
-            MeshRenderer r = meshFilter.GetComponent<MeshRenderer>();
             DestroyImmediate(meshFilter.gameObject);
         }
     }

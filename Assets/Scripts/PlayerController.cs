@@ -112,6 +112,36 @@ public class PlayerController : MonoBehaviour
         yield return null;
     }
 
+    private void LateUpdate()
+    {
+#if UNITY_HAS_GOOGLEVR
+
+        if (GvrController.AppButton)
+        {
+            PauseTheLevel();
+        }
+
+
+        if (GvrController.HomeButtonDown)
+        {
+            PauseTheLevel();
+        }
+#endif
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+        {
+            PauseTheLevel();
+        }
+    }
+
+    private void PauseTheLevel()
+    {
+        PauseLevel(PauseType.pause, DataObjects.LevelInfo(SceneManager.GetActiveScene().name));
+    }
+
     private void Update()
     {
         if (null == cam)
@@ -210,6 +240,11 @@ public class PlayerController : MonoBehaviour
 
     public void PauseLevel(PauseType reason, LevelInfo p)
     {
+        if (null == p)
+        {
+            return;
+        }
+
         if (CurrentState == CatState.paused)
             return;
 
