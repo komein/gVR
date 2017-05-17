@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour
         SAVE_PATH = Application.persistentDataPath + "/save.xml";
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-        LEVELS_PATH = "jar:file://" + Application.dataPath + "!/assets/" + levelsName;
+        LEVELS_PATH = "jar:file://" + Application.dataPath + "!/assets/" + levelsConfigFileName;
 #elif UNITY_EDITOR
         LEVELS_PATH = "file://" + Application.streamingAssetsPath + "/" + levelsConfigFileName;
 #endif
