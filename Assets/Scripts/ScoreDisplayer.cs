@@ -2,7 +2,6 @@
 using System.Collections;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -15,7 +14,7 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
     public Image pBarBackground;
     public Image pBarTemp;
 
-    public TextMeshProUGUI status;
+    Text status;
     public StarProgressBar optionalBar;
 
     public Color minColor;
@@ -89,6 +88,8 @@ public class ScoreDisplayer : MonoBehaviour, IUICanReinitialize
     void Start()
     {
         storage = DataObjects.GameManager;
+
+        status = GetComponentInChildren<Text>();
 
         UpdateLevelInfo();
         FillStarsNoAnimation();

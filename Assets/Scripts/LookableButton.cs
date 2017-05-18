@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -10,7 +9,7 @@ using UnityEngine.UI;
 public class LookableButton : MonoBehaviour
 {
     public Image img;
-    protected TextMeshProUGUI text;
+    protected Text text;
 
     public string caption;
     public string pressedCaption;
@@ -54,7 +53,7 @@ public class LookableButton : MonoBehaviour
         if (null == aus)
             aus = gameObject.AddComponent<AudioSource>();
 
-        text = GetComponentInChildren<TextMeshProUGUI>();
+        text = GetComponentInChildren<Text>();
 
         if (null != text)
         {

@@ -81,13 +81,7 @@ public class GvrLaserPointer : MonoBehaviour {
     get { return laserPointerImpl != null ? laserPointerImpl.LaserLineRenderer : null; }
   }
 
-    public bool IsPointerIntersecting
-    {
-        get
-        {
-            return laserPointerImpl.IsPointerIntersecting;
-        }
-    }
+    public bool IsPointerIntersecting { get { return laserPointerImpl.IsPointerIntersecting; } }
 
     private void UpdateLaserPointerProperties() {
     if (laserPointerImpl == null) {

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -8,7 +7,7 @@ public class AsyncSceneLoader : MonoBehaviour
 {
     public Image pBar;
     //Text loadMessage;
-    TextMeshProUGUI loadMessage;
+    Text loadMessage;
 
     private AsyncOperation async = null;
     private IEnumerator LoadALevel(string levelName)
@@ -28,7 +27,7 @@ public class AsyncSceneLoader : MonoBehaviour
 
     void Start()
     {
-        loadMessage = GetComponentInChildren<TextMeshProUGUI>();
+        loadMessage = GetComponentInChildren<Text>();
 
         if (null != DataObjects.SceneInfo)
         {

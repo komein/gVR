@@ -94,7 +94,7 @@ public class GvrTooltip : MonoBehaviour {
       if (GvrArmModel.Instance != null) {
         GvrArmModel.Instance.OnArmModelUpdate += OnArmModelUpdate;
       } else {
-        Debug.LogError("Unable to find GvrArmModel.");
+        //Debug.LogError("Unable to find GvrArmModel.");
       }
     }
   }

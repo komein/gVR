@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,9 +10,9 @@ public class WinCanvas : MonoBehaviour
     public StarProgressBar starBar;
     public ScoreDisplayer scoreBar;
 
-    public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI recordText;
-    public TextMeshProUGUI messageText;
+    public Text scoreText;
+    public Text recordText;
+    public Text messageText;
 
     public GameObject continueButton;
     public GameObject retryButton;

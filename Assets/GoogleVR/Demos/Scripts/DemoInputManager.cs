@@ -15,7 +15,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using TMPro;
 
 public class DemoInputManager : MonoBehaviour {
 // Build for iOS, or for a pre-native integration Unity version, for Android, and running on-device.
@@ -66,12 +65,12 @@ public class DemoInputManager : MonoBehaviour {
   public static string RETICLE_POINTER_PROP_NAME = "reticlePointer";
 
   public GameObject messageCanvas;
-  public TextMeshProUGUI messageText;
+  public Text messageText;
 
     GameManager gm;
 
 #if UNITY_EDITOR
-    public enum EmulatedPlatformType {
+  public enum EmulatedPlatformType {
     Daydream,
     Cardboard
   }
@@ -103,17 +102,18 @@ public class DemoInputManager : MonoBehaviour {
     if (messageCanvas == null) {
       messageCanvas = transform.Find(MESSAGE_CANVAS_NAME).gameObject;
       if (messageCanvas != null) {
-        messageText = messageCanvas.transform.Find(MESSAGE_TEXT_NAME).GetComponent<TextMeshProUGUI>();
+        messageText = messageCanvas.transform.Find(MESSAGE_TEXT_NAME).GetComponent<Text>();
       }
     }
 #if UNITY_EDITOR
+    /*
     if (playerSettingsHasDaydream() || playerSettingsHasCardboard()) {
       // The list is populated with valid VR SDK(s), pick the first one.
       gvrEmulatedPlatformType =
         (UnityEngine.VR.VRSettings.supportedDevices[0] == DAYDREAM_DEVICE_NAME) ?
         EmulatedPlatformType.Daydream :
         EmulatedPlatformType.Cardboard;
-    }
+    }*/
     isDaydream = (gvrEmulatedPlatformType == EmulatedPlatformType.Daydream);
 #else
     viewerPlatform = GvrSettings.ViewerPlatform;
@@ -145,10 +145,10 @@ public class DemoInputManager : MonoBehaviour {
 
 #if UNITY_EDITOR
     UpdateEmulatedPlatformIfPlayerSettingsChanged();
-    if ((isDaydream && gvrEmulatedPlatformType == EmulatedPlatformType.Daydream) ||
+    /*if ((isDaydream && gvrEmulatedPlatformType == EmulatedPlatformType.Daydream) ||
         (!isDaydream && gvrEmulatedPlatformType == EmulatedPlatformType.Cardboard)) {
       return;
-    }
+    }*/
     isDaydream = (gvrEmulatedPlatformType == EmulatedPlatformType.Daydream);
     SetVRInputMechanism();
 #else
@@ -160,16 +160,8 @@ public class DemoInputManager : MonoBehaviour {
     viewerPlatform = GvrSettings.ViewerPlatform;
     SetVRInputMechanism();
 #endif  // UNITY_EDITOR
-    }
-    /*
-    void LateUpdate() {
-    GvrViewer.Instance.UpdateState();
-    // Exit when (X) is tapped.
-    if (Input.GetKeyDown(KeyCode.Escape)) {
-      Application.Quit();
-    }
   }
-  */
+
   public bool IsCurrentlyDaydream() {
     return isDaydream;
   }

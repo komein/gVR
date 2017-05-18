@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -60,7 +59,7 @@ public class StarProgressBar : MonoBehaviour
         {
             for (int i = 0; i < conts.Count; i++)
             {
-                TextMeshProUGUI t = conts[i].GetComponentInChildren<TextMeshProUGUI>();
+                Text t = conts[i].GetComponentInChildren<Text>();
                 if (null != t)
                 {
                     t.text = starRecords[i].ToString();

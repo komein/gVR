@@ -29,6 +29,9 @@ public class GraphicsConfigurator : MonoBehaviour
             return laser;
         }
     }
+
+    GvrController gvrController;
+
 #if OCULUS_STUFF
     OVRInputModule inputModule;
     OVRCameraRig cameraRig;
@@ -240,14 +243,17 @@ public class GraphicsConfigurator : MonoBehaviour
 
         Instantiate(Resources.Load("GvrEventSystem") as GameObject);
 
-        if (null == FindObjectOfType<GvrController>())
+        if (null == gvrController)
         {
             GameObject go = Instantiate(Resources.Load("GvrControllerMain") as GameObject);
-            DontDestroyOnLoad(go);
+            gvrController = go.GetComponent<GvrController>();
+            if (null != gvrController)
+            {
+                DontDestroyOnLoad(gvrController.gameObject);
+            }
         }
 
         reticle = FindObjectOfType<GvrReticlePointer>();
-
         if (isDaydream)
         {
             laser = FindObjectOfType<GvrLaserPointer>();
@@ -255,7 +261,7 @@ public class GraphicsConfigurator : MonoBehaviour
 
         string s = isDaydream ? "_daydream" : "_cardboard";
 
-        Debug.Log(s);
+        //Debug.Log(s);
 
         GameObject manager = Instantiate(Resources.Load("DemoInputManager" + s) as GameObject);
 
@@ -270,6 +276,10 @@ public class GraphicsConfigurator : MonoBehaviour
                 manager.transform.SetParent(p.transform, true);
             }
         }
+
+#if UNITY_EDITOR
+        MakeMouseGazeConfiguration(Camera.main.gameObject);
+#endif
     }
 
 }
