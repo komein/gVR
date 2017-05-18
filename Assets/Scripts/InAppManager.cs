@@ -32,14 +32,14 @@ public class InAppManager : IStoreListener
 		{
 			return;
 		}
-        
-		var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
+#if IAP
+        var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 		builder.AddProduct(pLevels, ProductType.NonConsumable, new IDs() { { pLevelsAppStore, AppleAppStore.Name }, { pLevelsGooglePlay, GooglePlay.Name } });
-
 		UnityPurchasing.Initialize(this, builder);
-	}
+#endif
+    }
 
-	private bool IsInitialized()
+    private bool IsInitialized()
 	{
 		return m_StoreController != null && m_StoreExtensionProvider != null;
 	}

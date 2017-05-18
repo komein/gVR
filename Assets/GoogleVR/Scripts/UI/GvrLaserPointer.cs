@@ -23,38 +23,17 @@ using UnityEngine;
 [RequireComponent(typeof(LineRenderer))]
 public class GvrLaserPointer : MonoBehaviour {
 #if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
-    private GvrLaserPointerImpl laserPointerImpl;
+  private GvrLaserPointerImpl laserPointerImpl;
 
-    /// Color of the laser pointer including alpha transparency
-    public Color laserColor = new Color(1.0f, 1.0f, 1.0f, 0.25f);
+  /// Color of the laser pointer including alpha transparency
+  public Color laserColor = new Color(1.0f, 1.0f, 1.0f, 0.25f);
 
-
-    public bool IsPointerIntersecting
-        {
-        get
-        {
-            if (null == laserPointerImpl)
-                return false;
-            return laserPointerImpl.IsPointerIntersecting;
-        }
-        }
-
-    public GameObject TargetGO
-    {
-        get
-        {
-            if (null == laserPointerImpl)
-                return null;
-            return laserPointerImpl.TargetGO;
-        }
-    }
-
-    /// Maximum distance of the pointer (meters).
-    [Range(0.0f, 50.0f)]
+  /// Maximum distance of the pointer (meters).
+  [Range(0.0f, 10.0f)]
   public float maxLaserDistance = 0.75f;
 
   /// Maximum distance of the reticle (meters).
-  [Range(0.4f, 50.0f)]
+  [Range(0.4f, 10.0f)]
   public float maxReticleDistance = 2.5f;
 
   public GameObject reticle;
@@ -102,7 +81,15 @@ public class GvrLaserPointer : MonoBehaviour {
     get { return laserPointerImpl != null ? laserPointerImpl.LaserLineRenderer : null; }
   }
 
-  private void UpdateLaserPointerProperties() {
+    public bool IsPointerIntersecting
+    {
+        get
+        {
+            return laserPointerImpl.IsPointerIntersecting;
+        }
+    }
+
+    private void UpdateLaserPointerProperties() {
     if (laserPointerImpl == null) {
       return;
     }

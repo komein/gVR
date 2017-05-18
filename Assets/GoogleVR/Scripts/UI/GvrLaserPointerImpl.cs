@@ -16,6 +16,7 @@
 // GVR native integration.
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// Implementation of GvrBasePointer for a laser pointer visual.
 /// This script should be attached to the controller object.
@@ -44,19 +45,19 @@ public class GvrLaserPointerImpl : GvrBasePointer {
 
   public float MaxReticleDistance { private get; set; }
 
-    private GameObject reticle;
+  private GameObject reticle;
   public GameObject Reticle {
     get {
       return reticle;
     }
     set {
       reticle = value;
-      reticleMeshSizeMeters = 0.0f;
-      reticleMeshSizeRatio = 0.0f;
+      reticleMeshSizeMeters = 1.0f;
+      reticleMeshSizeRatio = 1.0f;
 
       if (reticle != null) {
         MeshFilter meshFilter = reticle.GetComponent<MeshFilter>();
-        if (meshFilter.mesh != null) {
+        if (meshFilter != null && meshFilter.mesh != null) {
           reticleMeshSizeMeters = meshFilter.mesh.bounds.size.x;
           if (reticleMeshSizeMeters != 0.0f) {
             reticleMeshSizeRatio = 1.0f / reticleMeshSizeMeters;
@@ -70,7 +71,6 @@ public class GvrLaserPointerImpl : GvrBasePointer {
   public Vector3 PointerIntersection { get; private set; }
 
   public bool IsPointerIntersecting { get; private set; }
-    public GameObject TargetGO { get; private set; }
 
   public Ray PointerIntersectionRay { get; private set; }
 
@@ -122,34 +122,30 @@ public class GvrLaserPointerImpl : GvrBasePointer {
 #endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
   }
 
-  public override void OnPointerEnter(GameObject targetObject, Vector3 intersectionPosition,
-      Ray intersectionRay, bool isInteractive) {
+  public override void OnPointerEnter(RaycastResult rayastResult, Ray ray,
+    bool isInteractive) {
 #if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
-    PointerIntersection = intersectionPosition;
-    PointerIntersectionRay = intersectionRay;
+    PointerIntersection = rayastResult.worldPosition;
+    PointerIntersectionRay = ray;
     IsPointerIntersecting = true;
-        TargetGO = targetObject;
-        Debug.Log(TargetGO.name);
 #endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
-    }
+  }
 
-  public override void OnPointerHover(GameObject targetObject, Vector3 intersectionPosition,
-      Ray intersectionRay, bool isInteractive) {
+  public override void OnPointerHover(RaycastResult rayastResult, Ray ray,
+    bool isInteractive) {
 #if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
-    PointerIntersection = intersectionPosition;
-    PointerIntersectionRay = intersectionRay;
-        TargetGO = targetObject;
+    PointerIntersection = rayastResult.worldPosition;
+    PointerIntersectionRay = ray;
 #endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
-    }
+  }
 
-  public override void OnPointerExit(GameObject targetObject) {
+  public override void OnPointerExit(GameObject previousObject) {
 #if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
     PointerIntersection = Vector3.zero;
     PointerIntersectionRay = new Ray();
     IsPointerIntersecting = false;
-        TargetGO = null;
 #endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
-    }
+  }
 
   public override void OnPointerClickDown() {
     // User has performed a click on the target.  In a derived class, you could
@@ -174,7 +170,7 @@ public class GvrLaserPointerImpl : GvrBasePointer {
       // Dynamic size for exit radius.
       // Always correct because we know the intersection point of the object and can
       // therefore use the correct radius based on the object's distance from the camera.
-      exitRadius = reticleScale  * RETICLE_VISUAL_RATIO;
+      exitRadius = reticleScale * reticleMeshSizeMeters * RETICLE_VISUAL_RATIO;
     } else {
       enterRadius = 0.0f;
       exitRadius = 0.0f;
@@ -224,7 +220,12 @@ public class GvrLaserPointerImpl : GvrBasePointer {
 
     // Adjust transparency
     float alpha = GvrArmModel.Instance.preferredAlpha;
+#if UNITY_5_6_OR_NEWER
+    LaserLineRenderer.startColor = Color.Lerp(Color.clear, LaserColor, alpha);
+    LaserLineRenderer.endColor = Color.clear;
+#else
     LaserLineRenderer.SetColors(Color.Lerp(Color.clear, LaserColor, alpha), Color.clear);
+#endif  // UNITY_5_6_OR_NEWER
   }
 #endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
 }

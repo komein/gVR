@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class LookableButton : MonoBehaviour, IGvrGazeResponder
+public class LookableButton : MonoBehaviour
 {
     public Image img;
     protected TextMeshProUGUI text;
@@ -72,10 +72,12 @@ public class LookableButton : MonoBehaviour, IGvrGazeResponder
         gazeMode = true;
 #endif
 
+#if OCULUS_STUFF
         if (gazeMode) // still may be oculus case
         {
             gazeMode = FindObjectOfType<OVRInputModule>() == null;
         }
+#endif
     }
 
     public virtual void SetGazedAt(bool gazedAt)

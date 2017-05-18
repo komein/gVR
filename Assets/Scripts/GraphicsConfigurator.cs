@@ -29,11 +29,11 @@ public class GraphicsConfigurator : MonoBehaviour
             return laser;
         }
     }
-
+#if OCULUS_STUFF
     OVRInputModule inputModule;
     OVRCameraRig cameraRig;
-
-    bool shouldHandleExitButton = false;
+#endif
+    bool shouldHandleExitButton = true;
 
     internal void Initialize()
     {
@@ -64,8 +64,9 @@ public class GraphicsConfigurator : MonoBehaviour
 
                 case GameManager.VRMode.Oculus:
                     {
-                        // TODO
+#if OCULUS_STUFF
                         MakeOculusConfiguration();
+#endif
                         break;
                     }
 
@@ -97,6 +98,7 @@ public class GraphicsConfigurator : MonoBehaviour
 
     private void Update()
     {
+#if OCULUS_STUFF
         if (null != inputModule && null != cameraRig)
         {
             inputModule.rayTransform = OVRGazePointer.instance.rayTransform =
@@ -105,8 +107,9 @@ public class GraphicsConfigurator : MonoBehaviour
                 (OVRInput.GetActiveController() == OVRInput.Controller.LTouch) ? cameraRig.leftHandAnchor :
                 cameraRig.centerEyeAnchor;
         }
+#endif
     }
-
+    /*
     void LateUpdate()
     {
         if (shouldHandleExitButton)
@@ -116,7 +119,7 @@ public class GraphicsConfigurator : MonoBehaviour
                 Application.Quit();
             }
         }
-    }
+    }*/
     
     private void MakeMouseGazeConfiguration(GameObject c)
     {
@@ -133,6 +136,7 @@ public class GraphicsConfigurator : MonoBehaviour
         }
     }
 
+#if OCULUS_STUFF
     void EntitlementCheck(Oculus.Platform.Message msg)
     {
         if (!msg.IsError)
@@ -214,9 +218,11 @@ public class GraphicsConfigurator : MonoBehaviour
 
         shouldHandleExitButton = true;
     }
+#endif
     
     private void MakeGoogleVRConfiguration(bool isDaydream)
     {
+        /*
         if (FindObjectOfType<GvrViewer>() != null)
         {
             return;
@@ -230,7 +236,7 @@ public class GraphicsConfigurator : MonoBehaviour
             {
                 viewer.VRModeEnabled = GameManager.StereoMode;
             }
-        }
+        }*/
 
         Instantiate(Resources.Load("GvrEventSystem") as GameObject);
 

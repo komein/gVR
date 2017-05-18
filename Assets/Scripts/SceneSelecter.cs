@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Collider))]
-public class SceneSelecter : MonoBehaviour, IGvrGazeResponder
+public class SceneSelecter : MonoBehaviour
 {
     protected Vector3 startingPosition;
 
@@ -42,15 +42,6 @@ public class SceneSelecter : MonoBehaviour, IGvrGazeResponder
         }
     }
 
-    void LateUpdate()
-    {
-        GvrViewer.Instance.UpdateState();
-        if (GvrViewer.Instance.BackButtonPressed)
-        {
-            Application.Quit();
-        }
-    }
-
     public virtual void SetGazedAt(bool gazedAt)
     {
         isGazedOn = gazedAt;
@@ -60,11 +51,6 @@ public class SceneSelecter : MonoBehaviour, IGvrGazeResponder
     public void Reset()
     {
         transform.localPosition = startingPosition;
-    }
-
-    public void ToggleVRMode()
-    {
-        GvrViewer.Instance.VRModeEnabled = !GvrViewer.Instance.VRModeEnabled;
     }
 
     protected virtual void Function()

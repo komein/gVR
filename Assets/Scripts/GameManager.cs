@@ -19,11 +19,11 @@ public class GameManager : MonoBehaviour
             return false;
 #elif UNITY_ANDROID
              return true;
-#endif
+#endif // UNITY_EDITOR || UNITY_ANDROID
 
 #else
             return false;
-#endif
+#endif // UNITY_HAS_GOOGLEVR
         }
     }
     
