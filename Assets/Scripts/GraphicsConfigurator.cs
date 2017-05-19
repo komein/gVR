@@ -1,4 +1,6 @@
-﻿
+﻿#define OCULUS_STUFF
+
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +12,8 @@ public class GraphicsConfigurator : MonoBehaviour
 {
     public static GraphicsConfigurator instanceRef; // singleton pattern
 
+#if UNITY_HAS_GOOGLEVR
+    
     private GvrReticlePointer reticle;
     public GvrReticlePointer Reticle
     {
@@ -18,9 +22,10 @@ public class GraphicsConfigurator : MonoBehaviour
             return reticle;
         }
     }
-
+#endif
     EventSystem es;
 
+#if UNITY_HAS_GOOGLEVR
     private GvrLaserPointer laser;
     public GvrLaserPointer Laser
     {
@@ -31,7 +36,8 @@ public class GraphicsConfigurator : MonoBehaviour
     }
 
     GvrController gvrController;
-
+    
+#endif
 #if OCULUS_STUFF
     OVRInputModule inputModule;
     OVRCameraRig cameraRig;
@@ -112,7 +118,7 @@ public class GraphicsConfigurator : MonoBehaviour
         }
 #endif
     }
-    /*
+    
     void LateUpdate()
     {
         if (shouldHandleExitButton)
@@ -122,7 +128,7 @@ public class GraphicsConfigurator : MonoBehaviour
                 Application.Quit();
             }
         }
-    }*/
+    }
     
     private void MakeMouseGazeConfiguration(GameObject c)
     {
@@ -140,6 +146,7 @@ public class GraphicsConfigurator : MonoBehaviour
     }
 
 #if OCULUS_STUFF
+    /*
     void EntitlementCheck(Oculus.Platform.Message msg)
     {
         if (!msg.IsError)
@@ -152,17 +159,17 @@ public class GraphicsConfigurator : MonoBehaviour
             Application.Quit();
         }
     }
-
+    */
     private void MakeOculusConfiguration()
     {
         if (FindObjectOfType<OVRCameraRig>() != null)
         {
             return;
         }
-
+        /*
         Oculus.Platform.Core.AsyncInitialize("1523835387640661");
         Oculus.Platform.Entitlements.IsUserEntitledToApplication().OnComplete(EntitlementCheck);
-
+        */
         OVRPlugin.cpuLevel = 1;
         OVRPlugin.gpuLevel = 3;
 
@@ -176,12 +183,14 @@ public class GraphicsConfigurator : MonoBehaviour
             Vector3 cameraPos = Camera.main.transform.position;
             Transform cameraParent = Camera.main.transform.parent;
             Camera.main.gameObject.SetActive(false);
+#if UNITY_HAS_GOOGLEVR
             GvrControllerVisualManager gvrManager = FindObjectOfType<GvrControllerVisualManager>();
 
             if (null != gvrManager)
             {
                 gvrManager.gameObject.SetActive(false);
             }
+#endif
 
             cameraRig = Instantiate((OVRCameraRig)Resources.Load("OVRCameraRig", typeof(OVRCameraRig)));
             if (null != cameraRig)
@@ -225,22 +234,7 @@ public class GraphicsConfigurator : MonoBehaviour
     
     private void MakeGoogleVRConfiguration(bool isDaydream)
     {
-        /*
-        if (FindObjectOfType<GvrViewer>() != null)
-        {
-            return;
-        }
-
-        GameObject v = Instantiate(Resources.Load("GvrViewerMain") as GameObject);
-        if (null != v)
-        {
-            GvrViewer viewer = v.GetComponent<GvrViewer>();
-            if (null != viewer)
-            {
-                viewer.VRModeEnabled = GameManager.StereoMode;
-            }
-        }*/
-
+#if UNITY_HAS_GOOGLEVR
         Instantiate(Resources.Load("GvrEventSystem") as GameObject);
 
         if (null == gvrController)
@@ -261,10 +255,7 @@ public class GraphicsConfigurator : MonoBehaviour
 
         string s = isDaydream ? "_daydream" : "_cardboard";
 
-        //Debug.Log(s);
-
         GameObject manager = Instantiate(Resources.Load("DemoInputManager" + s) as GameObject);
-
         if (null != manager)
         {
             Vector3 pos = manager.transform.position;
@@ -276,6 +267,7 @@ public class GraphicsConfigurator : MonoBehaviour
                 manager.transform.SetParent(p.transform, true);
             }
         }
+#endif
 
 #if UNITY_EDITOR
         MakeMouseGazeConfiguration(Camera.main.gameObject);

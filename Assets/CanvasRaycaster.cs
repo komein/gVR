@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿#define OCULUS_STUFF
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 
 public class CanvasRaycaster : MonoBehaviour {
 
@@ -15,11 +17,12 @@ public class CanvasRaycaster : MonoBehaviour {
         {
             gameObject.AddComponent<GvrPointerPhysicsRaycaster>();
         }
+#endif
 
-#elif OCULUS_STUFF
-        if (null == GetComponent<OvrGraphicsRaycaster>())
+#if OCULUS_STUFF
+        if (null == GetComponent<OVRRaycaster>())
         {
-            gameObject.AddComponent<OvrGraphicsRaycaster>();
+            gameObject.AddComponent<OVRRaycaster>();
         }
 #else
         if (null == GetComponent<PhysicsRaycaster>())

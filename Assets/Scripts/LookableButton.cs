@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define OCULUS_STUFF
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
