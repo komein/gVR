@@ -86,6 +86,10 @@ public class GraphicsConfigurator : MonoBehaviour
                     }
             }
         }
+
+#if UNITY_EDITOR
+        QualitySettings.antiAliasing = 0;
+#endif
     }
 
 

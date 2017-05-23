@@ -278,9 +278,17 @@ public class DemoInputManager : MonoBehaviour {
   }
 
   private void SetVRInputMechanism() {
-    SetGazeInputActive(!isDaydream);
-    SetControllerInputActive(isDaydream);
-  }
+        if (GameManager.ForceController)
+        {
+            SetGazeInputActive(false);
+            SetControllerInputActive(true);
+        }
+        else
+        {
+            SetGazeInputActive(!isDaydream);
+            SetControllerInputActive(isDaydream);
+        }
+    }
 
   private void SetGazeInputActive(bool active) {
     if (reticlePointer == null) {

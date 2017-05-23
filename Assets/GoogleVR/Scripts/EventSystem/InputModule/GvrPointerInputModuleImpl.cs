@@ -125,6 +125,7 @@ public class GvrPointerInputModuleImpl {
     if (Pointer == null || Pointer.PointerTransform == null) {
       return;
     }
+
     Vector2 currentPose = GvrMathHelpers.NormalizedCartesianToSpherical(Pointer.PointerTransform.forward);
 
     if (CurrentEventData == null) {
@@ -145,7 +146,7 @@ public class GvrPointerInputModuleImpl {
     // Set the position to the center of the camera.
     // This is only necessary if using the built-in Unity raycasters.
     RaycastResult raycastResult;
-    CurrentEventData.position = GvrMathHelpers.GetViewportCenter();
+    //CurrentEventData.position = GvrMathHelpers.GetViewportCenter();
     bool isPointerActiveAndAvailable = IsPointerActiveAndAvailable();
     if (isPointerActiveAndAvailable) {
       ModuleController.eventSystem.RaycastAll(CurrentEventData, ModuleController.RaycastResultCache);
@@ -201,9 +202,9 @@ public class GvrPointerInputModuleImpl {
     if (raycastResult.module != null
         && !(raycastResult.module is GvrPointerGraphicRaycaster)
         && !(raycastResult.module is GvrPointerPhysicsRaycaster)) {
-      Debug.LogWarning("Using Raycaster (Raycaster: " + raycastResult.module.GetType() +
-        ", Object: " + raycastResult.module.name + "). It is recommended to use " +
-        "GvrPointerPhysicsRaycaster or GvrPointerGrahpicRaycaster with GvrPointerInputModule.");
+      //Debug.LogWarning("Using Raycaster (Raycaster: " + raycastResult.module.GetType() +
+      //  ", Object: " + raycastResult.module.name + "). It is recommended to use " +
+       // "GvrPointerPhysicsRaycaster or GvrPointerGrahpicRaycaster with GvrPointerInputModule.");
     }
   }
 

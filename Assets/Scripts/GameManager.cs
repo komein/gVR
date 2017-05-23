@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
         get;
         private set;
     }
+    public static bool ForceController = true;
 
     public static GameManager instanceRef; // singleton pattern
 

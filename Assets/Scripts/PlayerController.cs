@@ -116,7 +116,7 @@ public class PlayerController : MonoBehaviour
     {
 #if UNITY_HAS_GOOGLEVR
 
-        /*if (GvrController.AppButton)
+        if (GvrController.AppButton)
         {
             PauseTheLevel();
         }
@@ -125,7 +125,7 @@ public class PlayerController : MonoBehaviour
         if (GvrController.HomeButtonDown)
         {
             PauseTheLevel();
-        }*/
+        }
 #endif
     }
 
@@ -358,60 +358,63 @@ public class PlayerController : MonoBehaviour
         }
 
 #if UNITY_HAS_GOOGLEVR
-         GvrLaserPointer laser = gc.Laser;
-         GvrReticlePointer reticle = gc.Reticle;
-         if (null != laser)
-         {
-             if (!laser.gameObject.activeInHierarchy)
-             {
-                 if (null != reticle)
-                 {
-                     if (reticle.gameObject.activeInHierarchy)
-                     {
-                         return GetCameraMoveVector();
-                     }
-                     else
-                     {
-                         return Vector3.zero;
-                     }
-                 }
-                 else
-                 {
-                     return Vector3.zero;
-                 }
-             }
+        GvrLaserPointer laser = gc.Laser;
+        GvrReticlePointer reticle = gc.Reticle;
+        if (null != laser)
+        {
+            if (!laser.gameObject.activeInHierarchy)
+            {
+                if (null != reticle)
+                {
+                    if (reticle.gameObject.activeInHierarchy)
+                    {
+                        return GetCameraMoveVector();
+                    }
+                    else
+                    {
+                        return Vector3.zero;
+                    }
+                }
+                else
+                {
+                    return Vector3.zero;
+                }
+            }
 
-             GameObject ret = laser.reticle;
+            GameObject ret = laser.reticle;
 
-             if (null == ret)
-             {
-                 return Vector3.zero;
-             }
+            if (null == ret)
+            {
+                return Vector3.zero;
+            }
 
-             if (laser.IsPointerIntersecting)
-             {
-                 Vector3 gotoPos = ret.transform.position;
-                 Vector3 pos = Vector3.zero;
+            if (laser.IsPointerIntersecting)
+            {
+                Vector3 gotoPos = ret.transform.position;
+                Vector3 pos = Vector3.zero;
 
-                 float zPos = gotoPos.z - gameObject.transform.position.z;
+                float zPos = gotoPos.z - gameObject.transform.position.z;
 
-                 if (zPos < -1)
-                 {
-                     return Vector3.zero;
-                 }
+                if (zPos < -1)
+                {
+                    return Vector3.zero;
+                }
 
-                 float diff = gotoPos.x - gameObject.transform.position.x;
+                float diff = gotoPos.x - gameObject.transform.position.x;
 
-                 pos.x = Mathf.Min(Mathf.Abs(diff), 0.4f) * Mathf.Sign(diff);
-                 pos.x *= strafeSpeed;
-                 pos.y = 0;
-                 pos.z = curSpeed;
+                pos.x = Mathf.Min(Mathf.Abs(diff), 0.4f) * Mathf.Sign(diff);
+                pos.x *= strafeSpeed;
+                pos.y = 0;
+                pos.z = curSpeed;
 
-                 return pos;
-             }
-
-             return Vector3.zero;
-         }
+                return pos;
+            }
+            else
+            {
+                //Debug.Log("!");
+                return Vector3.zero;
+            }
+        }
 #endif
         return GetCameraMoveVector();
     }
