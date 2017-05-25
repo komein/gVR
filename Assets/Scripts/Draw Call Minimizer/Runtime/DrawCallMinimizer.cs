@@ -47,7 +47,9 @@ namespace DCM {
             else
             {
                 CreateBatchedAtlasedObjects(allMeshesAndMaterials); 
+
             }
+
 
             if (destroyOriginalGameObject) {
                 Destroy(gameObject);
@@ -56,10 +58,8 @@ namespace DCM {
                     Destroy(filter);
                 }
                 
-                foreach (Renderer r in GetComponentsInChildren<Renderer>())
-                {
-                    if (!r.name.Contains("Combined"))
-                        r.enabled = false;
+                foreach (Renderer r in GetComponentsInChildren<Renderer>()) {
+                    r.enabled = false;
                 }
 
                 Destroy(this);
@@ -151,8 +151,6 @@ namespace DCM {
                     GameObject parent = new GameObject("Combined " + gameObject.name + " " + firstPass.Key + " Mesh Parent");
                     parent.transform.position = transform.position;
                     parent.transform.rotation = transform.rotation;
-                    parent.transform.SetParent(transform);
-
                     for (int i = 0; i < combinedMeshes.Count; i++) {
                         GameObject go = new GameObject("Combined " + gameObject.name + " Mesh");
                         go.transform.parent = parent.transform;
@@ -179,7 +177,6 @@ namespace DCM {
                 GameObject parent = new GameObject("Combined " + gameObject.name + " " + unatlasedGroup.Key + " Mesh Parent");
                 parent.transform.position = transform.position;
                 parent.transform.rotation = transform.rotation;
-                parent.transform.SetParent(transform);
                 for (int i = 0; i < combinedMeshes.Count; i++) {
                     GameObject go = new GameObject("Combined " + gameObject.name + " Mesh");
                     go.transform.parent = parent.transform;

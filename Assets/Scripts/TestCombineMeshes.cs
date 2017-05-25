@@ -44,6 +44,15 @@ public class TestCombineMeshes : MonoBehaviour
                 combineInstanceArrays.Add(new ArrayList());
 
                 CombineInstance combineInstance = new CombineInstance();
+
+                Transform t = meshRenderer.transform;
+                Matrix4x4 m = t.localToWorldMatrix;
+
+                while (t.parent != null)
+                {
+                    t = t.parent;
+                    m = m * t.localToWorldMatrix;
+                }
                 combineInstance.transform = meshRenderer.transform.localToWorldMatrix;
                 combineInstance.subMeshIndex = s;
                 combineInstance.mesh = meshFilter.sharedMesh;
