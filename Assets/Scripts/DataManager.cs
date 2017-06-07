@@ -11,6 +11,7 @@ public class DataManager
     public SavedGame savedGame;
     public SceneInfo sceneInfo = new SceneInfo();
 
+    public FileStream stream = null;
     public DataManager()
     {
         savedGame = null;
@@ -25,7 +26,11 @@ public class DataManager
             return;
 
         XmlSerializer serializer = new XmlSerializer(typeof(SavedGame));
-        FileStream stream = new FileStream(savePath, FileMode.Create);
+        if (stream != null)
+        {
+            stream.Close();
+        }
+        stream = new FileStream(savePath, FileMode.Create);
 
         try
         {
@@ -46,7 +51,11 @@ public class DataManager
         if (File.Exists(savePath))
         {
             XmlSerializer serializer = new XmlSerializer(typeof(SavedGame));
-            FileStream stream = new FileStream(savePath, FileMode.Open);
+            if (stream != null)
+            {
+                stream.Close();
+            }
+            stream = new FileStream(savePath, FileMode.Open);
             try
             {
                 savedGame = serializer.Deserialize(stream) as SavedGame;

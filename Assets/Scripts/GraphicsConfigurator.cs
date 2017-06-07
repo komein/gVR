@@ -12,7 +12,6 @@ public class GraphicsConfigurator : MonoBehaviour
 {
     public static GraphicsConfigurator instanceRef; // singleton pattern
 
-#if UNITY_HAS_GOOGLEVR
     
     private GvrReticlePointer reticle;
     public GvrReticlePointer Reticle
@@ -22,7 +21,6 @@ public class GraphicsConfigurator : MonoBehaviour
             return reticle;
         }
     }
-#endif
     EventSystem es;
 
 #if UNITY_HAS_GOOGLEVR
@@ -42,7 +40,7 @@ public class GraphicsConfigurator : MonoBehaviour
     OVRInputModule inputModule;
     OVRCameraRig cameraRig;
 #endif
-    bool shouldHandleExitButton = true;
+    bool shouldHandleExitButton = false;
 
     internal void Initialize()
     {
@@ -147,10 +145,18 @@ public class GraphicsConfigurator : MonoBehaviour
                 c.gameObject.AddComponent<PhysicsRaycaster>();
             }
         }
+
+        EventSystem eventSystem = FindObjectOfType<EventSystem>();
+        if (eventSystem == null)
+        {
+            Debug.Log("Creating EventSystem");
+            EventSystem eventSystemPrefab = (EventSystem)Resources.Load("EventSystem_noVR", typeof(EventSystem));
+            eventSystem = Instantiate(eventSystemPrefab);
+        }
     }
 
 #if OCULUS_STUFF
-    /*
+    
     void EntitlementCheck(Oculus.Platform.Message msg)
     {
         if (!msg.IsError)
@@ -163,25 +169,14 @@ public class GraphicsConfigurator : MonoBehaviour
             Application.Quit();
         }
     }
-    */
+    
     private void MakeOculusConfiguration()
     {
         if (FindObjectOfType<OVRCameraRig>() != null)
         {
             return;
         }
-        /*
-        Oculus.Platform.Core.AsyncInitialize("1523835387640661");
-        Oculus.Platform.Entitlements.IsUserEntitledToApplication().OnComplete(EntitlementCheck);
-        */
-        OVRPlugin.cpuLevel = 1;
-        OVRPlugin.gpuLevel = 3;
 
-        // Doesn't seem to affect the FPS, the bottleneck is elsewhere
-        //VRSettings.renderScale = 0.4f;
-
-        // Disabling current active camera whatever it is
-        // If there is no camera in scene, we don't know where to create the Oculus one
         if (Camera.main != null)
         {
             Vector3 cameraPos = Camera.main.transform.position;
@@ -232,14 +227,32 @@ public class GraphicsConfigurator : MonoBehaviour
             }
         }
 
-        shouldHandleExitButton = true;
+        if (null != FindObjectOfType<OVRPlatformMenu>())
+        {
+            return;
+        }
+
+
+        Oculus.Platform.Core.AsyncInitialize("1523835387640661");
+        Oculus.Platform.Entitlements.IsUserEntitledToApplication().OnComplete(EntitlementCheck);
+
+        OVRPlugin.cpuLevel = 1;
+        OVRPlugin.gpuLevel = 3;
+
+        shouldHandleExitButton = false;
+        OVRPlatformMenu platformMenu = new GameObject().AddComponent<OVRPlatformMenu>();
+        DontDestroyOnLoad(platformMenu.gameObject);
+        platformMenu.enabled = true;
+        platformMenu.gameObject.name = "OculusReservedButtonsHandler";
+
     }
 #endif
     
     private void MakeGoogleVRConfiguration(bool isDaydream)
     {
-#if UNITY_HAS_GOOGLEVR
         Instantiate(Resources.Load("GvrEventSystem") as GameObject);
+        reticle = FindObjectOfType<GvrReticlePointer>();
+#if UNITY_HAS_GOOGLEVR
 
         if (null == gvrController)
         {
@@ -251,7 +264,6 @@ public class GraphicsConfigurator : MonoBehaviour
             }
         }
 
-        reticle = FindObjectOfType<GvrReticlePointer>();
         if (isDaydream)
         {
             laser = FindObjectOfType<GvrLaserPointer>();
@@ -271,11 +283,16 @@ public class GraphicsConfigurator : MonoBehaviour
                 manager.transform.SetParent(p.transform, true);
             }
         }
-#endif
+
+        shouldHandleExitButton = true;
 
 #if UNITY_EDITOR
         MakeMouseGazeConfiguration(Camera.main.gameObject);
 #endif
+#else
+        MakeMouseGazeConfiguration(Camera.main.gameObject);
+#endif
+
     }
 
 }
