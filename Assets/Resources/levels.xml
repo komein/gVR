@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="windows-1251"?>
 
+<!--
 <SavedGame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Levels>
     <LevelInfo number="1" accScore="0" bestScore="0" maxScore="50">
@@ -26,8 +27,8 @@
   </Levels>
 </SavedGame>
 
+-->
 
-<!--
 <SavedGame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Levels>
     <LevelInfo number="1" accScore="0" bestScore="0" maxScore="500">
@@ -53,4 +54,3 @@
     </LevelInfo>
   </Levels>
 </SavedGame>
--->

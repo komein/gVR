@@ -1,12 +1,5 @@
-﻿#define OCULUS_STUFF
-
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.VR;
 
 public class GraphicsConfigurator : MonoBehaviour
 {
@@ -24,7 +17,7 @@ public class GraphicsConfigurator : MonoBehaviour
     EventSystem es;
 
 #if UNITY_HAS_GOOGLEVR
-    private GvrLaserPointer laser;
+    private GvrLaserPointer laser; 
     public GvrLaserPointer Laser
     {
         get
@@ -156,7 +149,6 @@ public class GraphicsConfigurator : MonoBehaviour
     }
 
 #if OCULUS_STUFF
-    
     void EntitlementCheck(Oculus.Platform.Message msg)
     {
         if (!msg.IsError)
@@ -224,14 +216,13 @@ public class GraphicsConfigurator : MonoBehaviour
 #if UNITY_EDITOR
                 MakeMouseGazeConfiguration(cameraRig.gameObject);
 #endif
-            }
+            
         }
 
         if (null != FindObjectOfType<OVRPlatformMenu>())
         {
             return;
-        }
-
+        }}
 
         Oculus.Platform.Core.AsyncInitialize("1523835387640661");
         Oculus.Platform.Entitlements.IsUserEntitledToApplication().OnComplete(EntitlementCheck);
