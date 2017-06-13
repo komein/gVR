@@ -21,3 +21,5 @@ Temp
 /obj/Debug/Assembly-CSharp.pdb
 /obj/Debug/build.force
 /Assets/Textures/Cubemaps
+ProjectSettings
+/Assets/Plugins/Android/AndroidManifest.xml
