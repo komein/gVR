@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class LookableButton : MonoBehaviour
+public class LookableButton : UIWithText
 {
     public Image img;
     protected Text text;
@@ -24,7 +24,7 @@ public class LookableButton : MonoBehaviour
     public Color normalColor;
     public Color pressedColor;
 
-    AudioSource aus;
+    protected AudioSource aus;
 
     protected bool isActiveButton = true;
 
@@ -45,20 +45,13 @@ public class LookableButton : MonoBehaviour
         }
     }
 
-    private bool gMode = true;
+    protected bool gMode = true;
 
     protected virtual void Start ()
     {
-        aus = GetComponent<AudioSource>();
-        if (null == aus)
-            aus = gameObject.AddComponent<AudioSource>();
-
         text = GetComponentInChildren<Text>();
 
-        if (null != text)
-        {
-            text.text = caption;
-        }
+        UpdateText();
 
         SetGazedAt(false);
     }
@@ -81,7 +74,13 @@ public class LookableButton : MonoBehaviour
 
     public virtual void SetGazedAt(bool gazedAt)
     {
+        if (null == aus)
+        {
+            MakeAudioSystem();
+        }
+
         aus.Stop();
+
         UpdateGazeMode();
         if (gMode)
         {
@@ -117,6 +116,13 @@ public class LookableButton : MonoBehaviour
                 img.fillAmount = 0;
             }
         }
+    }
+
+    private void MakeAudioSystem()
+    {
+        aus = GetComponent<AudioSource>();
+        if (null == aus)
+            aus = gameObject.AddComponent<AudioSource>();
     }
 
     protected virtual void Update()
@@ -156,6 +162,11 @@ public class LookableButton : MonoBehaviour
 
     protected virtual void Function()
     {
+        if (null == aus)
+        {
+            MakeAudioSystem();
+        }
+
         aus.Stop();
         DataObjects.SetMusic("click", aus);
         aus.Play();
@@ -197,5 +208,13 @@ public class LookableButton : MonoBehaviour
         }
 
         yield return null;
+    }
+
+    public override void UpdateText()
+    {
+        if (null != text)
+        {
+            text.text = DataObjects.Localization.GetField(caption);
+        }
     }
 }

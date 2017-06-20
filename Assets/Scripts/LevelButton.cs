@@ -79,7 +79,7 @@ public class LevelButton : SceneButton, IUICanReinitialize
 
         if (isInitialized && null != DataObjects.GameManager && null != DataObjects.DataManager && null != level && null != DataObjects.IAPManager)
         {
-            if (!DataObjects.DataManager.savedGame.isLevelUnlocked(level.number))
+            if (!DataObjects.DataManager.savedGame.IsLevelUnlocked(level.number))
             {
                 SetActiveLevelButton(false);
                 if (null != starBar)

@@ -4,6 +4,8 @@ using System.Xml.Serialization;
 [XmlRoot("SavedGame")]
 public class SavedGame
 {
+    public LanguageEnum language;
+
     [XmlArray("Levels")]
     [XmlArrayItem("LevelInfo")]
     public List<LevelInfo> levels;
@@ -18,7 +20,13 @@ public class SavedGame
         levels = l;
     }
 
-    public bool isLevelUnlocked(int level)
+    public SavedGame(List<LevelInfo> l, LanguageEnum lan)
+    {
+        levels = l;
+        language = lan;
+    }
+
+    public bool IsLevelUnlocked(int level)
     {
         if (!isValidLevel(level))
             return false;
@@ -119,6 +127,16 @@ public class SavedGame
         }
 
         return true;
+    }
+
+    public void SetLanguage(LanguageEnum lan)
+    {
+        language = lan;
+    }
+
+    public LanguageEnum GetLanguage()
+    {
+        return language;
     }
 
 }

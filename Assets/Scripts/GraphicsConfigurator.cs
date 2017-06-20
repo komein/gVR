@@ -157,7 +157,7 @@ public class GraphicsConfigurator : MonoBehaviour
         }
         else
         {
-            // sudden gracious exit without any explanations
+            // sudden gracious (lol no) exit without any explanations
             Application.Quit();
         }
     }
@@ -230,9 +230,12 @@ public class GraphicsConfigurator : MonoBehaviour
         OVRPlugin.cpuLevel = 1;
         OVRPlugin.gpuLevel = 3;
 
+        // this is to handle the exiting just like Oculus guys want
         shouldHandleExitButton = false;
+
         OVRPlatformMenu platformMenu = new GameObject().AddComponent<OVRPlatformMenu>();
         DontDestroyOnLoad(platformMenu.gameObject);
+
         platformMenu.enabled = true;
         platformMenu.gameObject.name = "OculusReservedButtonsHandler";
 

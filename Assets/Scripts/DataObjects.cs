@@ -116,4 +116,17 @@ public static class DataObjects
         return null;
     }
 
+    public static LocalizationContainer Localization
+    {
+        get
+        {
+            if (GameManager == null)
+            {
+                return null;
+            }
+
+            return GameManager.Localization;
+        }
+    }
+
 }

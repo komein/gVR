@@ -11,8 +11,14 @@ public class WinCanvas : MonoBehaviour
     public ScoreDisplayer scoreBar;
 
     public Text scoreText;
+    public string scoreId;
     public Text recordText;
+    public string recordId;
     public Text messageText;
+    public string levelsEndId;
+    public string levelCompletedId;
+    public string gamePausedId;
+    public string gameOverId;
 
     public GameObject continueButton;
     public GameObject retryButton;
@@ -25,7 +31,7 @@ public class WinCanvas : MonoBehaviour
         {
             continueButton.gameObject.SetActive(true);
         }
-        WriteMessage("Game paused");
+        WriteMessage(DataObjects.Localization.GetField(gamePausedId));
     }
 
     public void MakeWinScreen()
@@ -37,11 +43,11 @@ public class WinCanvas : MonoBehaviour
 
         if (LastLevel())
         {
-            WriteMessage("Thanks for playing!");
+            WriteMessage(DataObjects.Localization.GetField(levelsEndId));
         }
         else
         {
-            WriteMessage("New level avaliable!");
+            WriteMessage(DataObjects.Localization.GetField(levelCompletedId));
         }
     }
 
@@ -75,7 +81,7 @@ public class WinCanvas : MonoBehaviour
         {
             continueButton.gameObject.SetActive(false);
         }
-        WriteMessage("Game Over");
+        WriteMessage(DataObjects.Localization.GetField(gameOverId));
     }
 
     internal void ShowScore(PauseType reason, LevelInfo p)
@@ -115,18 +121,18 @@ public class WinCanvas : MonoBehaviour
         {
             //if (p != null)
             {
-                scoreText.text = "Score: " + DataObjects.SceneInfo.TempScore;
+                scoreText.text = DataObjects.Localization.GetField(scoreId) + ": " + DataObjects.SceneInfo.TempScore;
 
                 if (bestRecord < DataObjects.SceneInfo.TempScore)
                 {
-                    recordText.text = "New record: " + DataObjects.SceneInfo.TempScore + "!";
+                    recordText.text = DataObjects.Localization.GetField(recordId) + ": " + DataObjects.SceneInfo.TempScore + "!";
 
                     if (null != DataObjects.GameController)
                         DataObjects.GameController.UpdateBestScore();
                 }
                 else
                 {
-                    recordText.text = "Record: " + bestRecord;
+                    recordText.text = DataObjects.Localization.GetField(recordId) + ": " + bestRecord;
                 }
 
                 starBar.SetTextValues(starRecords);

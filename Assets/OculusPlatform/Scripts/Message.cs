@@ -244,7 +244,10 @@ namespace Oculus.Platform
     public virtual InstalledApplicationList GetInstalledApplicationList() { return null; }
     public virtual bool GetLeaderboardDidUpdate() { return false; }
     public virtual LeaderboardEntryList GetLeaderboardEntryList() { return null; }
+    public virtual LivestreamingApplicationStatus GetLivestreamingApplicationStatus() { return null; }
+    public virtual LivestreamingStartResult GetLivestreamingStartResult() { return null; }
     public virtual LivestreamingStatus GetLivestreamingStatus() { return null; }
+    public virtual LivestreamingVideoStats GetLivestreamingVideoStats() { return null; }
     public virtual MatchmakingAdminSnapshot GetMatchmakingAdminSnapshot() { return null; }
     public virtual MatchmakingBrowseResult GetMatchmakingBrowseResult() { return null; }
     public virtual MatchmakingEnqueueResult GetMatchmakingEnqueueResult() { return null; }
@@ -252,6 +255,7 @@ namespace Oculus.Platform
     public virtual MatchmakingStats GetMatchmakingStats() { return null; }
     public virtual OrgScopedID GetOrgScopedID() { return null; }
     public virtual Party GetParty() { return null; }
+    public virtual PartyID GetPartyID() { return null; }
     public virtual PidList GetPidList() { return null; }
     public virtual ProductList GetProductList() { return null; }
     public virtual Purchase GetPurchase() { return null; }
@@ -672,6 +676,30 @@ namespace Oculus.Platform
     }
 
   }
+  public class MessageWithLivestreamingApplicationStatus : Message<LivestreamingApplicationStatus>
+  {
+    public MessageWithLivestreamingApplicationStatus(IntPtr c_message) : base(c_message) { }
+    public override LivestreamingApplicationStatus GetLivestreamingApplicationStatus() { return Data; }
+    protected override LivestreamingApplicationStatus GetDataFromMessage(IntPtr c_message)
+    {
+      var msg = CAPI.ovr_Message_GetNativeMessage(c_message);
+      var obj = CAPI.ovr_Message_GetLivestreamingApplicationStatus(msg);
+      return new LivestreamingApplicationStatus(obj);
+    }
+
+  }
+  public class MessageWithLivestreamingStartResult : Message<LivestreamingStartResult>
+  {
+    public MessageWithLivestreamingStartResult(IntPtr c_message) : base(c_message) { }
+    public override LivestreamingStartResult GetLivestreamingStartResult() { return Data; }
+    protected override LivestreamingStartResult GetDataFromMessage(IntPtr c_message)
+    {
+      var msg = CAPI.ovr_Message_GetNativeMessage(c_message);
+      var obj = CAPI.ovr_Message_GetLivestreamingStartResult(msg);
+      return new LivestreamingStartResult(obj);
+    }
+
+  }
   public class MessageWithLivestreamingStatus : Message<LivestreamingStatus>
   {
     public MessageWithLivestreamingStatus(IntPtr c_message) : base(c_message) { }
@@ -681,6 +709,18 @@ namespace Oculus.Platform
       var msg = CAPI.ovr_Message_GetNativeMessage(c_message);
       var obj = CAPI.ovr_Message_GetLivestreamingStatus(msg);
       return new LivestreamingStatus(obj);
+    }
+
+  }
+  public class MessageWithLivestreamingVideoStats : Message<LivestreamingVideoStats>
+  {
+    public MessageWithLivestreamingVideoStats(IntPtr c_message) : base(c_message) { }
+    public override LivestreamingVideoStats GetLivestreamingVideoStats() { return Data; }
+    protected override LivestreamingVideoStats GetDataFromMessage(IntPtr c_message)
+    {
+      var msg = CAPI.ovr_Message_GetNativeMessage(c_message);
+      var obj = CAPI.ovr_Message_GetLivestreamingVideoStats(msg);
+      return new LivestreamingVideoStats(obj);
     }
 
   }
@@ -765,6 +805,18 @@ namespace Oculus.Platform
       var msg = CAPI.ovr_Message_GetNativeMessage(c_message);
       var obj = CAPI.ovr_Message_GetParty(msg);
       return new Party(obj);
+    }
+
+  }
+  public class MessageWithPartyID : Message<PartyID>
+  {
+    public MessageWithPartyID(IntPtr c_message) : base(c_message) { }
+    public override PartyID GetPartyID() { return Data; }
+    protected override PartyID GetDataFromMessage(IntPtr c_message)
+    {
+      var msg = CAPI.ovr_Message_GetNativeMessage(c_message);
+      var obj = CAPI.ovr_Message_GetPartyID(msg);
+      return new PartyID(obj);
     }
 
   }

@@ -60,9 +60,17 @@ public class GameManager : MonoBehaviour
     public const int lastFreeLevelNumber = 1;
     public bool purchaseMode = true;
 
+    public LocalizationContainer Localization
+    {
+        get;
+        private set;
+    }
+
     void Awake()
     {
         SAVE_PATH = Application.persistentDataPath + "/save.xml";
+
+        Debug.Log("save path: " + SAVE_PATH);
 
 #if UNITY_ANDROID && !UNITY_EDITOR
         LEVELS_PATH = "jar:file://" + Application.dataPath + "!/assets/" + levelsConfigFileName;
@@ -81,6 +89,11 @@ public class GameManager : MonoBehaviour
 
             dataManager.sceneInfo.ResetLevel();
             dataManager.LoadWithoutAction();
+
+            Localization = GameObject.Instantiate(Resources.Load<LocalizationContainer>("LocalizationContainer"));
+            DontDestroyOnLoad(Localization.gameObject);
+
+            Localization.SetLanguage(dataManager.savedGame.GetLanguage());
         }
         else
         {

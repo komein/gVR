@@ -6,8 +6,9 @@ using UnityEngine.UI;
 public class AsyncSceneLoader : MonoBehaviour
 {
     public Image pBar;
-    //Text loadMessage;
     Text loadMessage;
+
+    public string loading_id;
 
     private AsyncOperation async = null;
     private IEnumerator LoadALevel(string levelName)
@@ -65,7 +66,7 @@ public class AsyncSceneLoader : MonoBehaviour
 
         if (null != loadMessage)
         {
-            loadMessage.text = "Loading progress: " + (p * 100f).ToString("F2") + "%";
+            loadMessage.text = DataObjects.Localization.GetField(loading_id) + ": " + (p * 100f).ToString("F2") + "%";
         }
     }
 }

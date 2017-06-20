@@ -742,11 +742,30 @@ namespace Oculus.Platform
     [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
     public static extern ulong ovr_Livestreaming_GetStatus();
 
+    public static ulong ovr_Livestreaming_IsAllowedForApplication(string packageName) {
+      IntPtr packageName_native = StringToNative(packageName);
+      var result = (ovr_Livestreaming_IsAllowedForApplication_Native(packageName_native));
+      Marshal.FreeCoTaskMem(packageName_native);
+      return result;
+    }
+
+    [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl, EntryPoint="ovr_Livestreaming_IsAllowedForApplication")]
+    private static extern ulong ovr_Livestreaming_IsAllowedForApplication_Native(IntPtr packageName);
+
     [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
     public static extern ulong ovr_Livestreaming_PauseStream();
 
     [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
     public static extern ulong ovr_Livestreaming_ResumeStream();
+
+    [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
+    public static extern ulong ovr_Livestreaming_StartStream(LivestreamingAudience audience, LivestreamingMicrophoneStatus micStatus);
+
+    [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
+    public static extern ulong ovr_Livestreaming_StopStream();
+
+    [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
+    public static extern ulong ovr_Livestreaming_UpdateMicStatus(LivestreamingMicrophoneStatus micStatus);
 
     public static ulong ovr_Matchmaking_Browse(string pool, IntPtr customQueryData) {
       IntPtr pool_native = StringToNative(pool);
@@ -1458,6 +1477,12 @@ namespace Oculus.Platform
     public static extern bool ovr_LeaderboardUpdateStatus_GetDidUpdate(IntPtr obj);
 
     [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
+    public static extern bool ovr_LivestreamingApplicationStatus_GetStreamingEnabled(IntPtr obj);
+
+    [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
+    public static extern LivestreamingStartStatus ovr_LivestreamingStartResult_GetStreamingResult(IntPtr obj);
+
+    [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
     public static extern bool ovr_LivestreamingStatus_GetIsPaused(IntPtr obj);
 
     [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
@@ -1465,6 +1490,20 @@ namespace Oculus.Platform
 
     [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
     public static extern bool ovr_LivestreamingStatus_GetMicEnabled(IntPtr obj);
+
+    [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
+    public static extern int ovr_LivestreamingVideoStats_GetCommentCount(IntPtr obj);
+
+    [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
+    public static extern int ovr_LivestreamingVideoStats_GetReactionCount(IntPtr obj);
+
+    public static string ovr_LivestreamingVideoStats_GetTotalViews(IntPtr obj) {
+      var result = StringFromNative(ovr_LivestreamingVideoStats_GetTotalViews_Native(obj));
+      return result;
+    }
+
+    [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl, EntryPoint="ovr_LivestreamingVideoStats_GetTotalViews")]
+    private static extern IntPtr ovr_LivestreamingVideoStats_GetTotalViews_Native(IntPtr obj);
 
     [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
     public static extern IntPtr ovr_MatchmakingAdminSnapshot_GetCandidates(IntPtr obj);
@@ -1671,7 +1710,16 @@ namespace Oculus.Platform
     public static extern IntPtr ovr_Message_GetLeaderboardUpdateStatus(IntPtr obj);
 
     [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
+    public static extern IntPtr ovr_Message_GetLivestreamingApplicationStatus(IntPtr obj);
+
+    [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
+    public static extern IntPtr ovr_Message_GetLivestreamingStartResult(IntPtr obj);
+
+    [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
     public static extern IntPtr ovr_Message_GetLivestreamingStatus(IntPtr obj);
+
+    [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
+    public static extern IntPtr ovr_Message_GetLivestreamingVideoStats(IntPtr obj);
 
     [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
     public static extern IntPtr ovr_Message_GetMatchmakingAdminSnapshot(IntPtr obj);
@@ -1702,6 +1750,9 @@ namespace Oculus.Platform
 
     [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
     public static extern IntPtr ovr_Message_GetParty(IntPtr obj);
+
+    [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
+    public static extern IntPtr ovr_Message_GetPartyID(IntPtr obj);
 
     [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
     public static extern IntPtr ovr_Message_GetPidArray(IntPtr obj);
@@ -1764,6 +1815,9 @@ namespace Oculus.Platform
 
     [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
     public static extern bool ovr_Message_IsError(IntPtr obj);
+
+    [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
+    public static extern UIntPtr ovr_Microphone_GetNumSamplesAvailable(IntPtr obj);
 
     [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
     public static extern UIntPtr ovr_Microphone_GetOutputBufferMaxSize(IntPtr obj);
